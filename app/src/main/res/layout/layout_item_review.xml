@@ -1,100 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="100dp"
     android:orientation="vertical"
     android:background="@android:color/white">
 
+    <LinearLayout
+        android:id="@+id/basic_info_subject_curriculum_subject_container"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/review_writer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_toRightOf="@id/item_shop_icon"
         android:layout_centerVertical="true"
-        android:textSize="17sp"
-        android:textColor="@color/river_auction_black"/>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:textColor="@color/river_auction_brownish_grey"
+        android:text="AAA님의 리뷰"
+        />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@android:color/white">
+        android:weightSum="1">
         <ImageView
             android:id="@+id/star_rank"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="15dp"
-            android:src="@drawable/small_icon_key"
-            android:layout_centerVertical="true"/>
-
-        <TextView
-            android:id="@+id/review_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_toRightOf="@id/item_shop_icon"
-            android:layout_centerVertical="true"
-            android:textSize="17sp"
-            android:textColor="@color/river_auction_black"/>
+            android:src="@drawable/star1"
+            android:text="@string/review_list_average"
+            android:textColor="@color/river_auction_brownish_grey" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/river_auction_brownish_grey_two"
+            android:text="2016.06.26"
+            android:layout_marginLeft="20dp"
+            android:gravity="center_vertical" />
         <TextView
             android:id="@+id/review_createat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:layout_toRightOf="@id/item_shop_icon"
             android:layout_centerVertical="true"
             android:textSize="17sp"
             android:textColor="@color/river_auction_black"/>
     </LinearLayout>
+
     <TextView
         android:id="@+id/review_contents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/item_shop_count"
-        android:layout_centerVertical="true"
         android:textSize="11sp"
+        android:text="ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
         android:textColor="@color/river_auction_lightish_blue"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="20dp"
         android:orientation="horizontal"
         android:background="@android:color/white">
         <ImageView
             android:id="@+id/img_modify"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="36px"
+            android:layout_height="36px"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/small_icon_key"
+            android:src="@drawable/modify"
             android:layout_centerVertical="true"/>
-
         <TextView
             android:id="@+id/review_modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:layout_toRightOf="@id/item_shop_icon"
             android:layout_centerVertical="true"
             android:textSize="17sp"
             android:textColor="@color/river_auction_black"/>
         <ImageView
             android:id="@+id/img_delete"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="36px"
+            android:layout_height="36px"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/small_icon_key"
+            android:src="@drawable/delete"
             android:layout_centerVertical="true"/>
         <TextView
             android:id="@+id/review_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:layout_toRightOf="@id/item_shop_icon"
             android:layout_centerVertical="true"
             android:textSize="17sp"
             android:textColor="@color/river_auction_black"/>
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>

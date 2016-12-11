@@ -78,23 +78,46 @@
                     android:textColor="@color/river_auction_greyish_brown"
                     android:textSize="15sp"
                     android:singleLine="true"/>
+                <TextView
+                    android:id="@+id/basic_info_university_status_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="11sp"
+                    android:textColor="@color/river_auction_brownish_grey" />
             </LinearLayout>
-
+            <!-- 학교 과 학년 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="3dp">
             <TextView
-                android:id="@+id/basic_info_university_status_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginBottom="5dp"
                 android:textSize="11sp"
+                android:text="@string/review_list_average"
                 android:textColor="@color/river_auction_brownish_grey" />
-
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="5dp"
+                android:src="@drawable/star1"
+                android:text="@string/review_list_average"
+                android:textColor="@color/river_auction_brownish_grey" />
+            </LinearLayout>
             <!-- 장소-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:visibility="invisible"
                 android:layout_marginBottom="5dp">
 
                 <ImageView
@@ -119,6 +142,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:visibility="invisible"
                 android:layout_marginBottom="5dp">
 
                 <ImageView
@@ -147,7 +171,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="18dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="25dp">
+        android:layout_marginBottom="25dp"
+        android:visibility="invisible"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -178,6 +204,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal"
+            android:visibility="invisible"
             android:gravity="center_vertical">
 
             <ImageView
@@ -210,6 +237,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="8dp"
+            android:visibility="invisible"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
@@ -243,6 +271,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:orientation="horizontal"
+            android:visibility="invisible"
             android:gravity="center_vertical">
 
             <ImageView

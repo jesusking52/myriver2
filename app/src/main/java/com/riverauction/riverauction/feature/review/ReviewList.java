@@ -16,14 +16,13 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.RiverAuctionConstant;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReview;
-import com.riverauction.riverauction.api.model.CShopItem;
+import com.riverauction.riverauction.api.model.CReviewItem;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.common.ReviewInfoView;
-import com.riverauction.riverauction.feature.profile.shop.ShopActivity;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
@@ -47,8 +46,8 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     private CTeacher teacher;
     private Integer userId;
 
-    private ShopItemAdapter adapter;
-    private List<CShopItem> shopItems = Lists.newArrayList();
+    private ReviewItemAdapter adapter;
+    private List<CReviewItem> reviewItems = Lists.newArrayList();
     @Override
     public int getLayoutResId() {
         return R.layout.activity_reviewlist;
@@ -68,13 +67,17 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
-
-        adapter = new ShopItemAdapter(shopItems);
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
+        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
+        adapter = new ReviewItemAdapter(reviewItems);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -85,8 +88,8 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         //presenter.getUser(user.getId());
     }
 
-    private CShopItem makeShopItem(String skuId, Integer count, String bonus, Integer price) {
-        CShopItem shopItem = new CShopItem();
+    private CReviewItem makeShopItem(String skuId, Integer count, String bonus, Integer price) {
+        CReviewItem shopItem = new CReviewItem();
         shopItem.setSkuId(skuId);
         shopItem.setCount(count);
         shopItem.setBonusDescription(bonus);
@@ -149,18 +152,16 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         return false;
     }
 
-
     /**
      * ViewHolder
      */
-    public static class ShopItemHolder extends RecyclerView.ViewHolder {
+    public static class ReviewItemHolder extends RecyclerView.ViewHolder {
         public TextView countView;
         public TextView bonusDescriptionView;
         public TextView priceButton;
 
-        public ShopItemHolder(View itemView) {
+        public ReviewItemHolder(View itemView) {
             super(itemView);
-
             countView = (TextView) itemView.findViewById(R.id.item_shop_count);
             bonusDescriptionView = (TextView) itemView.findViewById(R.id.item_shop_bonus_description);
             priceButton = (TextView) itemView.findViewById(R.id.item_shop_price_button);
@@ -170,21 +171,21 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     /**
      * Adapter
      */
-    private class ShopItemAdapter extends RecyclerView.Adapter<ShopActivity.ShopItemHolder> {
-        private List<CShopItem> shopItems;
+    private class ReviewItemAdapter extends RecyclerView.Adapter<ReviewList.ReviewItemHolder> {
+        private List<CReviewItem> reviewItems;
 
-        public ShopItemAdapter(List<CShopItem> shopItems) {
-            this.shopItems = shopItems;
+        public ReviewItemAdapter(List<CReviewItem> reviewItems) {
+            this.reviewItems = reviewItems;
         }
 
         @Override
-        public ShopActivity.ShopItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ShopActivity.ShopItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false));
+        public ReviewList.ReviewItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ReviewList.ReviewItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(ShopActivity.ShopItemHolder holder, int position) {
-            CShopItem shopItem = shopItems.get(position);
+        public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
+            CReviewItem shopItem = reviewItems.get(position);
             /*
             if (shopItem.getSkuId().equals(SKU_PURCHASED)) {
                 holder.countView.setText("결제 성공하는 테스트");
@@ -223,7 +224,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
 
         @Override
         public int getItemCount() {
-            return shopItems.size();
+            return reviewItems.size();
         }
     }
 }
