@@ -7,6 +7,7 @@ import android.text.style.TextAppearanceSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class TeacherItemView extends LinearLayout {
     @Bind(R.id.item_teacher_location) TextView locationView;
     @Bind(R.id.item_teacher_price_title) TextView priceTitleView;
     @Bind(R.id.item_teacher_preferred_price) TextView priceView;
+    @Bind(R.id.img_rank) ImageView imgRank;
 
     public TeacherItemView(Context context) {
         super(context);
@@ -101,6 +103,32 @@ public class TeacherItemView extends LinearLayout {
             SpannableStringBuilder builder = new SpannableStringBuilder(price);
             builder.setSpan(new TextAppearanceSpan(getContext(), R.style.PriceSmallText), price.length() - 2, price.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             priceView.setText(builder);
+        }
+
+        if(teacher.getRank() != null){
+            switch (teacher.getRank())
+            {
+                case "1":
+                    imgRank.setImageResource(R.drawable.star1);
+                case "2":
+                    imgRank.setImageResource(R.drawable.star2);
+                case "3":
+                    imgRank.setImageResource(R.drawable.star3);
+                case "4":
+                    imgRank.setImageResource(R.drawable.star4);
+                case "5":
+                    imgRank.setImageResource(R.drawable.star5);
+                case "6":
+                    imgRank.setImageResource(R.drawable.star6);
+                case "7":
+                    imgRank.setImageResource(R.drawable.star7);
+                case "8":
+                    imgRank.setImageResource(R.drawable.star8);
+                case "9":
+                    imgRank.setImageResource(R.drawable.star9);
+                case "10":
+                    imgRank.setImageResource(R.drawable.star10);
+            }
         }
     }
 }

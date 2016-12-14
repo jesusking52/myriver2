@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLocation;
+import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CStudent;
 import com.riverauction.riverauction.api.model.CStudentStatus;
 import com.riverauction.riverauction.api.model.CTeacher;
@@ -35,6 +36,10 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
 
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.teacher.TeacherDetailActivity.";
     public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
+
+    private static final String EXTRA_PREFIX2 = "com.riverauction.riverauction.feature.review.ReviewList.";
+    public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
+    public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
     private PhotoSelector photoSelector;
     private String profileImagePath;
     @Inject
@@ -49,8 +54,9 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     // address 정보
     private CLocation location;
     private CUser user;
+    private int reviewIdx;
     private CTeacher teacher;
-    private Integer userId;
+    private Integer teacherId;
     @Override
     public int getLayoutResId() {
         return R.layout.activity_review_write;
@@ -70,22 +76,35 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
 
         // basic
         initializeRankSpinner();
-        presenter.getUserProfile(userId, true);
-        //setRank(user);
+        presenter.getUserProfile(teacherId, true);
+
+        //수정인 경우
+        if(reviewIdx>-1)
+        {
+            presenter.getUserReview(reviewIdx);
+        }
+
     }
 
-    // userId 를 이전 화면에서 넘겨받는다
+    private  void setUserReview(CReview review){
+
+    }
+
+    // teacherId 를 이전 화면에서 넘겨받는다
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             //실제로 티처아이디다
-            userId = bundle.getInt(EXTRA_USER_ID, -1);
-            if (userId == -1) {
-                throw new IllegalStateException("userId must be exist");
+            teacherId = bundle.getInt(EXTRA_USER_ID, -1);
+
+            if (teacherId == -1) {
+                //리뷰리스트에서 온 경우
+                teacherId = bundle.getInt(EXTRA_USER_ID2, -1);
+                reviewIdx = bundle.getInt(EXTRA_REVIEW_IDX, -1);
+                if (teacherId == -1) {
+                    throw new IllegalStateException("teacherId must be exist");
+                }
             }
 
-            //biddingPrice = bundle.getInt(EXTRA_BIDDING_PRICE, -1);
-            //isSelectTeacherButton = bundle.getBoolean(EXTRA_BOOLEAN_SELECT_TEACHER, false);
-            //lessonId = bundle.getInt(EXTRA_LESSON_ID, -1);
         }
     }
 
@@ -117,21 +136,6 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         if (RESULT_OK != resultCode) {
             return;
         }
-/*
-        if (REQUEST_SEARCH_LOCATION == requestCode) {
-            String response = data.getExtras().getString("data");
-            if (response != null) {
-                try {
-                    CDaumPostCode daumPostCode = Jackson.stringToObject(response, CDaumPostCode.class);
-                    //location = getLocation(daumPostCode);
-                    review.setText(daumPostCode.getAddress());
-                    review.setTextColor(context.getResources().getColor(R.color.river_auction_greyish_brown));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        */
     }
 
     @Override
@@ -229,7 +233,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         if (reviewRankSpinner.getSelectedItemPosition() == 0) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.review_rank_validate)
-                    .setMessage(R.string.sign_up_error_dialog_check_student_status_message)
+                    .setMessage(R.string.review_rank_validate)
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
             return false;
@@ -237,7 +241,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         if(review.getText().equals("")){
             new AlertDialog.Builder(context)
                     .setTitle(R.string.review_review_validate)
-                    .setMessage(R.string.sign_up_error_dialog_check_student_status_message)
+                    .setMessage(R.string.review_review_validate)
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
         }
@@ -296,6 +300,8 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         setContent(user);
     }
 
+
+
     private void setContent(CUser user) {
         if (user == null) {
             return;
@@ -304,11 +310,21 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         photoSelector = new PhotoSelector(this);
         profilePhotoView.loadProfileImage(user);
         userNameView.setText(user.getName());
-        profileuniversity.setText(user.getTeacher().getUniversity());
+        profileuniversity.setText(teacher.getUniversity());
     }
 
     @Override
     public boolean failGetUser(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successGetReview(CReview review) {
+       setUserReview(review);
+    }
+
+    @Override
+    public boolean failGetReview(CErrorCause errorCause) {
         return false;
     }
 }

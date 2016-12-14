@@ -2,6 +2,7 @@ package com.riverauction.riverauction.feature.review;
 
 import android.content.Context;
 
+import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BasePresenter;
@@ -13,6 +14,8 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static android.R.attr.phoneNumber;
 
 public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
     private final DataManager dataManager;
@@ -60,7 +63,6 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
                 */
     }
 
-
     public void getUserProfile(Integer userId, Boolean phoneNumber) {
         checkViewAttached();
         if (userId == null) {
@@ -83,5 +85,27 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
                     }
                 }, context));
     }
+
+    public void getUserReview(Integer reviewIdx) {
+        checkViewAttached();
+
+
+        subscription = dataManager.getReview(reviewIdx)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CReview>() {
+
+                    @Override
+                    public void onNext(CReview review) {
+                        super.onNext(review);
+                        getMvpView().successGetReview(review );
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failGetUser(getErrorCause(e));
+                    }
+                }, context));
+    }
+
 
 }

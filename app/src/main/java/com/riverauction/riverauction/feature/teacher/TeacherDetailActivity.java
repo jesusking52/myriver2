@@ -110,6 +110,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             riviewbutton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ReviewWriteActivity.class);
                 intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, userId);
+
                 startActivity(intent);
                 //Toast.makeText(this, "test2", Toast.LENGTH_SHORT).show();
             });

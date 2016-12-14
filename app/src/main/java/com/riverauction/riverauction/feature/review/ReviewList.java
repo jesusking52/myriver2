@@ -1,5 +1,6 @@
 package com.riverauction.riverauction.feature.review;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,12 +9,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.RiverAuctionConstant;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CReviewItem;
@@ -26,7 +27,6 @@ import com.riverauction.riverauction.feature.common.ReviewInfoView;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +37,11 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
 
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.teacher.TeacherDetailActivity.";
     public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
+
+    private static final String EXTRA_PREFIX2 = "com.riverauction.riverauction.feature.review.ReviewList.";
+    public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
+    public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
+
     @Inject
     ReviewListPresenter presenter;
     @Bind(R.id.basic_info_view) ReviewInfoView basicInfoView;
@@ -44,7 +49,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     // 로그인 한 유저
     private CUser user;
     private CTeacher teacher;
-    private Integer userId;
+    private Integer teacherId;
 
     private ReviewItemAdapter adapter;
     private List<CReviewItem> reviewItems = Lists.newArrayList();
@@ -61,22 +66,21 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         //뷰 리스트
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
-        presenter.getUserProfile(userId, true);
+        presenter.getUserProfile(teacherId, true);
         user = UserStates.USER.get(stateCtx);
         getSupportActionBar().setTitle(R.string.review_list_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
-        reviewItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+
         adapter = new ReviewItemAdapter(reviewItems);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -88,22 +92,22 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         //presenter.getUser(user.getId());
     }
 
-    private CReviewItem makeShopItem(String skuId, Integer count, String bonus, Integer price) {
+    private CReviewItem makeReviewItem(String createAt, Integer rank, String review, String userName) {
         CReviewItem shopItem = new CReviewItem();
-        shopItem.setSkuId(skuId);
-        shopItem.setCount(count);
-        shopItem.setBonusDescription(bonus);
-        shopItem.setPrice(price);
+        shopItem.setCreateAt(createAt);
+        shopItem.setRank(rank);
+        shopItem.setReview(review);
+        shopItem.setUserName(userName);
         return shopItem;
     }
 
-    // userId 를 이전 화면에서 넘겨받는다
+    // teacherId 를 이전 화면에서 넘겨받는다
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             //실제로 티처아이디다
-            userId = bundle.getInt(EXTRA_USER_ID, -1);
-            if (userId == -1) {
-                throw new IllegalStateException("userId must be exist");
+            teacherId = bundle.getInt(EXTRA_USER_ID, -1);
+            if (teacherId == -1) {
+                throw new IllegalStateException("teacherId must be exist");
             }
         }
     }
@@ -132,6 +136,14 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         basicInfoView.setContent(user2);
     }
 
+
+    public void modifyReviewItem(int reviewIdx) {
+        Intent intent = new Intent(context, ReviewWriteActivity.class);
+        intent.putExtra(ReviewList.EXTRA_USER_ID2, teacherId);
+        //리뷰 idx 수정 필요
+        intent.putExtra(ReviewList.EXTRA_REVIEW_IDX, reviewIdx);
+        startActivity(intent);
+    }
     @Override
     public void successGetReviews(APISuccessResponse<List<CReview>> response, Integer newNextToken) {
         //adapter.setMessageViewResult((List<CReview>) response, newNextToken);
@@ -156,15 +168,19 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
      * ViewHolder
      */
     public static class ReviewItemHolder extends RecyclerView.ViewHolder {
-        public TextView countView;
-        public TextView bonusDescriptionView;
-        public TextView priceButton;
-
+        public TextView writerView;
+        public TextView createView;
+        public TextView review;
+        public ImageView starRank;
+        public ImageView imgModify;
+        public RelativeLayout modify_layout;
         public ReviewItemHolder(View itemView) {
             super(itemView);
-            countView = (TextView) itemView.findViewById(R.id.item_shop_count);
-            bonusDescriptionView = (TextView) itemView.findViewById(R.id.item_shop_bonus_description);
-            priceButton = (TextView) itemView.findViewById(R.id.item_shop_price_button);
+            writerView = (TextView) itemView.findViewById(R.id.review_writer);
+            createView = (TextView) itemView.findViewById(R.id.review_createat);
+            review = (TextView) itemView.findViewById(R.id.review_contents);
+            starRank =(ImageView)itemView.findViewById(R.id.star_rank);
+            imgModify = (ImageView)itemView.findViewById(R.id.img_modify);
         }
     }
 
@@ -180,45 +196,61 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
 
         @Override
         public ReviewList.ReviewItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ReviewList.ReviewItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false));
+            return new ReviewList.ReviewItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_review, parent, false));
         }
 
         @Override
         public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
-            CReviewItem shopItem = reviewItems.get(position);
-            /*
-            if (shopItem.getSkuId().equals(SKU_PURCHASED)) {
-                holder.countView.setText("결제 성공하는 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_CANCELED)) {
-                holder.countView.setText("결제 실패하는 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_REFUNDED)) {
-                holder.countView.setText("결제 환불된거 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_ITEM_UNAVAILABLE)) {
-                holder.countView.setText("결제 불가능아이템 테스트");
-            } else {
-                holder.countView.setText(getString(R.string.common_shop_item_count_unit, shopItem.getCount()));
+            CReviewItem reviewItem = reviewItems.get(position);
+
+            holder.writerView.setText(reviewItem.getReview());
+
+            //자신의 댓글인 경우에만 노출
+            if(reviewItem.getReviewIdx().equals(user.getId()))
+            {
+                holder.imgModify.setVisibility(View.VISIBLE);
+            }else
+            {
+                //일단 주석 처리
+                //holder.imgModify.setVisibility(View.INVISIBLE);
             }
-            */
-            DecimalFormat formatter = new DecimalFormat("#,###,###");
-            String formattedString = formatter.format(shopItem.getPrice());
-            holder.priceButton.setText(getString(R.string.common_shop_item_price_unit, formattedString));
-            holder.priceButton.setOnClickListener(v -> {
+
+            holder.imgModify.setOnClickListener(v -> {
                 // Purchase and Consume
                 new AlertDialog.Builder(context)
-                        .setTitle(R.string.shop_purchase_dialog_title)
-                        .setMessage(R.string.shop_purchase_dialog_message)
+                        .setTitle(R.string.review_list_modify)
+                        .setMessage(R.string.review_modify_dialog_message)
                         .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                           // purchaseItem(shopItem.getSkuId());
+                            modifyReviewItem(reviewItem.getReviewIdx());
                         })
                         .setCancelable(true)
                         .show();
             });
 
-            if (!Strings.isNullOrEmpty(shopItem.getBonusDescription())) {
-                holder.bonusDescriptionView.setText(shopItem.getBonusDescription());
-                holder.bonusDescriptionView.setVisibility(View.VISIBLE);
-            } else {
-                holder.bonusDescriptionView.setVisibility(View.GONE);
+            holder.createView.setText(reviewItem.getCreateAt());
+            holder.review.setText(reviewItem.getReview());
+            switch (reviewItem.getRank())
+            {
+                case 1:
+                    holder.starRank.setImageResource(R.drawable.star1);
+                case 2:
+                    holder.starRank.setImageResource(R.drawable.star2);
+                case 3:
+                    holder.starRank.setImageResource(R.drawable.star3);
+                case 4:
+                    holder.starRank.setImageResource(R.drawable.star4);
+                case 5:
+                    holder.starRank.setImageResource(R.drawable.star5);
+                case 6:
+                    holder.starRank.setImageResource(R.drawable.star6);
+                case 7:
+                    holder.starRank.setImageResource(R.drawable.star7);
+                case 8:
+                    holder.starRank.setImageResource(R.drawable.star8);
+                case 9:
+                    holder.starRank.setImageResource(R.drawable.star9);
+                case 10:
+                    holder.starRank.setImageResource(R.drawable.star10);
             }
         }
 

@@ -127,38 +127,62 @@
                     android:textColor="@android:color/holo_blue_dark"
                     android:layout_marginBottom="22dp"
                     />
+                <include layout="@layout/divider_dark"/>
                 <TextView
                     android:id="@+id/riview_button"
                     android:layout_width="match_parent"
-                    android:layout_height="62dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="bottom"
                     android:gravity="center"
                     android:textSize="15sp"
                     android:textColor="@android:color/holo_blue_dark"
                     android:text="@string/teacher_item_review_button"
                    />
+                <include layout="@layout/divider_dark"/>
                 <!--리뷰 있을 시-->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:textSize="15sp"
-                    android:textColor="@color/river_auction_brownish_grey"
-                    android:text="@string/review_review_average"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:textSize="15sp"
-                    android:textColor="@color/river_auction_brownish_grey"
-                    android:text="@string/review_review_count"/>
-                <ImageView
-                    android:id="@+id/review_list"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/icon_arrow_right"/>
+                <LinearLayout
+                    android:id="@+id/riview_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:background="@android:color/white"
+                    android:weightSum="1">
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_brownish_grey"
+                        android:text="@string/review_review_average"/>
+                    <LinearLayout
+                        android:layout_width="184dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@android:color/white"
+                        android:layout_weight="0.67">
+                        <ImageView
+                            android:id="@+id/img_rank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="12dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/star9"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="12dp"
+                            android:layout_centerVertical="true"
+                            android:textSize="11sp"
+                            android:textColor="@color/river_auction_brownish_grey"
+                            android:text="@string/review_review_count"/>
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/review_list"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/icon_arrow_right"/>
+                </LinearLayout>
             </LinearLayout>
 
             <View

@@ -26,7 +26,6 @@ import com.riverauction.riverauction.api.service.lesson.params.GetLessonsParams;
 import com.riverauction.riverauction.api.service.lesson.request.LessonBiddingRequest;
 import com.riverauction.riverauction.api.service.payment.PaymentService;
 import com.riverauction.riverauction.api.service.review.ReviewService;
-import com.riverauction.riverauction.api.service.review.params.GetReviewParams;
 import com.riverauction.riverauction.api.service.teacher.TeacherService;
 import com.riverauction.riverauction.api.service.teacher.params.GetTeachersParams;
 import com.riverauction.riverauction.api.service.user.UserService;
@@ -217,5 +216,10 @@ public class DataManager {
     public Observable<APISuccessResponse<List<CReview>>> getReviews(Integer teacherId, Integer nextToken) {
         return reviewService.getReviews(teacherId, nextToken);
 
+    }
+
+    //리뷰
+    public Observable<CReview> getReview(Integer reviewIdx) {
+        return reviewService.getReview(reviewIdx);
     }
 }

@@ -152,7 +152,6 @@ public class TeacherView extends BaseFrameLayout implements TeacherMvpView, Main
             return;
         }
         statusView.showResultView();
-
         teachers.addAll(newTeachers);
         nextToken = newNextToken;
 

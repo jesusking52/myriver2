@@ -387,7 +387,7 @@
     <string name="photo_request_from_camera">사진 찍기</string>
     <string name="photo_request_from_android_gallery">앨범 사진 선택</string>
     <string name="photo_delete">사진 삭제</string>
-
+    <string name="review_delete">삭제</string>
     <string name="lesson_bidding_list_dialog_title">입찰 선택</string>
     <string name="lesson_bidding_list_dialog_positive_button">확인</string>
     <string name="lesson_bidding_list_dialog_negative_button">열쇠가 1만큼 차감됩니다</string>
@@ -427,4 +427,6 @@
     <string name="review_list_rank">평점순</string>
     <string name="review_list_count">총 10개의 리뷰</string>
     <string name="review_list_average">평균 별점</string>
+    <string name="review_list_modify">수정</string>
+    <string name="review_modify_dialog_message">평점을 수정하시겠습니까?</string>
 </resources>

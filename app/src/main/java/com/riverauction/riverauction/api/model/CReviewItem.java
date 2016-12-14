@@ -9,48 +9,57 @@ import proguard.annotation.KeepClassMembers;
 @KeepClassMembers
 public class CReviewItem {
 
-    @JsonProperty("sku_id")
-    private String skuId;
+    @JsonProperty("reviewIdx")
+    private Integer reviewIdx;
 
-    @JsonProperty("count")
-    private Integer count;
+    @JsonProperty("userName")
+    private String userName;
 
-    @JsonProperty("bonus_description")
-    private String bonusDescription;
+    @JsonProperty("rank")
+    private Integer rank;
 
-    @JsonProperty("price")
-    private Integer price;
+    @JsonProperty("createAt")
+    private String createAt;
 
+    @JsonProperty("review")
+    private String review;
 
-    public String getSkuId() {
-        return skuId;
+    public Integer getReviewIdx() {
+        return reviewIdx;
     }
 
-    public void setSkuId(String skuId) {
-        this.skuId = skuId;
+    public void setReviewIdx(Integer reviewIdx) {
+        this.reviewIdx = reviewIdx;
+    }
+    public String getUserName() {
+        return userName;
     }
 
-    public Integer getCount() {
-        return count;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public Integer getRank() {
+        return rank;
     }
 
-    public String getBonusDescription() {
-        return bonusDescription;
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
-    public void setBonusDescription(String bonusDescription) {
-        this.bonusDescription = bonusDescription;
+    public String getCreateAt() {
+        return createAt;
     }
 
-    public Integer getPrice() {
-        return price;
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
     }
 }

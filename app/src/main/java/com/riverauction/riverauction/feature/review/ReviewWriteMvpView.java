@@ -1,6 +1,7 @@
 package com.riverauction.riverauction.feature.review;
 
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.MvpView;
 
@@ -9,4 +10,6 @@ public interface ReviewWriteMvpView extends MvpView {
     boolean failPatchUser(CErrorCause errorCause);
     void successGetUser(CUser user);
     boolean failGetUser(CErrorCause errorCause);
+    void successGetReview(CReview response);
+    boolean failGetReview(CErrorCause errorCause);
 }

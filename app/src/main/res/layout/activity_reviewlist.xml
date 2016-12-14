@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="31dp"
         android:layout_marginLeft="10dp"
@@ -25,29 +25,16 @@
         android:gravity="center_vertical"
         android:background="@color/river_auction_pale_grey">
         <ImageView
-            android:layout_width="12dp"
+            android:layout_width="145px"
             android:layout_height="12dp"
-            android:src="@drawable/icon_book"
-            android:layout_marginRight="2dp"/>
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textColor="@color/river_auction_brownish_grey_two"
-            android:text="@string/review_list_last"
-            android:gravity="center_vertical"/>
+            android:src="@drawable/recent"/>
+
         <ImageView
-            android:layout_width="12dp"
+            android:layout_width="145px"
             android:layout_height="12dp"
-            android:src="@drawable/icon_book"
-            android:layout_marginRight="2dp"/>
-        <TextView
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textColor="@color/river_auction_brownish_grey_two"
-            android:text="@string/review_list_rank"
-            android:gravity="center_vertical"/>
+            android:src="@drawable/rate"
+            android:layout_marginLeft="70dp"/>
+
 
         <TextView
             android:layout_width="45dp"
@@ -57,9 +44,9 @@
             android:text="@string/review_list_count"
             android:gravity="center_vertical"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="18dp"
+            android:layout_marginRight="40dp"
             />
-    </LinearLayout>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/shop_recycler_view"
