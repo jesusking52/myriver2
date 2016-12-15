@@ -18,7 +18,6 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CReviewItem;
-import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
@@ -48,7 +47,6 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
     // 로그인 한 유저
     private CUser user;
-    private CTeacher teacher;
     private Integer teacherId;
 
     private ReviewItemAdapter adapter;
@@ -92,6 +90,10 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         //presenter.getUser(user.getId());
     }
 
+    private void setAdaptor(APISuccessResponse<List<CReview>> response){
+        List<CReview> newReview = response.getResult();
+
+    }
     private CReviewItem makeReviewItem(String createAt, Integer rank, String review, String userName) {
         CReviewItem shopItem = new CReviewItem();
         shopItem.setCreateAt(createAt);
@@ -147,6 +149,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     @Override
     public void successGetReviews(APISuccessResponse<List<CReview>> response, Integer newNextToken) {
         //adapter.setMessageViewResult((List<CReview>) response, newNextToken);
+        setAdaptor(response);
     }
 
     @Override
@@ -206,7 +209,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             holder.writerView.setText(reviewItem.getReview());
 
             //자신의 댓글인 경우에만 노출
-            if(reviewItem.getReviewIdx().equals(user.getId()))
+            if(reviewItem.getUserId() !=null && reviewItem.getUserId() == user.getId())
             {
                 holder.imgModify.setVisibility(View.VISIBLE);
             }else

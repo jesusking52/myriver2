@@ -12,6 +12,9 @@ public class CReviewItem {
     @JsonProperty("reviewIdx")
     private Integer reviewIdx;
 
+    @JsonProperty("userId")
+    private Integer userId;
+
     @JsonProperty("userName")
     private String userName;
 
@@ -31,6 +34,7 @@ public class CReviewItem {
     public void setReviewIdx(Integer reviewIdx) {
         this.reviewIdx = reviewIdx;
     }
+
     public String getUserName() {
         return userName;
     }
@@ -62,4 +66,13 @@ public class CReviewItem {
     public void setReview(String review) {
         this.review = review;
     }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
 }

@@ -429,4 +429,22 @@
     <string name="review_list_average">평균 별점</string>
     <string name="review_list_modify">수정</string>
     <string name="review_modify_dialog_message">평점을 수정하시겠습니까?</string>
+
+    <!--상담게시판-->
+    <string name="consult_title">상담게시판</string>
+    <string name="consult_tab_school">진학</string>
+    <string name="consult_tab_study">공부</string>
+    <string name="consult_tab_worry">고민</string>
+    <string name="consult_spinner_subject">게시판 및 카테고리 선택</string>
+    <string name="subject">게시판 및 카테고리 선택</string>
+    <string name="contents">본문</string>
+    <string name="contents_hint">본문 내용을 입력하세요</string>
+    <string name="subject_hint">제목을 입력하세요</string>
+    <string name="board_spinner1">진학/공부/고민</string>
+
+    <string name="board_spinner2">대학/고등/중등/유학</string>
+    <string name="board_spinner3">게시판을 선택해 주세요.</string>
+    <string name="board_spinner4">카테고리를 선택해 주세요.</string>
+    <string name="board_text5">제목을 입력해 주세요.</string>
+    <string name="board_text6">내용을 입력해 주세요.</string>
 </resources>

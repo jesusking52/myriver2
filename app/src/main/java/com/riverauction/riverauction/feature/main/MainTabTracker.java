@@ -17,6 +17,7 @@ public final class MainTabTracker {
     private static final String TAB_MY_LESSON = "my_lesson";
     private static final String TAB_MESSAGE = "message";
     private static final String TAB_PROFILE = "profile";
+    private static final String TAB_CONSULT = "consult";
     private static final Map<Integer, String> TABS = Maps.newHashMap();
     static {
         TABS.put(0, TAB_TEACHER);
@@ -24,6 +25,7 @@ public final class MainTabTracker {
         TABS.put(2, TAB_MY_LESSON);
         TABS.put(3, TAB_MESSAGE);
         TABS.put(4, TAB_PROFILE);
+        TABS.put(5, TAB_CONSULT);
     }
 
     private static final WeakHashMap<Integer, MainTabTrackerListener> TAB_VIEWS = new WeakHashMap<>();

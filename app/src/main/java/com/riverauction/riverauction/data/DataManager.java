@@ -215,7 +215,6 @@ public class DataManager {
     //리뷰리스트
     public Observable<APISuccessResponse<List<CReview>>> getReviews(Integer teacherId, Integer nextToken) {
         return reviewService.getReviews(teacherId, nextToken);
-
     }
 
     //리뷰

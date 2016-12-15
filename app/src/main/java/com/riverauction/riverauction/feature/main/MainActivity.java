@@ -7,10 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +24,7 @@ import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.LaunchActivity;
+import com.riverauction.riverauction.feature.consult.SchoolView;
 import com.riverauction.riverauction.feature.lesson.LessonView;
 import com.riverauction.riverauction.feature.mylesson.MyLessonView;
 import com.riverauction.riverauction.feature.notification.NotificationActivity;
@@ -230,6 +229,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         tabPagerItems.add(new MainTabPagerItem(R.string.main_tab_teacher, 0));
         tabPagerItems.add(new MainTabPagerItem(R.string.main_tab_my_lesson, 1));
         tabPagerItems.add(new MainTabPagerItem(R.string.main_tab_lesson, 2));
+        tabPagerItems.add(new MainTabPagerItem(R.string.consult_title, 3));
     }
 
     private void makeViewPagerSlidingTabLayout() {
@@ -337,6 +337,10 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 case 2: {
                     lessonView = new LessonView(MainActivity.this);
                     view = lessonView;
+                    break;
+                }
+                case 3: {
+                    view = new SchoolView(MainActivity.this);
                     break;
                 }
             }
