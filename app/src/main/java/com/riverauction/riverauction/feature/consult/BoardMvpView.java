@@ -7,7 +7,7 @@ import com.riverauction.riverauction.base.MvpView;
 
 import java.util.List;
 
-public interface MyLessonMvpView extends MvpView {
+public interface BoardMvpView extends MvpView {
     // student
     void successGetActiveLessonAndBiddings(CLesson lesson, List<CLessonBidding> lessonBiddingList, Integer nextToken, int totalCount);
     void successGetLessonBiddings(List<CLessonBidding> lessonBiddingList, Integer nextToken);

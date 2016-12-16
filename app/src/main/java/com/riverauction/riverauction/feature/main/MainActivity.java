@@ -24,7 +24,7 @@ import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.LaunchActivity;
-import com.riverauction.riverauction.feature.consult.SchoolView;
+import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.lesson.LessonView;
 import com.riverauction.riverauction.feature.mylesson.MyLessonView;
 import com.riverauction.riverauction.feature.notification.NotificationActivity;
@@ -340,7 +340,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                     break;
                 }
                 case 3: {
-                    view = new SchoolView(MainActivity.this);
+                    view = new BoardView(MainActivity.this);
                     break;
                 }
             }

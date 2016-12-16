@@ -24,6 +24,7 @@ import com.riverauction.riverauction.eventbus.MakeBiddingEvent;
 import com.riverauction.riverauction.eventbus.PostBiddingEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
+import com.riverauction.riverauction.feature.consult.filter.ConsultFilterActivity;
 import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.main.MainTabTracker;
 import com.riverauction.riverauction.feature.main.MainTabTrackerListener;
@@ -36,26 +37,27 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
-public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, MainTabTrackerListener {
+public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabTrackerListener {
 
     @Inject
-    MyLessonPresenter presenter;
+    BoardPresenter presenter;
 
+    @Bind(R.id.filter_button) View filterButton;
     @Bind(R.id.my_lesson_sliding_tabs) SlidingTabLayout slidingTabLayout;
     @Bind(R.id.my_lesson_view_pager) ViewPager viewPager;
 
     private MyLessonPagerAdapter adapter;
     private CUser user;
 
-    public SchoolView(Context context) {
+    public BoardView(Context context) {
         super(context);
     }
 
-    public SchoolView(Context context, AttributeSet attrs) {
+    public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SchoolView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BoardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -68,11 +70,15 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
 
         makeViewPagerSlidingTabLayout();
         MainTabTracker.registerTabCallback(this, 1, getContext());
+        filterButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ConsultFilterActivity.class);
+            getContext().startActivity(intent);
+        });
     }
 
     @Override
     public int getLayoutResId() {
-        return R.layout.view_my_lesson;
+        return R.layout.view_board;
     }
 
     @Override
@@ -239,8 +245,8 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
      */
     private class MyLessonPagerAdapter extends PagerAdapter implements SlidingTabLayout.TabCustomViewProvider, SlidingTabLayout.TabCustomLayoutParamsProvider {
 
-        private MyLessonActiveStudentView myLessonActiveStudentView;
-        private MyLessonActiveTeacherView myLessonActiveTeacherView;
+        private BoardActiveStudentView boardActiveStudentView;
+        private BoardActiveTeacherView boardActiveTeacherView;
         private MyLessonHistoryView myLessonHistoryView;
         private List<MyLessonTabPagerItem> tabPagerItems;
 
@@ -261,10 +267,11 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View view = null;
+
             switch (position) {
                 case 0: {
                     if (CUserType.STUDENT == user.getType()) {
-                        myLessonActiveStudentView = new MyLessonActiveStudentView(getContext()) {
+                        boardActiveStudentView = new BoardActiveStudentView(getContext()) {
                             @Override
                             public void firstLoad(Integer userId) {
                                 getActiveLessonAndLessonBiddings();
@@ -275,7 +282,7 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
                                 presenter.getLessonBiddings(lessonId, nextToken);
                             }
                         };
-                        myLessonActiveStudentView.setOnMyLessonButtonClickListener(new MyLessonActiveStudentView.OnMyLessonButtonClickListener() {
+                        boardActiveStudentView.setOnMyLessonButtonClickListener(new BoardActiveStudentView.OnMyLessonButtonClickListener() {
                             @Override
                             public void makeLesson() {
                                 Intent intent = new Intent(getContext(), BoardWriteActivity.class);
@@ -293,43 +300,117 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
                                         .show();
                             }
                         });
-                        view = myLessonActiveStudentView;
+                        view = boardActiveStudentView;
                         getActiveLessonAndLessonBiddings();
                     } else {
-                        myLessonActiveTeacherView = new MyLessonActiveTeacherView(getContext()) {
+                        boardActiveTeacherView = new BoardActiveTeacherView(getContext()) {
                             @Override
                             public void loadMore(Integer nextToken) {
                                 getActiveLessonList(nextToken);
                             }
                         };
-                        myLessonActiveTeacherView.setOnFindLessonClickListener(() -> {
+                        boardActiveTeacherView.setOnFindLessonClickListener(() -> {
                             // TODO: tab 이동
                         });
-                        view = myLessonActiveTeacherView;
+                        view = boardActiveTeacherView;
                         getActiveLessonList(null);
                     }
                     break;
                 }
                 case 1: {
-                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
-                        @Override
-                        public void loadMore(Integer nextToken) {
-                            getHistoryList(nextToken);
-                        }
-                    };
-                    view = myLessonHistoryView;
-                    getHistoryList(null);
+                    if (CUserType.STUDENT == user.getType()) {
+                        boardActiveStudentView = new BoardActiveStudentView(getContext()) {
+                            @Override
+                            public void firstLoad(Integer userId) {
+                                getActiveLessonAndLessonBiddings();
+                            }
+
+                            @Override
+                            public void loadMore(Integer lessonId, Integer nextToken) {
+                                presenter.getLessonBiddings(lessonId, nextToken);
+                            }
+                        };
+                        boardActiveStudentView.setOnMyLessonButtonClickListener(new BoardActiveStudentView.OnMyLessonButtonClickListener() {
+                            @Override
+                            public void makeLesson() {
+                                Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                                getContext().startActivity(intent);
+                            }
+
+                            @Override
+                            public void cancelLesson(CLesson lesson) {
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle(R.string.menu_lesson_cancel)
+                                        .setMessage(R.string.my_lesson_cancel_lesson_button)
+                                        .setPositiveButton(R.string.common_button_confirm, (dialog, which) -> {
+                                            presenter.cancelLesson(lesson.getId());
+                                        })
+                                        .show();
+                            }
+                        });
+                        view = boardActiveStudentView;
+                        getActiveLessonAndLessonBiddings();
+                    } else {
+                        boardActiveTeacherView = new BoardActiveTeacherView(getContext()) {
+                            @Override
+                            public void loadMore(Integer nextToken) {
+                                getActiveLessonList(nextToken);
+                            }
+                        };
+                        boardActiveTeacherView.setOnFindLessonClickListener(() -> {
+                            // TODO: tab 이동
+                        });
+                        view = boardActiveTeacherView;
+                        getActiveLessonList(null);
+                    }
                     break;
                 }
                 case 2: {
-                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
-                        @Override
-                        public void loadMore(Integer nextToken) {
-                            getHistoryList(nextToken);
-                        }
-                    };
-                    view = myLessonHistoryView;
-                    getHistoryList(null);
+                    if (CUserType.STUDENT == user.getType()) {
+                        boardActiveStudentView = new BoardActiveStudentView(getContext()) {
+                            @Override
+                            public void firstLoad(Integer userId) {
+                                getActiveLessonAndLessonBiddings();
+                            }
+
+                            @Override
+                            public void loadMore(Integer lessonId, Integer nextToken) {
+                                presenter.getLessonBiddings(lessonId, nextToken);
+                            }
+                        };
+                        boardActiveStudentView.setOnMyLessonButtonClickListener(new BoardActiveStudentView.OnMyLessonButtonClickListener() {
+                            @Override
+                            public void makeLesson() {
+                                Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                                getContext().startActivity(intent);
+                            }
+
+                            @Override
+                            public void cancelLesson(CLesson lesson) {
+                                new AlertDialog.Builder(getContext())
+                                        .setTitle(R.string.menu_lesson_cancel)
+                                        .setMessage(R.string.my_lesson_cancel_lesson_button)
+                                        .setPositiveButton(R.string.common_button_confirm, (dialog, which) -> {
+                                            presenter.cancelLesson(lesson.getId());
+                                        })
+                                        .show();
+                            }
+                        });
+                        view = boardActiveStudentView;
+                        getActiveLessonAndLessonBiddings();
+                    } else {
+                        boardActiveTeacherView = new BoardActiveTeacherView(getContext()) {
+                            @Override
+                            public void loadMore(Integer nextToken) {
+                                getActiveLessonList(nextToken);
+                            }
+                        };
+                        boardActiveTeacherView.setOnFindLessonClickListener(() -> {
+                            // TODO: tab 이동
+                        });
+                        view = boardActiveTeacherView;
+                        getActiveLessonList(null);
+                    }
                     break;
                 }
             }
@@ -359,50 +440,50 @@ public class SchoolView extends BaseFrameLayout implements MyLessonMvpView, Main
 
         // student
         public void setActiveViewStudentLoading() {
-            if (myLessonActiveStudentView != null) {
-                myLessonActiveStudentView.setLoading();
+            if (boardActiveStudentView != null) {
+                boardActiveStudentView.setLoading();
             }
         }
         public void setActiveViewStudentResult(CLesson lessons, List<CLessonBidding> biddings, Integer nextToken, int totalCount) {
-            if (myLessonActiveStudentView != null) {
-                myLessonActiveStudentView.setContent(lessons, biddings, nextToken, totalCount);
+            if (boardActiveStudentView != null) {
+                boardActiveStudentView.setContent(lessons, biddings, nextToken, totalCount);
             }
         }
         public void setActiveViewStudentResult(List<CLessonBidding> biddings, Integer nextToken) {
-            if (myLessonActiveStudentView != null) {
-                myLessonActiveStudentView.setContent(biddings, nextToken);
+            if (boardActiveStudentView != null) {
+                boardActiveStudentView.setContent(biddings, nextToken);
             }
         }
         public void setActiveViewStudentError() {
-            if (myLessonActiveStudentView != null) {
-                myLessonActiveStudentView.setError();
+            if (boardActiveStudentView != null) {
+                boardActiveStudentView.setError();
             }
         }
         public void clearActiveLessonsAndBidding() {
-            if (myLessonActiveStudentView != null) {
-                myLessonActiveStudentView.clear();
+            if (boardActiveStudentView != null) {
+                boardActiveStudentView.clear();
             }
         }
 
         // active
         public void setActiveViewLoading() {
-            if (myLessonActiveTeacherView != null) {
-                myLessonActiveTeacherView.setLoading();
+            if (boardActiveTeacherView != null) {
+                boardActiveTeacherView.setLoading();
             }
         }
         public void setActiveViewResult(List<CLesson> lessons, Integer nextToken) {
-            if (myLessonActiveTeacherView != null) {
-                myLessonActiveTeacherView.setContent(lessons, nextToken);
+            if (boardActiveTeacherView != null) {
+                boardActiveTeacherView.setContent(lessons, nextToken);
             }
         }
         public void setActiveViewError() {
-            if (myLessonActiveTeacherView != null) {
-                myLessonActiveTeacherView.setError();
+            if (boardActiveTeacherView != null) {
+                boardActiveTeacherView.setError();
             }
         }
         public void clearActiveLessons() {
-            if (myLessonActiveTeacherView != null) {
-                myLessonActiveTeacherView.clear();
+            if (boardActiveTeacherView != null) {
+                boardActiveTeacherView.clear();
             }
         }
 

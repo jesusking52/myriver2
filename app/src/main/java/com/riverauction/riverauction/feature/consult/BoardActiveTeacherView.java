@@ -28,7 +28,7 @@ import com.riverauction.riverauction.widget.recyclerview.DividerItemDecoration;
 
 import java.util.List;
 
-public abstract class MyLessonActiveTeacherView extends StatusView implements MoreLoadable {
+public abstract class BoardActiveTeacherView extends StatusView implements MoreLoadable {
     private OnFindLessonClickListener onFindLessonClickListener;
     private LessonsAdapter adapter;
 
@@ -38,17 +38,17 @@ public abstract class MyLessonActiveTeacherView extends StatusView implements Mo
     // 로그인한 사용자
     private CUser user;
 
-    public MyLessonActiveTeacherView(Context context) {
+    public BoardActiveTeacherView(Context context) {
         super(context);
         initialize(context);
     }
 
-    public MyLessonActiveTeacherView(Context context, AttributeSet attrs) {
+    public BoardActiveTeacherView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context);
     }
 
-    public MyLessonActiveTeacherView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BoardActiveTeacherView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
     }
@@ -58,7 +58,7 @@ public abstract class MyLessonActiveTeacherView extends StatusView implements Mo
         stateCtx = RiverAuctionApplication.getApplication().getComponent().stateCtx();
         user = UserStates.USER.get(stateCtx);
 
-        View emptyView = inflater.inflate(R.layout.status_my_lesson_ongoing_empty_view, this, false);
+        View emptyView = inflater.inflate(R.layout.status_board_ongoing_empty_view, this, false);
         TextView emptyButton = (TextView) emptyView.findViewById(R.id.my_lesson_active_empty_button);
         emptyButton.setText(R.string.my_lesson_ongoing_empty_teacher_button);
         emptyButton.setOnClickListener(v -> {
@@ -86,7 +86,7 @@ public abstract class MyLessonActiveTeacherView extends StatusView implements Mo
         addView(recyclerView);
         setResultView(recyclerView);
 
-        findViewById(R.id.error_retry_button).setOnClickListener(v -> MyLessonActiveTeacherView.this.loadMore(null));
+        findViewById(R.id.error_retry_button).setOnClickListener(v -> BoardActiveTeacherView.this.loadMore(null));
 
         adapter = new LessonsAdapter(lessons);
         RecyclerView mRecyclerView = (RecyclerView) getResultView();
@@ -183,7 +183,7 @@ public abstract class MyLessonActiveTeacherView extends StatusView implements Mo
 
         @Override
         public void loadMore(Integer nextToken) {
-            MyLessonActiveTeacherView.this.loadMore(nextToken);
+            BoardActiveTeacherView.this.loadMore(nextToken);
         }
     }
 

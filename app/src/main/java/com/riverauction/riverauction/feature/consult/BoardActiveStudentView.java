@@ -37,7 +37,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public abstract class MyLessonActiveStudentView extends FrameLayout implements MyLessonActiveStudentLoadable {
+public abstract class BoardActiveStudentView extends FrameLayout implements MyLessonActiveStudentLoadable {
     @Bind(R.id.my_lesson_active_student_status_view) StatusView statusView;
 
     private BiddingAdapter adapter;
@@ -52,17 +52,17 @@ public abstract class MyLessonActiveStudentView extends FrameLayout implements M
     // 로그인한 사용자
     private CUser user;
 
-    public MyLessonActiveStudentView(Context context) {
+    public BoardActiveStudentView(Context context) {
         super(context);
         initialize(context);
     }
 
-    public MyLessonActiveStudentView(Context context, AttributeSet attrs) {
+    public BoardActiveStudentView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context);
     }
 
-    public MyLessonActiveStudentView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BoardActiveStudentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
     }
@@ -81,7 +81,7 @@ public abstract class MyLessonActiveStudentView extends FrameLayout implements M
         statusView.setErrorView(findViewById(R.id.error_view));
         statusView.setResultView(findViewById(R.id.recycler_view));
 
-        TextView emptyButton = (TextView) findViewById(R.id.my_lesson_active_empty_button);
+        TextView emptyButton = (TextView) findViewById(R.id.board_write_button);
         emptyButton.setText(R.string.my_lesson_ongoing_empty_student_button);
         emptyButton.setOnClickListener(v -> {
             if (onMyLessonButtonClickListener != null) {
@@ -96,7 +96,7 @@ public abstract class MyLessonActiveStudentView extends FrameLayout implements M
 
         findViewById(R.id.error_retry_button).setOnClickListener(v -> {
             setLoading();
-            MyLessonActiveStudentView.this.firstLoad(user.getId());
+            BoardActiveStudentView.this.firstLoad(user.getId());
         });
 
         adapter = new BiddingAdapter(biddings);
@@ -290,7 +290,7 @@ public abstract class MyLessonActiveStudentView extends FrameLayout implements M
 
         @Override
         public void loadMore(Integer nextToken) {
-            MyLessonActiveStudentView.this.loadMore(lesson.getId(), nextToken);
+            BoardActiveStudentView.this.loadMore(lesson.getId(), nextToken);
         }
     }
 

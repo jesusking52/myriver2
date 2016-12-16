@@ -15,7 +15,7 @@
 
     <TextView
         style="@style/LeafyGreenButton"
-        android:id="@+id/my_lesson_active_empty_button"
+        android:id="@+id/board_write_button"
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:text="@string/board_write_button"/>

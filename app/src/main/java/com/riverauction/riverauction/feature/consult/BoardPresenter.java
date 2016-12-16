@@ -17,18 +17,18 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class MyLessonPresenter extends BasePresenter<MyLessonMvpView> {
+public class BoardPresenter extends BasePresenter<BoardMvpView> {
 
     private final DataManager dataManager;
     private Subscription subscription;
 
     @Inject
-    MyLessonPresenter(DataManager dataManager) {
+    BoardPresenter(DataManager dataManager) {
         this.dataManager = dataManager;
     }
 
     @Override
-    public void attachView(MyLessonMvpView mvpView, Context context) {
+    public void attachView(BoardMvpView mvpView, Context context) {
         super.attachView(mvpView, context);
     }
 

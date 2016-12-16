@@ -447,4 +447,6 @@
     <string name="board_spinner4">카테고리를 선택해 주세요.</string>
     <string name="board_text5">제목을 입력해 주세요.</string>
     <string name="board_text6">내용을 입력해 주세요.</string>
+        <string name="board_ongoing_empty_view">등록된 게시글이 없습니다.\n질문을 등록해보세요</string>
+    <string name="board_write_button">질문하기</string>
 </resources>

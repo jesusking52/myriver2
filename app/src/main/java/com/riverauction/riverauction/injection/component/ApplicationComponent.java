@@ -6,7 +6,7 @@ import android.content.Context;
 import com.jhcompany.android.libs.injection.qualifier.ApplicationContext;
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.riverauction.riverauction.data.DataManager;
-import com.riverauction.riverauction.feature.consult.SchoolView;
+import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.lesson.LessonView;
 import com.riverauction.riverauction.feature.mylesson.MyLessonView;
 import com.riverauction.riverauction.feature.teacher.TeacherView;
@@ -38,6 +38,6 @@ public interface ApplicationComponent {
     void inject(LessonView view);
     void inject(MyLessonView view);
 
-    void inject(SchoolView schoolView);
+    void inject(BoardView boardView);
     //void inject(ReviewList view);
 }
