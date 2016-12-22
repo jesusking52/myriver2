@@ -8,6 +8,7 @@ import com.riverauction.riverauction.BuildConfig;
 import com.riverauction.riverauction.api.APIConstant;
 import com.riverauction.riverauction.api.converter.JacksonApiConverter;
 import com.riverauction.riverauction.api.service.auth.AuthService;
+import com.riverauction.riverauction.api.service.board.BoardService;
 import com.riverauction.riverauction.api.service.info.InfoService;
 import com.riverauction.riverauction.api.service.lesson.LessonService;
 import com.riverauction.riverauction.api.service.payment.PaymentService;
@@ -88,5 +89,11 @@ public class APIModule {
     @Singleton
     ReviewService reviewService(RestAdapter restAdapter){
         return restAdapter.create(ReviewService.class);
+    }
+
+    @Provides
+    @Singleton
+    BoardService provideBoardService(RestAdapter restAdapter){
+        return restAdapter.create(BoardService.class);
     }
 }

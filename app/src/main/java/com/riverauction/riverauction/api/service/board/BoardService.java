@@ -1,18 +1,17 @@
 package com.riverauction.riverauction.api.service.board;
 
-import com.riverauction.riverauction.api.model.CUser;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
-import com.riverauction.riverauction.api.service.teacher.params.GetTeachersParams;
 
 import java.util.List;
 
 import retrofit.http.GET;
 import retrofit.http.Path;
-import retrofit.http.QueryMap;
+import retrofit.http.Query;
 import rx.Observable;
 
 public interface BoardService {
 
-    @GET("/api/teachers/{userId}")
-    Observable<APISuccessResponse<List<CUser>>> getTeachers(@Path("userId") Integer userId, @QueryMap GetTeachersParams params);
+    @GET("/api/board/{categoryId}")
+    Observable<APISuccessResponse<List<CBoard>>> getBoards(@Path("categoryId") Integer userId, @Query("next_token") Integer nextToken);
 }
