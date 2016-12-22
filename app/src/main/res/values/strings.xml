@@ -436,7 +436,7 @@
     <string name="consult_tab_study">공부</string>
     <string name="consult_tab_worry">고민</string>
     <string name="consult_spinner_subject">게시판 및 카테고리 선택</string>
-    <string name="subject">게시판 및 카테고리 선택</string>
+    <string name="subject">제목</string>
     <string name="contents">본문</string>
     <string name="contents_hint">본문 내용을 입력하세요</string>
     <string name="subject_hint">제목을 입력하세요</string>
@@ -449,4 +449,6 @@
     <string name="board_text6">내용을 입력해 주세요.</string>
         <string name="board_ongoing_empty_view">등록된 게시글이 없습니다.\n질문을 등록해보세요</string>
     <string name="board_write_button">질문하기</string>
+    <string name="board_register_id">회원ID</string>
+    <string name="side">|</string>
 </resources>

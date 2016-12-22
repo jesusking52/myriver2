@@ -2,9 +2,7 @@ package com.riverauction.riverauction.feature.consult;
 
 import android.content.Context;
 
-import com.jhcompany.android.libs.utils.Lists2;
 import com.riverauction.riverauction.api.model.CLesson;
-import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
@@ -40,6 +38,35 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
         }
     }
 
+    public void getActiveLessons(Integer userId, Integer nextToken) {
+        if (userId == null) {
+            return;
+        }
+        checkViewAttached();
+
+        subscription = dataManager.getActiveLessons(userId, nextToken)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new APISubscriber<APISuccessResponse<List<CLesson>>>() {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        getMvpView().loadingGetActiveList();
+                    }
+
+                    @Override
+                    public void onNext(APISuccessResponse<List<CLesson>> result) {
+                        super.onNext(result);
+                        getMvpView().successGetActiveList(result.getResult(), result.getNextToken());
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failGetActiveList(getErrorCause(e));
+                    }
+                });
+    }
+
+/*
     public void getActiveLessonAndLessonBiddings(Integer userId) {
         checkViewAttached();
         if (userId == null) {
@@ -113,34 +140,7 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
                 });
     }
 
-    public void getActiveLessons(Integer userId, Integer nextToken) {
-        if (userId == null) {
-            return;
-        }
-        checkViewAttached();
-
-        subscription = dataManager.getActiveLessons(userId, nextToken)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<APISuccessResponse<List<CLesson>>>() {
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        getMvpView().loadingGetActiveList();
-                    }
-
-                    @Override
-                    public void onNext(APISuccessResponse<List<CLesson>> result) {
-                        super.onNext(result);
-                        getMvpView().successGetActiveList(result.getResult(), result.getNextToken());
-                    }
-
-                    @Override
-                    public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetActiveList(getErrorCause(e));
-                    }
-                });
-    }
-
+*/
     public void getHistoryLessons(Integer userId, Integer nextToken) {
         if (userId == null) {
             return;
@@ -188,4 +188,5 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
                     }
                 });
     }
+
 }

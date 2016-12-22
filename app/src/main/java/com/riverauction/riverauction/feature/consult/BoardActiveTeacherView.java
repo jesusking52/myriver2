@@ -58,7 +58,7 @@ public abstract class BoardActiveTeacherView extends StatusView implements MoreL
         stateCtx = RiverAuctionApplication.getApplication().getComponent().stateCtx();
         user = UserStates.USER.get(stateCtx);
 
-        View emptyView = inflater.inflate(R.layout.status_board_ongoing_empty_view, this, false);
+        View emptyView = inflater.inflate(R.layout.status_my_lesson_ongoing_empty_view, this, false);
         TextView emptyButton = (TextView) emptyView.findViewById(R.id.my_lesson_active_empty_button);
         emptyButton.setText(R.string.my_lesson_ongoing_empty_teacher_button);
         emptyButton.setOnClickListener(v -> {

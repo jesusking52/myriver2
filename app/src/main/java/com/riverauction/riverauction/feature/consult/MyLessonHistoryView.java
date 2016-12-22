@@ -133,7 +133,7 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         @Override
         public RecyclerView.ViewHolder onCreateViewItemHolder(ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM) {
-                return new LessonHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lesson_list, parent, false));
+                return new LessonHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_board_list, parent, false));
             }
             return null;
         }

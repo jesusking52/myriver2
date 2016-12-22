@@ -2,6 +2,7 @@ package com.riverauction.riverauction.data;
 
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.jhcompany.android.libs.utils.Lists2;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
@@ -20,6 +21,7 @@ import com.riverauction.riverauction.api.service.auth.request.SignUpRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.api.service.auth.response.IssueTokenResult;
 import com.riverauction.riverauction.api.service.auth.response.SignUpResult;
+import com.riverauction.riverauction.api.service.board.BoardService;
 import com.riverauction.riverauction.api.service.info.InfoService;
 import com.riverauction.riverauction.api.service.lesson.LessonService;
 import com.riverauction.riverauction.api.service.lesson.params.GetLessonsParams;
@@ -55,9 +57,10 @@ public class DataManager {
     private final InfoService infoService;
     private final PaymentService paymentService;
     private final ReviewService reviewService;
+    private final BoardService boardService;
     @Inject
     public DataManager(StateCtx stateCtx, AuthService authService, TeacherService teacherService, LessonService lessonService,
-                       UserService userService, InfoService infoService, PaymentService paymentService, ReviewService reviewService) {
+                       UserService userService, InfoService infoService, PaymentService paymentService, ReviewService reviewService, BoardService boardService) {
         this.stateCtx = stateCtx;
         this.authService = authService;
         this.teacherService = teacherService;
@@ -66,6 +69,7 @@ public class DataManager {
         this.infoService = infoService;
         this.paymentService = paymentService;
         this.reviewService = reviewService;
+        this.boardService = boardService;
     }
 
     public Observable<SignUpResult> signUp(SignUpRequest request) {
@@ -221,4 +225,11 @@ public class DataManager {
     public Observable<CReview> getReview(Integer reviewIdx) {
         return reviewService.getReview(reviewIdx);
     }
+
+    //보드
+    public Observable<APISuccessResponse<List<CBoard>>> getBoards(Integer categoryIdx, Integer nextToken) {
+        return boardService.getBoards(categoryIdx, nextToken);
+}
+
+
 }

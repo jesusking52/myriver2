@@ -39,15 +39,12 @@ import butterknife.ButterKnife;
 
 public abstract class BoardActiveStudentView extends FrameLayout implements MyLessonActiveStudentLoadable {
     @Bind(R.id.my_lesson_active_student_status_view) StatusView statusView;
-
     private BiddingAdapter adapter;
     private OnMyLessonButtonClickListener onMyLessonButtonClickListener;
-    // data
     private CLesson lesson;
     private int biddingCount;
     private List<CLessonBidding> biddings;
     private Integer nextToken;
-
     private StateCtx stateCtx;
     // 로그인한 사용자
     private CUser user;
@@ -72,8 +69,7 @@ public abstract class BoardActiveStudentView extends FrameLayout implements MyLe
         stateCtx = RiverAuctionApplication.getApplication().getComponent().stateCtx();
         user = UserStates.USER.get(stateCtx);
         biddings = Lists.newArrayList();
-
-        inflater.inflate(R.layout.layout_my_lesson_active_student, this, true);
+        inflater.inflate(R.layout.layout_board_active_student, this, true);
         ButterKnife.bind(this);
 
         statusView.setLoadingView(findViewById(R.id.loading_animation_layout));
@@ -81,7 +77,7 @@ public abstract class BoardActiveStudentView extends FrameLayout implements MyLe
         statusView.setErrorView(findViewById(R.id.error_view));
         statusView.setResultView(findViewById(R.id.recycler_view));
 
-        TextView emptyButton = (TextView) findViewById(R.id.board_write_button);
+        TextView emptyButton = (TextView) findViewById(R.id.my_lesson_active_empty_button);
         emptyButton.setText(R.string.my_lesson_ongoing_empty_student_button);
         emptyButton.setOnClickListener(v -> {
             if (onMyLessonButtonClickListener != null) {
@@ -213,7 +209,7 @@ public abstract class BoardActiveStudentView extends FrameLayout implements MyLe
             if (viewType == TYPE_HEADER) {
                 return new HeaderHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_active_lesson_header, parent, false));
             } else if (viewType == TYPE_BIDDING) {
-                return new BiddingItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_teacher_list, parent, false));
+                return new BiddingItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_board_list, parent, false));
             }
             return null;
         }

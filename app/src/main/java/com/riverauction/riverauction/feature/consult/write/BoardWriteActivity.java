@@ -70,7 +70,7 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         presenter.attachView(this, this);
         user = UserStates.USER.get(stateCtx);
 
-        getSupportActionBar().setTitle(R.string.sign_up_basic_info_action_bar_title);
+        getSupportActionBar().setTitle(R.string.board_write_button);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
