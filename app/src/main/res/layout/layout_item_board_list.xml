@@ -3,25 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- 프로필 사진 & 이름-->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:gravity="center_horizontal">
-        <ImageView
-            android:id="@+id/category_label"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:src="@drawable/icon_location"
-            android:layout_marginRight="4dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -32,14 +18,24 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="3dp">
-
+            <ImageView
+                android:id="@+id/category_label"
+                android:paddingTop="3dp"
+                android:layout_width="25dp"
+                android:layout_height="15dp"
+                android:layout_gravity="top"
+                android:src="@drawable/grade_university"
+                android:layout_marginRight="4dp"/>
 
             <TextView
                 android:id="@+id/item_summary"
-                android:layout_width="wrap_content"
+                android:inputType="textMultiLine"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:singleLine="true"
+                android:minLines="1"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠"
                 android:textSize="15sp"
                 android:textColor="@color/river_auction_black"/>
         </LinearLayout>
@@ -49,86 +45,74 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginLeft="28dp"
             android:layout_marginBottom="3dp">
             <TextView
                 android:id="@+id/board_register_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/board_register_id"
                 android:gravity="center_vertical"
-                android:textColor="@color/river_auction_brownish_grey_two"
+                android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/side"
                 android:gravity="center_vertical"
-                android:textColor="@color/river_auction_brownish_grey_two"
+                android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />
             <TextView
                 android:id="@+id/register_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/board_register_id"
                 android:gravity="center_vertical"
-                android:textColor="@color/river_auction_brownish_grey_two"
+                android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/side"
                 android:gravity="center_vertical"
-                android:textColor="@color/river_auction_brownish_grey_two"
+                android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />
             <TextView
                 android:id="@+id/view_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/board_register_id"
                 android:gravity="center_vertical"
-                android:textColor="@color/river_auction_brownish_grey_two"
+                android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:layout_marginRight="19dp">
-
-        <!-- 경매중 -->
-        <LinearLayout
-            android:id="@+id/item_lesson_bidding"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical"
-            android:gravity="right">
-
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layout_marginRight="12dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/river_auction_greyish"
+                    android:text="@string/board_reply"/>
                 <TextView
                     android:id="@+id/review_cnt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="21sp"
-                    android:textColor="@color/river_auction_leafy_green"
-                    android:text="@string/common_lesson_status_bidding"/>
+                    android:textSize="13sp"
+                    android:textColor="@color/river_auction_dark_sky_blue"
+                    android:text="1"/>
             </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
-    </FrameLayout>
 </merge>

@@ -450,5 +450,6 @@
         <string name="board_ongoing_empty_view">등록된 게시글이 없습니다.\n질문을 등록해보세요</string>
     <string name="board_write_button">질문하기</string>
     <string name="board_register_id">회원ID</string>
+    <string name="board_reply">답변</string>
     <string name="side">|</string>
 </resources>

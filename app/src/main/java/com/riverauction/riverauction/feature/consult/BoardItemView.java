@@ -22,6 +22,7 @@ public class BoardItemView extends LinearLayout {
     @Bind(R.id.register_time) TextView registerTime;
     @Bind(R.id.view_count) TextView viewCount;
     @Bind(R.id.review_cnt) TextView reviewCnt;
+
     public BoardItemView(Context context) {
         super(context);
         initialize(context);

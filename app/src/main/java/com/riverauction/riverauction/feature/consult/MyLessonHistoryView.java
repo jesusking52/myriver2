@@ -13,11 +13,11 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.riverauction.riverauction.R;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.common.LoadMoreRecyclerViewAdapter;
 import com.riverauction.riverauction.feature.MoreLoadable;
 import com.riverauction.riverauction.feature.lesson.LessonDetailActivity;
-import com.riverauction.riverauction.feature.lesson.LessonItemView;
 import com.riverauction.riverauction.widget.StatusView;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
@@ -28,6 +28,7 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
     private LessonsAdapter adapter;
 
     private List<CLesson> lessons = Lists.newArrayList();
+    private List<CBoard> boards = Lists.newArrayList();
     private Integer nextToken;
 
     public MyLessonHistoryView(Context context) {
@@ -77,6 +78,21 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         mRecyclerView.setAdapter(adapter);
     }
 
+    public void setContent(List<CBoard> newBoards, Integer newNextToken) {
+        if (lessons.size() == 0 && newBoards.size() == 0) {
+            showEmptyView();
+            return;
+        }
+        showResultView();
+
+        boards.addAll(newBoards);
+        nextToken = newNextToken;
+
+        adapter.setNextToken(nextToken);
+        adapter.setErrorLoadMore(false);
+        adapter.notifyDataSetChanged();
+    }
+
     public void setContent(List<CLesson> newLessons, Integer newNextToken) {
         if (lessons.size() == 0 && newLessons.size() == 0) {
             showEmptyView();
@@ -114,11 +130,11 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
     }
 
     public static class LessonHolder extends RecyclerView.ViewHolder {
-        public LessonItemView lessonItemView;
+        public BoardItemView lessonItemView;
 
         public LessonHolder(View itemView) {
             super(itemView);
-            lessonItemView = (LessonItemView) itemView;
+            lessonItemView = (BoardItemView) itemView;
         }
     }
 
@@ -133,6 +149,7 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         @Override
         public RecyclerView.ViewHolder onCreateViewItemHolder(ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM) {
+                //return new LessonHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lesson_list, parent, false));
                 return new LessonHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_board_list, parent, false));
             }
             return null;

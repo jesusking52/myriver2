@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
     <com.riverauction.riverauction.widget.slidingtab.SlidingTabLayout
         android:id="@+id/my_lesson_sliding_tabs"
         android:layout_width="match_parent"
@@ -24,6 +25,7 @@
         android:id="@+id/my_lesson_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="64dp"
         android:background="@android:color/white"/>
 
     <TextView
@@ -39,7 +41,8 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="68dp"
+        android:layout_marginRight="16dp"
         android:src="@drawable/floating_button"
         app:fab_colorNormal="@color/river_auction_leafy_green"
         app:fab_colorPressed="@color/river_auction_leafy_green"
