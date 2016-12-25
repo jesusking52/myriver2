@@ -445,6 +445,7 @@
     <string name="board_spinner2">대학/고등/중등/유학</string>
     <string name="board_spinner3">게시판을 선택해 주세요.</string>
     <string name="board_spinner4">카테고리를 선택해 주세요.</string>
+
     <string name="board_text5">제목을 입력해 주세요.</string>
     <string name="board_text6">내용을 입력해 주세요.</string>
         <string name="board_ongoing_empty_view">등록된 게시글이 없습니다.\n질문을 등록해보세요</string>
@@ -452,4 +453,16 @@
     <string name="board_register_id">회원ID</string>
     <string name="board_reply">답변</string>
     <string name="side">|</string>
+
+    <string name="board_spinner21">대학</string>
+    <string name="board_spinner22">고등</string>
+    <string name="board_spinner23">중등</string>
+    <string name="board_spinner24">유학</string>
+    <string name="board_spinner30">인문/자연/기타</string>
+    <string name="board_spinner31">인문</string>
+    <string name="board_spinner32">자연</string>
+    <string name="board_spinner33">기타</string>
+    <string name="board_spinner40">학생/학부모</string>
+    <string name="board_spinner41">학생</string>
+    <string name="board_spinner42">학부모</string>
 </resources>

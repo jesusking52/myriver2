@@ -8,12 +8,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLocation;
 import com.riverauction.riverauction.api.model.CReview;
-import com.riverauction.riverauction.api.model.CStudent;
 import com.riverauction.riverauction.api.model.CStudentStatus;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
@@ -21,6 +21,7 @@ import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
@@ -29,17 +30,17 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
+import static com.riverauction.riverauction.api.model.CStudentStatus.ELEMENTARY_SCHOOL;
+import static com.riverauction.riverauction.api.model.CStudentStatus.HIGH_SCHOOL;
+import static com.riverauction.riverauction.api.model.CStudentStatus.KINDERGARTEN;
+import static com.riverauction.riverauction.api.model.CStudentStatus.MIDDLE_SCHOOL;
+import static com.riverauction.riverauction.api.model.CStudentStatus.ORDINARY;
+import static com.riverauction.riverauction.api.model.CStudentStatus.RETRY_UNIVERSITY;
+import static com.riverauction.riverauction.api.model.CStudentStatus.UNIVERSITY;
+
 public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpView {
     private final static int REQUEST_SEARCH_LOCATION = 0x01;
-
-    private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.teacher.TeacherDetailActivity.";
-    public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
-
-    private static final String EXTRA_PREFIX2 = "com.riverauction.riverauction.feature.review.ReviewList.";
-    public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
-    public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
     private PhotoSelector photoSelector;
-    private String profileImagePath;
     @Inject
     ReviewWritePresenter presenter;
 
@@ -48,15 +49,13 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     @Bind(R.id.category_select) Spinner categorySpinner;
     @Bind(R.id.subject) EditText subject;
     @Bind(R.id.content) EditText content;
-    //@Bind(R.id.profile_photo_view) ProfileImageView profilePhotoView;
-    //@Bind(R.id.profile_user_name) TextView userNameView;
-    //@Bind(R.id.profile_university) TextView profileuniversity;
     // address 정보
     private CLocation location;
     private CUser user;
     private int reviewIdx;
     private CTeacher teacher;
     private Integer teacherId;
+    private Integer CATEGORY;
     @Override
     public int getLayoutResId() {
         return R.layout.activity_board_write;
@@ -65,7 +64,8 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getDataFromBundle(getIntent().getExtras());
+        getDataFromBundle(getIntent().getExtras());//변수 전달
+
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
         user = UserStates.USER.get(stateCtx);
@@ -75,7 +75,11 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // basic
-        initializeRankSpinner();
+        initializeRankSpinner1();
+        setCategory(CATEGORY);//카테고리 선택
+        initializeRankSpinner2(CATEGORY);
+
+        //boardSpinner.setOnClickListener(v -> initializeRankSpinner2(boardSpinner.getSelectedItemPosition()));
         presenter.getUserProfile(teacherId, true);
 
         //수정인 경우
@@ -90,21 +94,12 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
 
     }
 
-    // teacherId 를 이전 화면에서 넘겨받는다
+    // 카테고리 코드
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
-            //실제로 티처아이디다
-            teacherId = bundle.getInt(EXTRA_USER_ID, -1);
-
-            if (teacherId == -1) {
-                //리뷰리스트에서 온 경우
-                teacherId = bundle.getInt(EXTRA_USER_ID2, -1);
-                reviewIdx = bundle.getInt(EXTRA_REVIEW_IDX, -1);
-                if (teacherId == -1) {
-                    throw new IllegalStateException("teacherId must be exist");
-                }
-            }
-
+            //카테고리
+            CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
+            Toast.makeText(BoardWriteActivity.this, "CATEGORY=", Toast.LENGTH_SHORT);
         }
     }
 
@@ -144,92 +139,44 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         presenter.detachView();
     }
 
-    /**
-     * User data 로 초기화
-     * @param user
-     */
-    private void setRank(CUser user) {
-        CStudent student = user.getStudent();
-        CStudentStatus studentStatus = student.getStudentStatus();
-        switch (studentStatus) {
-            case KINDERGARTEN: {
-                boardSpinner.setSelection(1);
-                break;
-            }
-            case ELEMENTARY_SCHOOL: {
-                boardSpinner.setSelection(2);
-                break;
-            }
-            case MIDDLE_SCHOOL: {
-                boardSpinner.setSelection(3);
-                break;
-            }
-            case HIGH_SCHOOL: {
-                boardSpinner.setSelection(4);
-                break;
-            }
-            case UNIVERSITY: {
-                boardSpinner.setSelection(5);
-                break;
-            }
-            case RETRY_UNIVERSITY: {
-                boardSpinner.setSelection(6);
-                break;
-            }
-            case ORDINARY: {
-                boardSpinner.setSelection(7);
-                break;
-            }
-        }
-/*
-        handler.postDelayed(() -> {
-            Integer grade = student.getGrade();
-            if (grade != null && grade > 0) {
-                gradeSpinner.setSelection(grade);
-            }
-        }, 500);
-
-        CStudentDepartmentType studentDepartmentType = student.getDepartment();
-        switch (studentDepartmentType) {
-            case LIBERAL_ARTS: {
-                departmentTypeSpinner.setSelection(1);
-                break;
-            }
-            case NATURAL_SCIENCES: {
-                departmentTypeSpinner.setSelection(2);
-                break;
-            }
-            case ART_MUSIC_PHYSICAL: {
-                departmentTypeSpinner.setSelection(3);
-                break;
-            }
-            case COMMERCIAL_AND_TECHNICAL: {
-                departmentTypeSpinner.setSelection(4);
-                break;
-            }
-            case NONE: {
-                departmentTypeSpinner.setSelection(5);
-                break;
-            }
-        }
-*/
-        //location = user.getLocation();
-        //review.setText("");
+    private void setCategory(int point) {
+        boardSpinner.setSelection(point);
     }
 
-    private void initializeRankSpinner() {
+    private void initializeRankSpinner1() {
         SpinnerAdapter boardSpinnerAdapter = new SpinnerAdapter(this, R.layout.item_spinner);
         boardSpinnerAdapter.addItem(getString(R.string.board_spinner1));
         boardSpinnerAdapter.addItem(getString(R.string.consult_tab_school));
         boardSpinnerAdapter.addItem(getString(R.string.consult_tab_study));
         boardSpinnerAdapter.addItem(getString(R.string.consult_tab_worry));
         boardSpinner.setAdapter(boardSpinnerAdapter);
+    }
 
+    private void initializeRankSpinner2(int select1) {
         SpinnerAdapter categorAdapter = new SpinnerAdapter(this, R.layout.item_spinner);
-        categorAdapter.addItem(getString(R.string.board_spinner2));
-        categorAdapter.addItem(getString(R.string.consult_tab_school));
-        categorAdapter.addItem(getString(R.string.consult_tab_study));
-        categorAdapter.addItem(getString(R.string.consult_tab_worry));
+        //categorySpinner.removeAllViews();
+        switch (select1)
+        {
+            case 1:
+                categorAdapter.addItem(getString(R.string.board_spinner2));
+                categorAdapter.addItem(getString(R.string.board_spinner21));
+                categorAdapter.addItem(getString(R.string.board_spinner22));
+                categorAdapter.addItem(getString(R.string.board_spinner23));
+                categorAdapter.addItem(getString(R.string.board_spinner24));
+            break;
+            case 2:
+                categorAdapter.addItem(getString(R.string.board_spinner30));
+                categorAdapter.addItem(getString(R.string.board_spinner31));
+                categorAdapter.addItem(getString(R.string.board_spinner32));
+                categorAdapter.addItem(getString(R.string.board_spinner33));
+                break;
+            case 3:
+                categorAdapter.addItem(getString(R.string.board_spinner40));
+                categorAdapter.addItem(getString(R.string.board_spinner41));
+                categorAdapter.addItem(getString(R.string.board_spinner42));
+                break;
+        }
+
         categorySpinner.setAdapter(categorAdapter);
     }
 
@@ -291,13 +238,13 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
 
     private CStudentStatus getStudentStatus() {
         switch (boardSpinner.getSelectedItemPosition()) {
-            case 1 : return CStudentStatus.KINDERGARTEN;
-            case 2 : return CStudentStatus.ELEMENTARY_SCHOOL;
-            case 3 : return CStudentStatus.MIDDLE_SCHOOL;
-            case 4 : return CStudentStatus.HIGH_SCHOOL;
-            case 5 : return CStudentStatus.UNIVERSITY;
-            case 6 : return CStudentStatus.RETRY_UNIVERSITY;
-            case 7 : return CStudentStatus.ORDINARY;
+            case 1 : return KINDERGARTEN;
+            case 2 : return ELEMENTARY_SCHOOL;
+            case 3 : return MIDDLE_SCHOOL;
+            case 4 : return HIGH_SCHOOL;
+            case 5 : return UNIVERSITY;
+            case 6 : return RETRY_UNIVERSITY;
+            case 7 : return ORDINARY;
         }
 
         return null;

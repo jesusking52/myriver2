@@ -35,6 +35,8 @@ import butterknife.Bind;
 
 public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabTrackerListener {
 
+    private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.consult.BoardView.";
+    public static final String EXTRA_CATEGORY_ID = EXTRA_PREFIX + "category";
     @Inject
     BoardPresenter presenter;
 
@@ -284,6 +286,45 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     };
                     boardWriteButton.setOnClickListener(v -> {
                         Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                        intent.putExtra(EXTRA_CATEGORY_ID, 1);
+                        getContext().startActivity(intent);
+                    });
+                    if (CUserType.TEACHER == user.getType()) {
+                        boardWriteButton.setVisibility(GONE);
+                    }
+                    view = myLessonHistoryView;
+                    getHistoryList(null);
+                    break;
+                }
+                case 1: {
+                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
+                        @Override
+                        public void loadMore(Integer nextToken) {
+                            getHistoryList(nextToken);
+                        }
+                    };
+                    boardWriteButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                        intent.putExtra(EXTRA_CATEGORY_ID, 2);
+                        getContext().startActivity(intent);
+                    });
+                    if (CUserType.TEACHER == user.getType()) {
+                        boardWriteButton.setVisibility(GONE);
+                    }
+                    view = myLessonHistoryView;
+                    getHistoryList(null);
+                    break;
+                }
+                case 2: {
+                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
+                        @Override
+                        public void loadMore(Integer nextToken) {
+                            getHistoryList(nextToken);
+                        }
+                    };
+                    boardWriteButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                        intent.putExtra(EXTRA_CATEGORY_ID, 3);
                         getContext().startActivity(intent);
                     });
                     if (CUserType.TEACHER == user.getType()) {
