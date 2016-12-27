@@ -6,6 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -79,7 +81,18 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         setCategory(CATEGORY);//카테고리 선택
         initializeRankSpinner2(CATEGORY);
 
-        //boardSpinner.setOnClickListener(v -> initializeRankSpinner2(boardSpinner.getSelectedItemPosition()));
+        boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                //tv.setText("position : " + position +parent.getItemAtPosition(position));
+                Toast.makeText(BoardWriteActivity.this, "choice="+position, Toast.LENGTH_SHORT);
+                initializeRankSpinner2(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         presenter.getUserProfile(teacherId, true);
 
         //수정인 경우
@@ -99,7 +112,7 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         if (bundle != null) {
             //카테고리
             CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
-            Toast.makeText(BoardWriteActivity.this, "CATEGORY=", Toast.LENGTH_SHORT);
+            //Toast.makeText(BoardWriteActivity.this, "CATEGORY=", Toast.LENGTH_SHORT);
         }
     }
 

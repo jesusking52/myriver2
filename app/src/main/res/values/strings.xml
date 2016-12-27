@@ -465,4 +465,7 @@
     <string name="board_spinner40">학생/학부모</string>
     <string name="board_spinner41">학생</string>
     <string name="board_spinner42">학부모</string>
+    <string name="board_categoryname">카테고리 선택</string>
+    <string name="board_myboard">내가 쓴글 보기</string>
+    <string name="board_search">검색어</string>
 </resources>

@@ -19,8 +19,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
     <android.support.v4.view.ViewPager
         android:id="@+id/my_lesson_view_pager"
         android:layout_width="match_parent"
@@ -35,6 +33,7 @@
         android:layout_height="62dp"
         android:layout_gravity="bottom"
         android:text="@string/board_write_button"/>
+
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/filter_button"

@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/river_auction_greyish"
+            android:text="@string/filter_description"/>
+
+        <!-- 내가 쓴 글 보기 -->
+        <LinearLayout
+            android:id="@+id/filter_available_subjects_container"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/filter_available_my_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="18dp"
+                android:src="@drawable/check_selector"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="80dp"
+                android:textSize="15sp"
+                android:textColor="@color/river_auction_brownish_grey"
+                android:text="@string/board_myboard"/>
+        </LinearLayout>
+        <include layout="@layout/divider"/>
+        <!-- 카테고리 선택 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/river_auction_greyish"
+            android:text="@string/board_categoryname"/>
+        <!-- 카테고리1 -->
+        <LinearLayout
+            android:id="@+id/category1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- 대학 -->
+            <LinearLayout
+                android:id="@+id/filter_university"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_univ_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner21"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 고등 -->
+            <LinearLayout
+                android:id="@+id/filter_high_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_high_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner22"/>
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 중등 -->
+            <LinearLayout
+                android:id="@+id/filter_middle_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_middle_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner23"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 유학 -->
+            <LinearLayout
+                android:id="@+id/filter_overseas_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_overseas_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner24"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+        </LinearLayout>
+
+        <!-- 카테고리2 -->
+        <LinearLayout
+            android:id="@+id/category2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <!-- 인문 -->
+            <LinearLayout
+                android:id="@+id/filter_human_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_human_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner31"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 자연 -->
+            <LinearLayout
+                android:id="@+id/filter_nature_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_nature_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner32"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 기타 -->
+            <LinearLayout
+                android:id="@+id/filter_other_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_other_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner33"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+        </LinearLayout>
+
+        <!-- 카테고리3 -->
+        <LinearLayout
+            android:id="@+id/category3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <!-- 학생 -->
+            <LinearLayout
+                android:id="@+id/filter_student_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_student_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner41"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+            <!-- 학부모 -->
+            <LinearLayout
+                android:id="@+id/filter_parents_container"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/filter_parents_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="18dp"
+                    android:src="@drawable/check_selector"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="80dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/river_auction_brownish_grey"
+                    android:text="@string/board_spinner42"/>
+
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+        </LinearLayout>
+        <include layout="@layout/divider"/>
+        <!-- 검색어 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/river_auction_greyish"
+            android:text="@string/board_search"/>
+        <EditText
+            android:id="@+id/searchtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="80dp"
+            android:textSize="15sp"
+            android:textColor="@color/river_auction_brownish_grey"
+            android:hint="@string/select_university_error"/>
+    </LinearLayout>
+
+    <TextView
+        style="@style/LightishBlueButton"
+        android:id="@+id/filter_apply_button"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_gravity="bottom"
+        android:text="@string/filter_apply_button"/>
+</FrameLayout>

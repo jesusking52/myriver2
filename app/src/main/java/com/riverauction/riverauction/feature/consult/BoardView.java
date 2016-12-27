@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.DisplayUtils;
@@ -18,8 +19,11 @@ import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseFrameLayout;
+import com.riverauction.riverauction.eventbus.CancelEvent;
+import com.riverauction.riverauction.eventbus.MakeBiddingEvent;
 import com.riverauction.riverauction.eventbus.PostBiddingEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
+import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
 import com.riverauction.riverauction.feature.consult.filter.ConsultFilterActivity;
 import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.main.MainTabTracker;
@@ -41,7 +45,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     BoardPresenter presenter;
 
     @Bind(R.id.filter_button) View filterButton;
-    @Bind(R.id.board_active_empty_button) View boardWriteButton;
+    @Bind(R.id.board_active_empty_button) TextView boardWriteButton;
     @Bind(R.id.my_lesson_sliding_tabs) SlidingTabLayout slidingTabLayout;
     @Bind(R.id.my_lesson_view_pager) ViewPager viewPager;
 
@@ -76,9 +80,29 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         MainTabTracker.registerTabCallback(this, 1, getContext());
         filterButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ConsultFilterActivity.class);
+            if(viewPager.getCurrentItem()==0)
+                intent.putExtra(EXTRA_CATEGORY_ID, 1);
+            else  if(viewPager.getCurrentItem()==1)
+                intent.putExtra(EXTRA_CATEGORY_ID, 2);
+            else
+                intent.putExtra(EXTRA_CATEGORY_ID, 3);
             getContext().startActivity(intent);
         });
 
+        if (CUserType.TEACHER == user.getType()) {
+            boardWriteButton.setVisibility(GONE);
+        }
+        boardWriteButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+            if(viewPager.getCurrentItem()==0)
+                intent.putExtra(EXTRA_CATEGORY_ID, 1);
+            else  if(viewPager.getCurrentItem()==1)
+                intent.putExtra(EXTRA_CATEGORY_ID, 2);
+            else
+                intent.putExtra(EXTRA_CATEGORY_ID, 3);
+
+            getContext().startActivity(intent);
+        });
 
     }
 
@@ -96,29 +120,33 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             RiverAuctionEventBus.getEventBus().unregister(this);
         }
     }
-/*
+
     @SuppressWarnings("unused")
     public void onEventMainThread(final MakeBiddingEvent event) {
         adapter.clearActiveLessonsAndBidding();
-        getActiveLessonAndLessonBiddings();
+       // getActiveLessonAndLessonBiddings();
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(final SelectTeacherEvent event) {
         adapter.clearActiveLessonsAndBidding();
-        getActiveLessonAndLessonBiddings();
+        //getActiveLessonAndLessonBiddings();
         adapter.clearHistory();
-        getHistoryList(null);
+        getHistoryList(1,null);
+        getHistoryList(2,null);
+        getHistoryList(3,null);
     }
 
     @SuppressWarnings("unused")
     public void onEventMainThread(final CancelEvent event) {
         adapter.clearActiveLessonsAndBidding();
-        getActiveLessonAndLessonBiddings();
+        //getActiveLessonAndLessonBiddings();
         adapter.clearHistory();
-        getHistoryList(null);
+        getHistoryList(1,null);
+        getHistoryList(2,null);
+        getHistoryList(3,null);
     }
-    */
+
 
     @SuppressWarnings("unused")
     public void onEventMainThread(final PostBiddingEvent event) {
@@ -148,17 +176,22 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
     @Override
     public void onEnterTab() {
-        /*
+/*
         if (CUserType.TEACHER == user.getType()) {
             adapter.clearActiveLessons();
             getActiveLessonList(null);
             adapter.clearHistory();
-            getHistoryList(null);
+            getHistoryList(1,null);
+            getHistoryList(2,null);
+            getHistoryList(3,null);
         } else if (CUserType.STUDENT == user.getType()) {
             adapter.clearActiveLessonsAndBidding();
-            getActiveLessonAndLessonBiddings();
+            getActiveLessonList(null);
+            //getActiveLessonAndLessonBiddings();
             adapter.clearHistory();
-            getHistoryList(null);
+            getHistoryList(1,null);
+            getHistoryList(2,null);
+            getHistoryList(3,null);
         }
         */
     }
@@ -175,7 +208,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         presenter.getActiveLessonAndLessonBiddings(user.getId());
     }
     */
-    private void getHistoryList(Integer nextToken) {
+    private void getHistoryList(Integer boardCategory,Integer nextToken) {
         presenter.getHistoryLessons(user.getId(), nextToken);
     }
 
@@ -240,7 +273,9 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         ///adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
         adapter.clearHistory();
-        getHistoryList(null);
+        getHistoryList(1,null);
+        getHistoryList(2,null);
+        getHistoryList(3,null);
     }
 
     @Override
@@ -256,6 +291,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         private BoardActiveStudentView boardActiveStudentView;
         private BoardActiveTeacherView boardActiveTeacherView;
         private MyLessonHistoryView myLessonHistoryView;
+        private MyLessonHistoryView myLessonHistoryView2;
+        private MyLessonHistoryView myLessonHistoryView3;
         private List<MyLessonTabPagerItem> tabPagerItems;
 
         public MyLessonPagerAdapter(List<MyLessonTabPagerItem> tabPagerItems) {
@@ -281,157 +318,38 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     myLessonHistoryView = new MyLessonHistoryView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getHistoryList(nextToken);
+                            getHistoryList(1,nextToken);
+
                         }
                     };
-                    boardWriteButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-                        intent.putExtra(EXTRA_CATEGORY_ID, 1);
-                        getContext().startActivity(intent);
-                    });
-                    if (CUserType.TEACHER == user.getType()) {
-                        boardWriteButton.setVisibility(GONE);
-                    }
                     view = myLessonHistoryView;
-                    getHistoryList(null);
+                    getHistoryList(1,null);
                     break;
                 }
                 case 1: {
-                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
+                    myLessonHistoryView2 = new MyLessonHistoryView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getHistoryList(nextToken);
+                            getHistoryList(2,nextToken);
                         }
                     };
-                    boardWriteButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-                        intent.putExtra(EXTRA_CATEGORY_ID, 2);
-                        getContext().startActivity(intent);
-                    });
-                    if (CUserType.TEACHER == user.getType()) {
-                        boardWriteButton.setVisibility(GONE);
-                    }
-                    view = myLessonHistoryView;
-                    getHistoryList(null);
+                    view = myLessonHistoryView2;
+                    getHistoryList(2,null);
                     break;
                 }
+
                 case 2: {
-                    myLessonHistoryView = new MyLessonHistoryView(getContext()) {
+                    myLessonHistoryView3 = new MyLessonHistoryView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getHistoryList(nextToken);
+                            getHistoryList(3,nextToken);
                         }
                     };
-                    boardWriteButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-                        intent.putExtra(EXTRA_CATEGORY_ID, 3);
-                        getContext().startActivity(intent);
-                    });
-                    if (CUserType.TEACHER == user.getType()) {
-                        boardWriteButton.setVisibility(GONE);
-                    }
-                    view = myLessonHistoryView;
-                    getHistoryList(null);
+
+                    view = myLessonHistoryView3;
+                    getHistoryList(3,null);
                     break;
                 }
-                /*
-                case 1: {
-                    if (CUserType.STUDENT == user.getType()) {
-                        boardActiveStudentView = new BoardActiveStudentView(getContext()) {
-                            @Override
-                            public void firstLoad(Integer userId) {
-                                getActiveLessonAndLessonBiddings();
-                            }
-
-                            @Override
-                            public void loadMore(Integer lessonId, Integer nextToken) {
-                                presenter.getLessonBiddings(lessonId, nextToken);
-                            }
-                        };
-                        boardActiveStudentView.setOnMyLessonButtonClickListener(new BoardActiveStudentView.OnMyLessonButtonClickListener() {
-                            @Override
-                            public void makeLesson() {
-                                Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-                                getContext().startActivity(intent);
-                            }
-
-                            @Override
-                            public void cancelLesson(CLesson lesson) {
-                                new AlertDialog.Builder(getContext())
-                                        .setTitle(R.string.menu_lesson_cancel)
-                                        .setMessage(R.string.my_lesson_cancel_lesson_button)
-                                        .setPositiveButton(R.string.common_button_confirm, (dialog, which) -> {
-                                            presenter.cancelLesson(lesson.getId());
-                                        })
-                                        .show();
-                            }
-                        });
-                        view = boardActiveStudentView;
-                        getActiveLessonAndLessonBiddings();
-                    } else {
-                        boardActiveTeacherView = new BoardActiveTeacherView(getContext()) {
-                            @Override
-                            public void loadMore(Integer nextToken) {
-                                getActiveLessonList(nextToken);
-                            }
-                        };
-                        boardActiveTeacherView.setOnFindLessonClickListener(() -> {
-                            // TODO: tab 이동
-                        });
-                        view = boardActiveTeacherView;
-                        getActiveLessonList(null);
-                    }
-                    break;
-                }
-                case 2: {
-                    if (CUserType.STUDENT == user.getType()) {
-                        boardActiveStudentView = new BoardActiveStudentView(getContext()) {
-                            @Override
-                            public void firstLoad(Integer userId) {
-                                getActiveLessonAndLessonBiddings();
-                            }
-
-                            @Override
-                            public void loadMore(Integer lessonId, Integer nextToken) {
-                                presenter.getLessonBiddings(lessonId, nextToken);
-                            }
-                        };
-                        boardActiveStudentView.setOnMyLessonButtonClickListener(new BoardActiveStudentView.OnMyLessonButtonClickListener() {
-                            @Override
-                            public void makeLesson() {
-                                Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-                                getContext().startActivity(intent);
-                            }
-
-                            @Override
-                            public void cancelLesson(CLesson lesson) {
-                                new AlertDialog.Builder(getContext())
-                                        .setTitle(R.string.menu_lesson_cancel)
-                                        .setMessage(R.string.my_lesson_cancel_lesson_button)
-                                        .setPositiveButton(R.string.common_button_confirm, (dialog, which) -> {
-                                            presenter.cancelLesson(lesson.getId());
-                                        })
-                                        .show();
-                            }
-                        });
-                        view = boardActiveStudentView;
-                        getActiveLessonAndLessonBiddings();
-                    } else {
-                        boardActiveTeacherView = new BoardActiveTeacherView(getContext()) {
-                            @Override
-                            public void loadMore(Integer nextToken) {
-                                getActiveLessonList(nextToken);
-                            }
-                        };
-                        boardActiveTeacherView.setOnFindLessonClickListener(() -> {
-                            // TODO: tab 이동
-                        });
-                        view = boardActiveTeacherView;
-                        getActiveLessonList(null);
-                    }
-                    break;
-                }
-                */
             }
 
             if (view != null) {
@@ -511,20 +429,44 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             if (myLessonHistoryView != null) {
                 myLessonHistoryView.setLoading();
             }
+            if (myLessonHistoryView2 != null) {
+                myLessonHistoryView2.setLoading();
+            }
+            if (myLessonHistoryView3 != null) {
+                myLessonHistoryView3.setLoading();
+            }
         }
         public void setHistoryViewResult(List<CLesson> lessons, Integer nextToken) {
             if (myLessonHistoryView != null) {
                 myLessonHistoryView.setContent(lessons, nextToken);
+            }
+            if (myLessonHistoryView2 != null) {
+                myLessonHistoryView2.setContent(lessons, nextToken);
+            }
+            if (myLessonHistoryView3 != null) {
+                myLessonHistoryView3.setContent(lessons, nextToken);
             }
         }
         public void setHistoryViewError() {
             if (myLessonHistoryView != null) {
                 myLessonHistoryView.setError();
             }
+            if (myLessonHistoryView2 != null) {
+                myLessonHistoryView2.setError();
+            }
+            if (myLessonHistoryView3 != null) {
+                myLessonHistoryView3.setError();
+            }
         }
         public void clearHistory() {
             if (myLessonHistoryView != null) {
                 myLessonHistoryView.clear();
+            }
+            if (myLessonHistoryView2 != null) {
+                myLessonHistoryView2.clear();
+            }
+            if (myLessonHistoryView3 != null) {
+                myLessonHistoryView3.clear();
             }
         }
     }
