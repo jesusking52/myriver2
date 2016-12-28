@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.riverauction.riverauction.R;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.eventbus.BoardFilterEvent;
+import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.consult.BoardView;
 
 import javax.inject.Inject;
@@ -54,32 +57,6 @@ public class ConsultFilterActivity extends BaseActivity implements ConsultFilter
     @Bind(R.id.filter_parents_container) View parentsContainer;
     @Bind(R.id.filter_parents_icon) View parentsIconView;
     @Bind(R.id.searchtext) EditText searchText;
-
-/*
-    private List<CSubject> selectedSubjects = Lists.newArrayList();
-
-    @Bind(R.id.filter_price_container) View priceContainer;
-    @Bind(R.id.filter_price_icon) View priceIconView;
-    @Bind(R.id.filter_price_view) TextView priceView;
-    private Integer highPrice;
-    private Integer lowPrice;
-
-    @Bind(R.id.filter_grade_container) View universityContainer;
-    @Bind(R.id.filter_grade_icon) View universityIconView;
-    @Bind(R.id.filter_grade_view) TextView universityView;
-    private List<String> universities = Lists.newArrayList();
-
-    @Bind(R.id.filter_location_container) View locationContainer;
-    @Bind(R.id.filter_location_icon) View locationIconView;
-    @Bind(R.id.filter_location_view) TextView locationView;
-    private Integer minZoneCode;
-    private Integer maxZoneCode;
-
-    @Bind(R.id.filter_gender_container) View genderContainer;
-    @Bind(R.id.filter_gender_icon) View genderIconView;
-    @Bind(R.id.filter_gender_view) TextView genderView;
-    private CGender preferredGender;
-*/
     @Bind(R.id.filter_apply_button) View applyButton;
 
     @Override
@@ -228,7 +205,6 @@ public class ConsultFilterActivity extends BaseActivity implements ConsultFilter
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -250,17 +226,29 @@ public class ConsultFilterActivity extends BaseActivity implements ConsultFilter
     }
 
     private void search() {
-        /*
-        GetTeachersParams.Builder builder = new GetTeachersParams.Builder();
-        builder.setSubjects(DataUtils.convertSubjectsToIds(selectedSubjects));
-        builder.setLessThanPrice(highPrice);
-        builder.setMoreThanPrice(lowPrice);
-        builder.setUniversities(universities);
-        builder.setMinZipCode(minZoneCode);
-        builder.setMaxZipCode(maxZoneCode);
-        builder.setGender(preferredGender);
-        subjectsIconView.isSelected();
-        RiverAuctionEventBus.getEventBus().post(new TeacherFilterEvent(builder));
-        */
+
+        GetBoardsParams.Builder builder = new GetBoardsParams.Builder();
+        builder.setFavorite(setValue(myIconView.isSelected()));
+        builder.setUniversities(setValue(univIconView.isSelected()));
+        builder.setHigh(setValue(highIconView.isSelected()));
+        builder.setMiddle(setValue(middleIconView.isSelected()));
+        builder.setOverseas(setValue(overseasIconView.isSelected()));
+        builder.setHuman(setValue(humanIconView.isSelected()));
+        builder.setNature(setValue(natureIconView.isSelected()));
+        builder.setOther(setValue(otherIconView.isSelected()));
+        builder.setStudent(setValue(studentIconView.isSelected()));
+        builder.setParents(setValue(parentsIconView.isSelected()));
+        builder.setSearch(searchText.getText().toString());
+        RiverAuctionEventBus.getEventBus().post(new BoardFilterEvent(builder));
+
+    }
+
+    private int setValue(boolean isbool)
+    {
+        if(isbool)
+            return 1;
+        else
+            return  0;
+
     }
 }
