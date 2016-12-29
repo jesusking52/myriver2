@@ -19,7 +19,6 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
 
     private final DataManager dataManager;
     private Subscription subscription;
-
     @Inject
     BoardPresenter(DataManager dataManager) {
         this.dataManager = dataManager;
@@ -141,30 +140,30 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
     }
 
 */
-    public void getHistoryLessons(Integer userId, Integer nextToken) {
+    public void getHistoryLessons(Integer boardId,Integer userId, Integer nextToken) {
         if (userId == null) {
             return;
         }
         checkViewAttached();
-
-        subscription = dataManager.getHistoryLessons(userId, nextToken)
+        subscription = dataManager.getHistoryLessons(boardId, userId, nextToken)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<APISuccessResponse<List<CLesson>>>() {
                     @Override
                     public void onStart() {
                         super.onStart();
-                        getMvpView().loadingGetHistoryList();
+                        getMvpView().loadingGetHistoryList(boardId);
                     }
 
                     @Override
                     public void onNext(APISuccessResponse<List<CLesson>> result) {
                         super.onNext(result);
-                        getMvpView().successGetHistoryList(result.getResult(), result.getNextToken());
+                        getMvpView().successGetHistoryList(boardId,result.getResult(), result.getNextToken());
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetHistoryList(getErrorCause(e));
+
+                        return getMvpView().failGetHistoryList(boardId,getErrorCause(e));
                     }
                 });
     }

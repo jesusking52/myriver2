@@ -158,6 +158,10 @@ public class DataManager {
         return userService.getHistoryLessons(userId, nextToken);
     }
 
+    public Observable<APISuccessResponse<List<CLesson>>> getHistoryLessons(Integer boardId,Integer userId, Integer nextToken) {
+        return userService.getHistoryLessons(userId, nextToken);
+    }
+
     public Observable<APISuccessResponse<List<CUserFavorite>>> getUserFavorites(Integer userId, Integer nextToken) {
         return userService.getUserFavorites(userId, nextToken);
     }

@@ -131,7 +131,9 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     public void onEventMainThread(final SelectTeacherEvent event) {
         adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
-        adapter.clearHistory();
+        adapter.clearHistory(1);
+        adapter.clearHistory(2);
+        adapter.clearHistory(3);
         getHistoryList(1,null);
         getHistoryList(2,null);
         getHistoryList(3,null);
@@ -141,7 +143,9 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     public void onEventMainThread(final CancelEvent event) {
         adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
-        adapter.clearHistory();
+        adapter.clearHistory(1);
+        adapter.clearHistory(2);
+        adapter.clearHistory(3);
         getHistoryList(1,null);
         getHistoryList(2,null);
         getHistoryList(3,null);
@@ -176,11 +180,13 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
     @Override
     public void onEnterTab() {
-/*
+
         if (CUserType.TEACHER == user.getType()) {
             adapter.clearActiveLessons();
             getActiveLessonList(null);
-            adapter.clearHistory();
+            adapter.clearHistory(1);
+            adapter.clearHistory(2);
+            adapter.clearHistory(3);
             getHistoryList(1,null);
             getHistoryList(2,null);
             getHistoryList(3,null);
@@ -188,12 +194,14 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             adapter.clearActiveLessonsAndBidding();
             getActiveLessonList(null);
             //getActiveLessonAndLessonBiddings();
-            adapter.clearHistory();
+            adapter.clearHistory(1);
+            adapter.clearHistory(2);
+            adapter.clearHistory(3);
             getHistoryList(1,null);
             getHistoryList(2,null);
             getHistoryList(3,null);
         }
-        */
+
     }
 
     @Override
@@ -209,7 +217,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     }
     */
     private void getHistoryList(Integer boardCategory,Integer nextToken) {
-        presenter.getHistoryLessons(user.getId(), nextToken);
+        presenter.getHistoryLessons(boardCategory,user.getId(), nextToken);
     }
 
 
@@ -253,26 +261,26 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
     */
       @Override
-      public void successGetHistoryList(List<CLesson> lessons, Integer nextToken) {
-          adapter.setHistoryViewResult(lessons, nextToken);
+      public void successGetHistoryList(Integer boardid, List<CLesson> lessons, Integer nextToken) {
+          adapter.setHistoryViewResult(boardid,lessons, nextToken);
       }
 
       @Override
-      public boolean failGetHistoryList(CErrorCause errorCause) {
-          adapter.setHistoryViewError();
+      public boolean failGetHistoryList(Integer boardid, CErrorCause errorCause) {
+          adapter.setHistoryViewError( boardid);
           return false;
       }
 
       @Override
-      public void loadingGetHistoryList() {
-          adapter.setHistoryViewLoading();
+      public void loadingGetHistoryList(Integer boardid) {
+          adapter.setHistoryViewLoading(boardid);
       }
 
     @Override
     public void successCancelLesson(CLesson lesson) {
         ///adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
-        adapter.clearHistory();
+        adapter.clearHistory(1);
         getHistoryList(1,null);
         getHistoryList(2,null);
         getHistoryList(3,null);
@@ -350,6 +358,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     getHistoryList(3,null);
                     break;
                 }
+
             }
 
             if (view != null) {
@@ -425,29 +434,30 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         }
 
         // history
-        public void setHistoryViewLoading() {
-            if (myLessonHistoryView != null) {
+        public void setHistoryViewLoading(Integer boardid) {
+
+            if (boardid == 1) {
                 myLessonHistoryView.setLoading();
             }
-            if (myLessonHistoryView2 != null) {
+            else if (boardid == 2) {
                 myLessonHistoryView2.setLoading();
             }
-            if (myLessonHistoryView3 != null) {
+            else if (boardid == 3) {
                 myLessonHistoryView3.setLoading();
             }
         }
-        public void setHistoryViewResult(List<CLesson> lessons, Integer nextToken) {
-            if (myLessonHistoryView != null) {
+        public void setHistoryViewResult(Integer boardid, List<CLesson> lessons, Integer nextToken) {
+            if (boardid == 1) {
                 myLessonHistoryView.setContent(lessons, nextToken);
             }
-            if (myLessonHistoryView2 != null) {
+            else if (boardid == 2) {
                 myLessonHistoryView2.setContent(lessons, nextToken);
             }
-            if (myLessonHistoryView3 != null) {
+            else if (boardid == 3) {
                 myLessonHistoryView3.setContent(lessons, nextToken);
             }
         }
-        public void setHistoryViewError() {
+        public void setHistoryViewError(Integer boardid) {
             if (myLessonHistoryView != null) {
                 myLessonHistoryView.setError();
             }
@@ -457,15 +467,25 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             if (myLessonHistoryView3 != null) {
                 myLessonHistoryView3.setError();
             }
+
+            if (boardid == 1) {
+                myLessonHistoryView.setError();
+            }
+            else if (boardid == 2) {
+                myLessonHistoryView2.setError();
+            }
+            else if (boardid == 3) {
+                myLessonHistoryView3.setError();
+            }
         }
-        public void clearHistory() {
-            if (myLessonHistoryView != null) {
+        public void clearHistory(Integer boardid) {
+            if (boardid == 1) {
                 myLessonHistoryView.clear();
             }
-            if (myLessonHistoryView2 != null) {
+            else if (boardid == 2) {
                 myLessonHistoryView2.clear();
             }
-            if (myLessonHistoryView3 != null) {
+            else if (boardid == 3) {
                 myLessonHistoryView3.clear();
             }
         }

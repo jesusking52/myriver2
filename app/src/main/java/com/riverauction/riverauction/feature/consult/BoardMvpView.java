@@ -17,9 +17,9 @@ public interface BoardMvpView extends MvpView {
     boolean failGetActiveList(CErrorCause errorCause);
     void loadingGetActiveList();
     // history
-   void successGetHistoryList(List<CLesson> lessons, Integer nextToken);
-    boolean failGetHistoryList(CErrorCause errorCause);
-   void loadingGetHistoryList();
+   void successGetHistoryList(Integer boardid,List<CLesson> lessons, Integer nextToken);
+    boolean failGetHistoryList(Integer boardid,CErrorCause errorCause);
+   void loadingGetHistoryList(Integer boardid);
 
     void successCancelLesson(CLesson lesson);
     boolean failCancelLesson(CErrorCause errorCause);
