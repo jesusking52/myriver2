@@ -20,7 +20,7 @@
             android:paddingBottom="15dp"
             android:background="@android:color/white">
 
-            <TextView
+            <TextViewprofile_change_photo_container
                 android:id="@+id/profile_teacher_on_off_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -53,19 +53,17 @@
                 android:text="@string/subject"/>
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="24dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/shape_color_white_border_white_five">
 
                 <EditText
                     android:id="@+id/subject"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="19dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_centerVertical="true"
+                    style="@style/EditTextStyle"
                     android:textSize="15sp"
-                    android:hint="@string/subject_hint"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/subject_hint" />
             </RelativeLayout>
 
             <!-- 내용 -->
@@ -78,22 +76,31 @@
                 android:id="@+id/sign_up_address_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="3dp"
                 android:background="@drawable/shape_color_white_border_white_five"
                 android:layout_weight="1.25">
 
                 <EditText
                     android:id="@+id/content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="120dp"
-                    android:layout_marginLeft="19dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
+                    style="@style/EditTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
                     android:singleLine="false"
-                    android:layout_centerVertical="true"
                     android:textSize="15sp"
+                    android:gravity="top"
                     android:hint="@string/contents_hint"/>
             </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/profile_change_photo_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|left"
+                    android:src="@drawable/icon_photo"/>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

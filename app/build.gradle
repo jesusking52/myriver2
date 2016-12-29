@@ -125,5 +125,6 @@ dependencies {
     compile group: 'com.facebook.rebound', name:'rebound', version: '0.3.8'
     compile 'frankiesardo:icepick:3.1.0'
     provided 'frankiesardo:icepick-processor:3.1.0'
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }
 apply plugin: 'com.google.gms.google-services'

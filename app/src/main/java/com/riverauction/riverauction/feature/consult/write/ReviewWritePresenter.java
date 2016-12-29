@@ -10,6 +10,8 @@ import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
 import com.riverauction.riverauction.rxjava.DialogSubscriber;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import rx.Subscription;
@@ -105,5 +107,25 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
                 }, context));
     }
 
+
+    public void postProfilePhoto(Integer userId, File localFile) {
+        checkViewAttached();
+
+        subscription = dataManager.postProfilePhoto(userId, localFile)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+
+                    @Override
+                    public void onNext(CUser user) {
+                        super.onNext(user);
+                        getMvpView().successPostProfilePhoto(user);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failPostPreferences(getErrorCause(e));
+                    }
+                }, context));
+    }
 
 }
