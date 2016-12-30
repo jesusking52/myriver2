@@ -76,7 +76,7 @@ public class BasicInfoView extends LinearLayout {
     }
 
     /**
-     * LessonDetailActivity 에서 사용
+     * BoardDetailActivity 에서 사용
      * @param lesson
      */
     public void setContent(CLesson lesson) {

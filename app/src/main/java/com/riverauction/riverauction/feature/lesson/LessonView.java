@@ -246,9 +246,9 @@ public class LessonView extends BaseFrameLayout implements LessonMvpView, MainTa
 //                    getContext().startActivity(intent);
 //                } else {
 //                    // 선생님일 경우
-//                    Intent intent = new Intent(getContext(), LessonDetailActivity.class);
-//                    intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, lesson.getId());
-//                    intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
+//                    Intent intent = new Intent(getContext(), BoardDetailActivity.class);
+//                    intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, lesson.getId());
+//                    intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
 //                    getContext().startActivity(intent);
 //                }
             });

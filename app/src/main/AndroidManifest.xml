@@ -98,7 +98,7 @@
         <activity android:name=".feature.review.ReviewList" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".feature.consult.write.BoardWriteActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".feature.consult.filter.ConsultFilterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-
+        <activity android:name=".feature.consult.BoardDetailActivity" android:screenOrientation="portrait"/>
         <!-- GCM -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

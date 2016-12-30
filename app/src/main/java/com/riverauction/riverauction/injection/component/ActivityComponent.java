@@ -15,6 +15,7 @@ import com.riverauction.riverauction.feature.common.price.SelectPriceRangeActivi
 import com.riverauction.riverauction.feature.common.studentstatus.SelectStudentStatusActivity;
 import com.riverauction.riverauction.feature.common.subject.SelectSubjectsActivity;
 import com.riverauction.riverauction.feature.common.university.SelectUniversityActivity;
+import com.riverauction.riverauction.feature.consult.BoardDetailActivity;
 import com.riverauction.riverauction.feature.consult.filter.ConsultFilterActivity;
 import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.lesson.LessonDetailActivity;
@@ -99,5 +100,6 @@ public interface ActivityComponent {
         void inject(ReviewList activity);
         void inject(BoardWriteActivity activity);
         void inject(ConsultFilterActivity activity);
+        void inject(BoardDetailActivity activity);
 //        void inject(MapView mapView);
 }

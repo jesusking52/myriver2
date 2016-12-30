@@ -146,8 +146,8 @@ public abstract class MyLessonHistoryView_Bak extends StatusView implements More
            // lessonHolder.lessonItemView.setContent(board);
             lessonHolder.lessonItemView.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), LessonDetailActivity.class);
-               // intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, board.getId());
-               // intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, board.getOwner().getId());
+               // intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, board.getId());
+               // intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, board.getOwner().getId());
                 getContext().startActivity(intent);
             });
         }

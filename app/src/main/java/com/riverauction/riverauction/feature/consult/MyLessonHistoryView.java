@@ -16,7 +16,6 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.common.LoadMoreRecyclerViewAdapter;
 import com.riverauction.riverauction.feature.MoreLoadable;
-import com.riverauction.riverauction.feature.lesson.LessonDetailActivity;
 import com.riverauction.riverauction.widget.StatusView;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
@@ -143,9 +142,9 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
             LessonHolder lessonHolder = ((LessonHolder) holder);
             lessonHolder.lessonItemView.setContent(lesson);
             lessonHolder.lessonItemView.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), LessonDetailActivity.class);
-                intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, lesson.getId());
-                intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
+                Intent intent = new Intent(getContext(), BoardDetailActivity.class);
+                intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, lesson.getId());
+                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
                 getContext().startActivity(intent);
             });
         }

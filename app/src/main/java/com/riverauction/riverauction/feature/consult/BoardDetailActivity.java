@@ -1,4 +1,4 @@
-package com.riverauction.riverauction.feature.lesson;
+package com.riverauction.riverauction.feature.consult;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,14 +36,15 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
-public class LessonDetailActivity extends BaseActivity implements LessonDetailMvpView {
+public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpView {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.lesson.BoardDetailActivity.";
     public static final String EXTRA_LESSON_ID = EXTRA_PREFIX + "extra_lesson_id";
     public static final String EXTRA_OWNER_ID = EXTRA_PREFIX + "extra_owner_id";
 
     private static final int REQUEST_POST_BIDDING = 0x01;
 
-    @Inject LessonDetailPresenter presenter;
+    @Inject
+    BoardDetailPresenter presenter;
 
     @Bind(R.id.lesson_detail_lesson_status_bidding) View biddingStatusView;
     @Bind(R.id.lesson_detail_lesson_status_dealing) View dealingStatusView;
