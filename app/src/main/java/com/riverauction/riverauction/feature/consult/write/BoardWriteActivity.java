@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,8 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
@@ -22,8 +21,10 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLocation;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CStudentStatus;
@@ -35,11 +36,10 @@ import com.riverauction.riverauction.api.service.auth.request.TeacherReviewReque
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.UploadProfilePhotoEvent;
+import com.riverauction.riverauction.feature.consult.BoardDetailActivity;
 import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.photo.CPhotoInfo;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
-import com.riverauction.riverauction.feature.profile.ProfileActivity;
-import com.riverauction.riverauction.feature.register.signup.SpinnerItemSelectedListener;
 import com.riverauction.riverauction.feature.utils.PermissionUtils;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
@@ -57,6 +57,7 @@ import static com.riverauction.riverauction.api.model.CStudentStatus.MIDDLE_SCHO
 import static com.riverauction.riverauction.api.model.CStudentStatus.ORDINARY;
 import static com.riverauction.riverauction.api.model.CStudentStatus.RETRY_UNIVERSITY;
 import static com.riverauction.riverauction.api.model.CStudentStatus.UNIVERSITY;
+import static com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity.EXTRA_LESSON;
 
 public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpView, IListDialogListener {
     private final static int REQUEST_SEARCH_LOCATION = 0x01;
@@ -83,7 +84,11 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     private CTeacher teacher;
     private Integer teacherId;
     private Integer CATEGORY;
+    private Integer IDX;
     private String boardImagePath;
+
+    // from bundle
+    private CLesson lesson;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -108,10 +113,17 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if(IDX != -1){
+            //넘겨받고 처리 추가 예정
+        }
+
         // basic
-        initializeRankSpinner1();
-        setCategory(CATEGORY);//카테고리 선택
-        initializeRankSpinner2(CATEGORY);
+        if(CATEGORY != -1) {
+            initializeRankSpinner1();
+            setCategory(CATEGORY);//카테고리 선택
+            initializeRankSpinner2(CATEGORY);
+        }
+
 
         boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -185,6 +197,14 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         if (bundle != null) {
             //카테고리
             CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
+            IDX = bundle.getInt(BoardDetailActivity.MODES, -1);
+
+            Parcelable parcelable = bundle.getParcelable(EXTRA_LESSON);
+            if (parcelable == null) {
+                throw new IllegalStateException("lesson must be exist");
+            } else {
+                lesson = ParcelableWrappers.unwrap(parcelable);
+            }
             //Toast.makeText(BoardWriteActivity.this, "CATEGORY=", Toast.LENGTH_SHORT);
         }
     }
@@ -255,6 +275,12 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
                 categorAdapter.addItem(getString(R.string.board_spinner41));
                 categorAdapter.addItem(getString(R.string.board_spinner42));
                 break;
+            default:
+                categorAdapter.addItem(getString(R.string.board_spinner2));
+                categorAdapter.addItem(getString(R.string.board_spinner21));
+                categorAdapter.addItem(getString(R.string.board_spinner22));
+                categorAdapter.addItem(getString(R.string.board_spinner23));
+                categorAdapter.addItem(getString(R.string.board_spinner24));
         }
         //categorySpinner.setOnItemSelectedListener(new SpinnerItemSelectedListener(context));
         categorySpinner.setAdapter(categorAdapter);

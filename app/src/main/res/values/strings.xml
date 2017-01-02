@@ -262,7 +262,7 @@
     <string name="teacher_phone_number_dialog_message">아이템이 %1$d만큼 차감됩니다. 연락처를 확인할까요?</string>
     <string name="teacher_item_preferred_price">희망 금액</string>
     <string name="teacher_item_bidding_price">입찰 금액</string>
-    <string name="teacher_item_review_empty">현제 작성된 리뷰가 없습니다.</string>
+    <string name="teacher_item_review_empty">현재 작성된 리뷰가 없습니다.</string>
     <string name="teacher_item_review_empty2">리뷰작성 버튼을 눌러 리뷰를 남겨 주세요.</string>
     <string name="teacher_item_review_button">리뷰 작성</string>
 
@@ -453,7 +453,7 @@
     <string name="board_register_id">회원ID</string>
     <string name="board_reply">답변</string>
     <string name="side">|</string>
-
+    <string name="board_regist">등록</string>
     <string name="board_spinner21">대학</string>
     <string name="board_spinner22">고등</string>
     <string name="board_spinner23">중등</string>
@@ -468,4 +468,12 @@
     <string name="board_categoryname">카테고리 선택</string>
     <string name="board_myboard">내가 쓴글 보기</string>
     <string name="board_search">검색어</string>
+
+    <string name="teacher_item_reply_empty">현재 작성된 답변이 없습니다.</string>
+    <string name="teacher_item_reply_empty2">답변하기 버튼을 눌러 의견을 적어 주세요.</string>
+    <string name="board_write_title">게시글</string>
+
+    <string name="board_modify_title">게시글</string>
+    <string name="board_modify_content">게시글을 수정하시겠습니까?</string>
+    <string name="board_delete">삭제하시겠습니까?\n삭제하시면 답글도 삭제됩니다.</string>
 </resources>

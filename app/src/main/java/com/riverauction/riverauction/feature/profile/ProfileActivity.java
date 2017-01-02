@@ -63,7 +63,6 @@ public class ProfileActivity extends BaseActivity implements ProfileMvpView, ILi
 
     // 로그인 한 유저
     private CUser user;
-
     private PhotoSelector photoSelector;
     private String profileImagePath;
 

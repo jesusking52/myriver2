@@ -4,20 +4,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
 import com.riverauction.riverauction.api.model.CLessonStatus;
+import com.riverauction.riverauction.api.model.CReply;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseActivity;
@@ -27,14 +34,21 @@ import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
 import com.riverauction.riverauction.feature.common.BasicInfoView;
 import com.riverauction.riverauction.feature.common.LessonInfoView;
+import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.lesson.bidding.PostBiddingActivity;
 import com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity;
+import com.riverauction.riverauction.feature.photo.ProfileImageView;
 import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.states.UserStates;
+import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
+
+import static com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity.EXTRA_LESSON;
 
 public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpView {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.lesson.BoardDetailActivity.";
@@ -52,15 +66,12 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.lesson_detail_lesson_status_canceled_created_at) TextView canceledCreatedAtView;
     @Bind(R.id.lesson_detail_lesson_status_finished) View finishedStatusView;
     @Bind(R.id.lesson_detail_lesson_status_finished_created_at) TextView finishedCreatedAtView;
-
     @Bind(R.id.lesson_detail_remain_time_view) TextView remainTimeView;
     @Bind(R.id.lesson_detail_bidding_count_view) TextView biddingCountView;
     @Bind(R.id.lesson_detail_bidding_count_container) View biddingCountContainer;
-
     @Bind(R.id.lesson_detail_basic_info_view) BasicInfoView basicInfoView;
     @Bind(R.id.lesson_detail_lesson_info_view) LessonInfoView lessonInfoView;
     @Bind(R.id.description_view) TextView descriptionView;
-
     @Bind(R.id.bidding_button_dummy_view) View biddingButtonDummyView;
     @Bind(R.id.bidding_button) View biddingButton;
     @Bind(R.id.bidding_cancel_button) View biddingCancelButton;
@@ -73,10 +84,37 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     // 로그인 된 유저
     private CUser me;
     private CLesson lesson;
+    //여기부터 추가
 
+    @Bind(R.id.modify) View modify;
+    @Bind(R.id.delete) View delete;
+    @Bind(R.id.reply) View reply;
+    @Bind(R.id.noReply) View noReply;
+    @Bind(R.id.reply_container) View replyContainer;
+    @Bind(R.id.replyLayout) View replyLayout;
+    @Bind(R.id.item_teacher_profile_image2) ProfileImageView profile;
+
+    private BoardDetailActivity.ShopItemAdapter adapter;
+    private List<CReply> shopItems = Lists.newArrayList();
+    @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
+    static final String SKU_PURCHASED = "android.test.purchased";
+    static final String SKU_CANCELED = "android.test.canceled";
+    static final String SKU_REFUNDED = "android.test.refunded";
+    private static final String SKU_ITEM_UNAVAILABLE = "android.test.item_unavailable";
+    public static final String MODES = "MODE";
+    public static final String IDX = "IDX";
     @Override
     public int getLayoutResId() {
-        return R.layout.activity_lesson_detail;
+        return R.layout.activity_board_detail;
+    }
+
+    private CReply makeShopItem(String contents, Integer createAt, String title, String teacherId) {
+        CReply shopItem = new CReply();
+        shopItem.setContents(contents);
+        shopItem.setGetCreatedAt(createAt);
+        shopItem.setTitle(title);
+        shopItem.setTeacherid(teacherId);
+        return shopItem;
     }
 
     @Override
@@ -85,15 +123,65 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         RiverAuctionEventBus.getEventBus().register(this);
         getDataFromBundle(getIntent().getExtras());
         me = UserStates.USER.get(stateCtx);
-
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
 
-        getSupportActionBar().setTitle(R.string.lesson_detail_action_bar_title);
+        getSupportActionBar().setTitle(R.string.board_write_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         presenter.getLesson(lessonId);
+
+        //여기부터 추가
+        shopItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
+        shopItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
+        shopItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
+        shopItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
+        shopItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
+
+        adapter = new ShopItemAdapter(shopItems);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = DividerUtils.getHorizontalDividerItemDecoration(context);
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        noReply.setVisibility(View.GONE);
+        //답글
+        reply.setOnClickListener(v -> {
+            profile.loadProfileImage(me);
+            replyLayout.setVisibility(View.VISIBLE);
+            noReply.setVisibility(View.GONE);
+            replyContainer.setVisibility(View.GONE);
+            setLikeMenuItem(1);
+        });
+        //수정하기
+        modify.setOnClickListener(v -> {
+            // Purchase and Consume
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.board_modify_title)
+                    .setMessage(R.string.board_modify_content)
+                    .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                        Intent intent = new Intent(context, BoardWriteActivity.class);
+                        intent.putExtra(MODES, "MODIFY");
+                        intent.putExtra(IDX, lesson.getId());//바꿔야 함
+                        intent.putExtra(EXTRA_LESSON, ParcelableWrappers.wrap(lesson));
+                        startActivity(intent);
+                    })
+                    .setCancelable(true)
+                    .show();
+        });
+        //삭제하기
+        delete.setOnClickListener(v -> {
+            // Purchase and Consume
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.review_delete)
+                    .setMessage(R.string.board_delete)
+                    .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                        // 삭제 태움
+                    })
+                    .setCancelable(true)
+                    .show();
+        });
     }
 
     @Override
@@ -101,7 +189,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_favorite, menu);
         likeMenuItem = menu.getItem(0);
-        likeMenuItem.setActionView(R.layout.action_layout_favorite);
+        likeMenuItem.setActionView(R.layout.action_layout_board);
+        likeMenuItem.setVisible(false);
         return true;
     }
 
@@ -111,6 +200,29 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setLikeMenuItem(int isRegist) {
+        if (likeMenuItem == null) {
+            return;
+        }
+     
+        likeMenuItem.setVisible(true);
+        TextView favoriteTextView = (TextView) likeMenuItem.getActionView().findViewById(R.id.favorite_text_view);
+        if (isRegist==1) {
+            favoriteTextView.setText(R.string.board_regist);
+            likeMenuItem.getActionView().setOnClickListener(item -> {
+                // 등록
+                postModifyDialog();
+            });
+        } else {
+            favoriteTextView.setText(R.string.review_list_modify);
+            likeMenuItem.getActionView().setOnClickListener(item -> {
+                //수정
+                postRegistDialog();
+            });
+        }
+    
     }
 
     @Override
@@ -146,9 +258,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     /**
-     * 찜하기
+     * 등록
      */
-    private void postFavoriteDialog() {
+    private void postRegistDialog() {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.favorite_title)
                 .setMessage(R.string.favorite_post_message)
@@ -160,9 +272,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     /**
-     * 찜 해제
+     * 수정
      */
-    private void deleteFavoriteDialog() {
+    private void postModifyDialog() {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.favorite_title)
                 .setMessage(R.string.favorite_delete_message)
@@ -193,7 +305,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         biddingCountContainer.setOnClickListener(v -> {
             if (me.equals(lesson.getOwner())) {
                 Intent intent = new Intent(context, MyLessonDetailSelectListActivity.class);
-                intent.putExtra(MyLessonDetailSelectListActivity.EXTRA_LESSON, ParcelableWrappers.wrap(lesson));
+                intent.putExtra(EXTRA_LESSON, ParcelableWrappers.wrap(lesson));
                 startActivity(intent);
             }
         });
@@ -202,7 +314,6 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         lessonInfoView.setContent(lesson);
         descriptionView.setText(lesson.getDescription());
 
-        setLikeMenuItem();
     }
 
     private void setLessonStatus(CLessonStatus lessonStatus) {
@@ -236,31 +347,6 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                 remainTimeView.setText("00:00");
                 remainTimeView.setTextColor(getResources().getColor(R.color.river_auction_greyish));
                 break;
-            }
-        }
-    }
-
-    private void setLikeMenuItem() {
-        if (likeMenuItem == null) {
-            return;
-        }
-        if (CUserType.STUDENT == me.getType()) {
-            likeMenuItem.setVisible(false);
-        } else {
-            likeMenuItem.setVisible(true);
-            TextView favoriteTextView = (TextView) likeMenuItem.getActionView().findViewById(R.id.favorite_text_view);
-            if (lesson.getIsFavorited() != null && lesson.getIsFavorited()) {
-                favoriteTextView.setText(R.string.menu_favorite_cancel);
-                likeMenuItem.getActionView().setOnClickListener(item -> {
-                    // 찜 해제
-                    deleteFavoriteDialog();
-                });
-            } else {
-                favoriteTextView.setText(R.string.menu_favorite);
-                likeMenuItem.getActionView().setOnClickListener(item -> {
-                    // 찜 하기
-                    postFavoriteDialog();
-                });
             }
         }
     }
@@ -363,5 +449,92 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Override
     public boolean failCancelLesson(CErrorCause errorCause) {
         return false;
+    }
+
+
+    /**
+     * ViewHolder
+     */
+    public static class ReplyItemHolder extends RecyclerView.ViewHolder {
+        public TextView replytitle;
+        public TextView replyContent;
+        public TextView replyTime;
+        public ProfileImageView profileImageView;
+        public ImageView modify;
+        public ImageView delete;
+        public View modifylayout;
+        public ReplyItemHolder(View itemView) {
+            super(itemView);
+            profileImageView = (ProfileImageView) itemView.findViewById(R.id.item_teacher_profile_image);
+            replytitle = (TextView) itemView.findViewById(R.id.reply_title);
+            replyContent = (TextView) itemView.findViewById(R.id.reply_content);
+            replyTime = (TextView) itemView.findViewById(R.id.reply_time);
+            modifylayout = (View) itemView.findViewById(R.id.modifylayout);
+            modify = (ImageView) itemView.findViewById(R.id.modify);
+            delete = (ImageView) itemView.findViewById(R.id.delete);
+        }
+    }
+
+    /**
+     * Adapter
+     */
+    private class ShopItemAdapter extends RecyclerView.Adapter<BoardDetailActivity.ReplyItemHolder> {
+        private List<CReply> shopItems;
+
+        public ShopItemAdapter(List<CReply> shopItems) {
+            this.shopItems = shopItems;
+        }
+
+        @Override
+        public ReplyItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ReplyItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_reply, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ReplyItemHolder holder, int position) {
+            CReply shopItem = shopItems.get(position);
+            holder.replyTime.setText(shopItem.getTitle());
+            holder.replyContent.setText(shopItem.getContents());
+            holder.replytitle.setText(shopItem.getTitle());
+            holder.replyTime.setText(DateUtils.getRelativeTimeSpanString(shopItem.getCreatedAt()));
+
+            if(me.getId().equals(shopItem.getTeacherid()) ){
+                holder.modifylayout.setVisibility(View.VISIBLE);
+                holder.modify.setOnClickListener(v -> {
+
+                    // Purchase and Consume
+                    new AlertDialog.Builder(context)
+                            .setTitle(R.string.shop_purchase_dialog_title)
+                            .setMessage(R.string.shop_purchase_dialog_message)
+                            .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                                // purchaseItem(shopItem.getSkuId());
+                                setLikeMenuItem(0);
+                            })
+                            .setCancelable(true)
+                            .show();
+                });
+                holder.delete.setOnClickListener(v -> {
+                    // Purchase and Consume
+                    new AlertDialog.Builder(context)
+                            .setTitle(R.string.shop_purchase_dialog_title)
+                            .setMessage(R.string.shop_purchase_dialog_message)
+                            .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                                // purchaseItem(shopItem.getSkuId());
+                            })
+                            .setCancelable(true)
+                            .show();
+                });
+            }else
+            {
+                holder.modifylayout.setVisibility(View.GONE);
+            }
+
+            holder.profileImageView.loadProfileImage(me);
+        }
+
+        @Override
+        public int getItemCount() {
+            return shopItems.size();
+        }
     }
 }

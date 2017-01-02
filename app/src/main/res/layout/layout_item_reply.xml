@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.riverauction.riverauction.feature.photo.ProfileImageView
+            android:id="@+id/item_teacher_profile_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/reply_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="left"
+                android:text="나의 답변이다~! 여기"
+                />
+            <!-- 아이디 라인 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:background="@android:color/white"
+                android:layout_marginBottom="3dp">
+
+                <TextView
+                    android:id="@+id/reply_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:text="@string/board_register_id"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/river_auction_greyish"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <TextView
+            android:id="@+id/reply_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="left"
+            android:text="나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기"
+            />
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/modifylayout"
+        android:layout_marginBottom="3dp">
+        <ImageView
+            android:id="@+id/modify"
+            android:paddingTop="3dp"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top"
+            android:src="@drawable/modify2"
+            android:layout_marginRight="4dp"/>
+        <ImageView
+            android:id="@+id/delete"
+            android:paddingTop="3dp"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top"
+            android:src="@drawable/delete2"
+            android:layout_marginRight="4dp"/>
+    </LinearLayout>
+</LinearLayout>

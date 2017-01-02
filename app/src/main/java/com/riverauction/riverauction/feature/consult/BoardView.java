@@ -170,7 +170,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     private void makeViewPagerSlidingTabLayout() {
         adapter = new MyLessonPagerAdapter(makeTabPagerItems());
         viewPager.setAdapter(adapter);
-
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(android.R.color.transparent));
         slidingTabLayout.setDividerColors(android.R.color.transparent);
         slidingTabLayout.setTabCustomViewProvider(adapter);
