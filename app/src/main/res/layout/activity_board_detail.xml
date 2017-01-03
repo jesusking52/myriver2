@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="match_parent"
         android:layout_height="62dp"
         android:orientation="horizontal"
@@ -30,7 +30,7 @@
             android:text="@string/menu_lesson_cancel"
             android:background="@color/river_auction_orange_red"
             android:visibility="gone"/>
-    </LinearLayout>
+    </LinearLayout-->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -364,12 +364,12 @@
                 android:paddingBottom="24dp"/>
             <include layout="@layout/divider_dark"/>
 
-            <LinearLayout
+            <!--LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- 경매 상태 -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="93dp"
@@ -383,7 +383,7 @@
                         android:layout_height="match_parent"
                         android:paddingLeft="35dp">
 
-                        <!-- 경매중 -->
+
                         <LinearLayout
                             android:id="@+id/lesson_detail_lesson_status_bidding"
                             android:layout_width="wrap_content"
@@ -407,7 +407,7 @@
                                 android:text="@string/common_lesson_status_bidding"/>
                         </LinearLayout>
 
-                        <!-- 매칭중 -->
+
                         <LinearLayout
                             android:id="@+id/lesson_detail_lesson_status_dealing"
                             android:layout_width="wrap_content"
@@ -431,7 +431,7 @@
                                 android:text="@string/common_lesson_status_dealing"/>
                         </LinearLayout>
 
-                        <!-- 매칭 실패 -->
+
                         <LinearLayout
                             android:id="@+id/lesson_detail_lesson_status_canceled"
                             android:layout_width="wrap_content"
@@ -456,7 +456,7 @@
                                 android:textColor="@color/river_auction_greyish"/>
                         </LinearLayout>
 
-                        <!-- 매칭 완료 -->
+
                         <LinearLayout
                             android:id="@+id/lesson_detail_lesson_status_finished"
                             android:layout_width="wrap_content"
@@ -515,7 +515,7 @@
                 </LinearLayout>
                 <include layout="@layout/divider"/>
 
-                <!-- 참여 인원 -->
+
                 <FrameLayout
                     android:id="@+id/lesson_detail_bidding_count_container"
                     android:layout_width="match_parent"
@@ -553,7 +553,7 @@
 
                 <include layout="@layout/divider_dark"/>
 
-                <!-- 기본 정보 -->
+
                 <com.riverauction.riverauction.feature.common.BasicInfoView
                     android:id="@+id/lesson_detail_basic_info_view"
                     android:layout_width="match_parent"
@@ -561,7 +561,7 @@
 
                 <include layout="@layout/divider_dark"/>
 
-                <!-- 과외 정보 -->
+
                 <com.riverauction.riverauction.feature.common.LessonInfoView
                     android:id="@+id/lesson_detail_lesson_info_view"
                     android:layout_width="match_parent"
@@ -569,7 +569,7 @@
 
                 <include layout="@layout/divider_dark"/>
 
-                <!-- 선생님에게 바라는점 -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -600,12 +600,12 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="20dp"/>
-                <!-- dummy -->
+
                 <View
                     android:id="@+id/bidding_button_dummy_view"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"/>
-            </LinearLayout>
+            </LinearLayout-->
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

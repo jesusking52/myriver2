@@ -10,8 +10,17 @@ import proguard.annotation.KeepClassMembers;
 public class CBoard {
 
 
+    @JsonProperty("userid")
+    private String userid;
+
+    @JsonProperty("teacherid")
+    private String teacherid;
+
     @JsonProperty("board_idx")
     private Integer boardIdx;
+
+    @JsonProperty("reply_idx")
+    private Integer replyIdx;
 
     @JsonProperty("created_at")
     private Long createdAt;
@@ -76,4 +85,26 @@ public class CBoard {
         this.replyCnt = replyCnt;
     }
 
+    public Integer getReplyIdx() {
+        return replyIdx;
+    }
+
+    public void setReplyIdx(Integer replyIdx) {
+        this.replyIdx = replyIdx;
+    }
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid;
+    }
 }

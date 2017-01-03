@@ -234,11 +234,11 @@ public class LessonView extends BaseFrameLayout implements LessonMvpView, MainTa
             LessonItemHolder lessonItemHolder = ((LessonItemHolder) holder);
             lessonItemHolder.lessonItemView.setContent(lesson);
             lessonItemHolder.lessonItemView.setOnClickListener(v -> {
-                // 선생님일 경우
-                Intent intent = new Intent(getContext(), LessonDetailActivity.class);
-                intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, lesson.getId());
-                intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
-                getContext().startActivity(intent);
+            // 선생님일 경우
+            Intent intent = new Intent(getContext(), LessonDetailActivity.class);
+            intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, lesson.getId());
+            intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
+            getContext().startActivity(intent);
 //                if (CUserType.STUDENT == user.getType()) {
 //                    // 학생일 경우
 //                    Intent intent = new Intent(getContext(), MyLessonDetailActivity.class);

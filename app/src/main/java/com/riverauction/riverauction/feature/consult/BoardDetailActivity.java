@@ -20,13 +20,15 @@ import android.widget.Toast;
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
 import com.riverauction.riverauction.api.model.CLessonStatus;
-import com.riverauction.riverauction.api.model.CReply;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.CancelEvent;
 import com.riverauction.riverauction.eventbus.FavoriteChangedEvent;
@@ -59,7 +61,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
 
     @Inject
     BoardDetailPresenter presenter;
-
+/*
     @Bind(R.id.lesson_detail_lesson_status_bidding) View biddingStatusView;
     @Bind(R.id.lesson_detail_lesson_status_dealing) View dealingStatusView;
     @Bind(R.id.lesson_detail_lesson_status_canceled) View canceledStatusView;
@@ -75,17 +77,17 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.bidding_button_dummy_view) View biddingButtonDummyView;
     @Bind(R.id.bidding_button) View biddingButton;
     @Bind(R.id.bidding_cancel_button) View biddingCancelButton;
-
-    // 찜하기
-    private MenuItem likeMenuItem;
-
+    */
     private Integer lessonId;
     private Integer ownerId;
     // 로그인 된 유저
     private CUser me;
     private CLesson lesson;
+    private  CBoard board;
+    private Integer nextToken;
     //여기부터 추가
-
+    List<CBoard> boardList;
+    private MenuItem likeMenuItem;
     @Bind(R.id.modify) View modify;
     @Bind(R.id.delete) View delete;
     @Bind(R.id.reply) View reply;
@@ -95,7 +97,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.item_teacher_profile_image2) ProfileImageView profile;
 
     private BoardDetailActivity.ShopItemAdapter adapter;
-    private List<CReply> shopItems = Lists.newArrayList();
+    private List<CBoard> shopItems = Lists.newArrayList();
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
     static final String SKU_PURCHASED = "android.test.purchased";
     static final String SKU_CANCELED = "android.test.canceled";
@@ -108,11 +110,11 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         return R.layout.activity_board_detail;
     }
 
-    private CReply makeShopItem(String contents, Integer createAt, String title, String teacherId) {
-        CReply shopItem = new CReply();
-        shopItem.setContents(contents);
-        shopItem.setGetCreatedAt(createAt);
-        shopItem.setTitle(title);
+    private CBoard makeShopItem(String contents, long createAt, String title, String teacherId) {
+        CBoard shopItem = new CBoard();
+        shopItem.setContent(contents);
+        shopItem.setCreatedAt(createAt);
+        //shopItem.setTitle(title);
         shopItem.setTeacherid(teacherId);
         return shopItem;
     }
@@ -288,19 +290,21 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @SuppressWarnings("unused")
     public void onEventMainThread(final SelectTeacherEvent event) {
         // 선생님이 선택됨
-        lesson.setStatus(CLessonStatus.FINISHED);
-        setContent(lesson);
+        //board.setStatus(CLessonStatus.FINISHED);
+        setContent(board);
     }
 
-    private void setContent(CLesson lesson) {
-        if (lesson == null) {
+    private void setContent(CBoard board) {
+        if (board == null) {
             return;
         }
-        this.lesson = lesson;
+        this.board = board;
 
         showOrHideButtons();
-
+/*
         setLessonStatus(lesson.getStatus());
+
+
         biddingCountView.setText(getString(R.string.common_person_count_unit, lesson.getBiddingsCount()));
         biddingCountContainer.setOnClickListener(v -> {
             if (me.equals(lesson.getOwner())) {
@@ -313,10 +317,29 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         basicInfoView.setContent(lesson);
         lessonInfoView.setContent(lesson);
         descriptionView.setText(lesson.getDescription());
+*/
+    }
 
+    private void setReply(APISuccessResponse<List<CBoard>> response) {
+
+        List<CBoard> boardNewList = response.getResult();
+        Integer newNextToken = response.getNextToken();
+        if (boardNewList.size() == 0 && boardNewList.size() == 0) {
+            //statusView.showEmptyView();
+            return;
+        }
+        //statusView.showResultView();
+
+        boardList.addAll(boardNewList);
+        nextToken = newNextToken;
+
+        //adapter.setNextToken(nextToken);
+        //adapter.setErrorLoadMore(false);
+        adapter.notifyDataSetChanged();
     }
 
     private void setLessonStatus(CLessonStatus lessonStatus) {
+        /*
         biddingStatusView.setVisibility(View.GONE);
         dealingStatusView.setVisibility(View.GONE);
         canceledStatusView.setVisibility(View.GONE);
@@ -349,9 +372,11 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                 break;
             }
         }
+        */
     }
 
     private void showOrHideButtons() {
+        /*
         if (CUserType.STUDENT == me.getType()) {
             // 학생일 경우
             if (lesson.getOwner().getId().equals(me.getId())) {
@@ -401,8 +426,53 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                     })
                     .show();
         });
+        */
     }
 
+
+    @Override
+    public void successGetBoard(CBoard board) {
+        setContent(board);
+    }
+    @Override
+    public boolean failGetBoard(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successGetReply(APISuccessResponse<List<CBoard>> response) {
+        setReply(response);
+    }
+
+    @Override
+    public boolean failGetReply(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successModifyReply(){}
+
+    @Override
+    public boolean failModifyReply(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successDeleteReply(){}
+
+    @Override
+    public boolean failDeleteReply(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successRegistReply(){}
+
+    @Override
+    public boolean failRegistReply(CErrorCause errorCause) {
+        return false;
+    }
+    /*
     @Override
     public void successGetLesson(CLesson lesson) {
         setContent(lesson);
@@ -450,7 +520,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     public boolean failCancelLesson(CErrorCause errorCause) {
         return false;
     }
-
+*/
 
     /**
      * ViewHolder
@@ -479,9 +549,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
      * Adapter
      */
     private class ShopItemAdapter extends RecyclerView.Adapter<BoardDetailActivity.ReplyItemHolder> {
-        private List<CReply> shopItems;
+        private List<CBoard> shopItems;
 
-        public ShopItemAdapter(List<CReply> shopItems) {
+        public ShopItemAdapter(List<CBoard> shopItems) {
             this.shopItems = shopItems;
         }
 
@@ -492,13 +562,12 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
 
         @Override
         public void onBindViewHolder(ReplyItemHolder holder, int position) {
-            CReply shopItem = shopItems.get(position);
-            holder.replyTime.setText(shopItem.getTitle());
-            holder.replyContent.setText(shopItem.getContents());
-            holder.replytitle.setText(shopItem.getTitle());
+            CBoard shopItem = shopItems.get(position);
+            holder.replyContent.setText(shopItem.getContent());
+            holder.replytitle.setText("하드코딩");
             holder.replyTime.setText(DateUtils.getRelativeTimeSpanString(shopItem.getCreatedAt()));
 
-            if(me.getId().equals(shopItem.getTeacherid()) ){
+            if(me.getId().equals(shopItem.getUserid()) ){
                 holder.modifylayout.setVisibility(View.VISIBLE);
                 holder.modify.setOnClickListener(v -> {
 
