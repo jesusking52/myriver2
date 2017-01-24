@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.api.model.CLesson;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.common.LoadMoreRecyclerViewAdapter;
 import com.riverauction.riverauction.feature.MoreLoadable;
 import com.riverauction.riverauction.widget.StatusView;
@@ -21,24 +21,24 @@ import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
 import java.util.List;
 
-public abstract class MyLessonHistoryView extends StatusView implements MoreLoadable {
+public abstract class BoardListView extends StatusView implements MoreLoadable {
 
-    private LessonsAdapter adapter;
+    private BoardAdapter adapter;
 
-    private List<CLesson> lessons = Lists.newArrayList();
+    private List<CBoard> boards = Lists.newArrayList();
     private Integer nextToken;
 
-    public MyLessonHistoryView(Context context) {
+    public BoardListView(Context context) {
         super(context);
         initialize(context);
     }
 
-    public MyLessonHistoryView(Context context, AttributeSet attrs) {
+    public BoardListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context);
     }
 
-    public MyLessonHistoryView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BoardListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
     }
@@ -63,9 +63,9 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         addView(recyclerView);
         setResultView(recyclerView);
 
-        findViewById(R.id.error_retry_button).setOnClickListener(v -> MyLessonHistoryView.this.loadMore(null));
+        findViewById(R.id.error_retry_button).setOnClickListener(v -> BoardListView.this.loadMore(null));
 
-        adapter = new LessonsAdapter(lessons);
+        adapter = new BoardAdapter(boards);
         RecyclerView mRecyclerView = (RecyclerView) getResultView();
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -75,14 +75,14 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void setContent(List<CLesson> newLessons, Integer newNextToken) {
-        if (lessons.size() == 0 && newLessons.size() == 0) {
+    public void setContent(List<CBoard> newBoard, Integer newNextToken) {
+        if (boards.size() == 0 && newBoard.size() == 0) {
             showEmptyView();
             return;
         }
         showResultView();
 
-        lessons.addAll(newLessons);
+        boards.addAll(newBoard);
         nextToken = newNextToken;
 
         adapter.setNextToken(nextToken);
@@ -91,39 +91,39 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
     }
 
     public void setError() {
-        if (lessons.size() == 0) {
+        if (boards.size() == 0) {
             showErrorView();
         } else {
             // 더 불러오기 실패
             adapter.setErrorLoadMore(true);
-            adapter.notifyItemChanged(lessons.size());
+            adapter.notifyItemChanged(boards.size());
         }
     }
 
     public void setLoading() {
-        if (lessons.size() == 0) {
+        if (boards.size() == 0) {
             showLoadingView();
         }
     }
 
     public void clear() {
-        lessons.clear();
+        boards.clear();
         nextToken = null;
     }
 
-    public static class LessonHolder extends RecyclerView.ViewHolder {
-        public BoardItemView lessonItemView;
+    public static class BoardHolder extends RecyclerView.ViewHolder {
+        public BoardItemView boardItemView;
 
-        public LessonHolder(View itemView) {
+        public BoardHolder(View itemView) {
             super(itemView);
-            lessonItemView = (BoardItemView) itemView;
+            boardItemView = (BoardItemView) itemView;
         }
     }
 
-    private class LessonsAdapter extends LoadMoreRecyclerViewAdapter {
+    private class BoardAdapter extends LoadMoreRecyclerViewAdapter {
         private static final int TYPE_ITEM = 1;
 
-        public LessonsAdapter(List<CLesson> lessons) {
+        public BoardAdapter(List<CBoard> lessons) {
             Preconditions.checkNotNull(lessons);
             this.items = lessons;
         }
@@ -131,20 +131,20 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
         @Override
         public RecyclerView.ViewHolder onCreateViewItemHolder(ViewGroup parent, int viewType) {
             if (viewType == TYPE_ITEM) {
-                return new LessonHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_board_list, parent, false));
+                return new BoardHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_board_list, parent, false));
             }
             return null;
         }
 
         @Override
         public void onBindViewItemHolder(RecyclerView.ViewHolder holder, int position) {
-            CLesson lesson = lessons.get(position);
-            LessonHolder lessonHolder = ((LessonHolder) holder);
-            lessonHolder.lessonItemView.setContent(lesson);
-            lessonHolder.lessonItemView.setOnClickListener(v -> {
+            CBoard board = boards.get(position);
+            BoardHolder boardHolder = ((BoardHolder) holder);
+            boardHolder.boardItemView.setContent(board);
+            boardHolder.boardItemView.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), BoardDetailActivity.class);
-                intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, lesson.getId());
-                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, lesson.getOwner().getId());
+                intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, board.getUserid());
+                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, board.getUserid());
                 getContext().startActivity(intent);
             });
         }
@@ -156,7 +156,7 @@ public abstract class MyLessonHistoryView extends StatusView implements MoreLoad
 
         @Override
         public void loadMore(Integer nextToken) {
-            MyLessonHistoryView.this.loadMore(nextToken);
+            BoardListView.this.loadMore(nextToken);
         }
     }
 }

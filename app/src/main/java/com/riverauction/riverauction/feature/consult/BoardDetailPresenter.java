@@ -42,7 +42,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
         if (lessonId == null) {
             return;
         }
-
+/*
         subscription = dataManager.getLesson(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<CLesson>() {
@@ -58,6 +58,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failGetLesson(getErrorCause(e));
                     }
                 });
+                */
     }
 
     public void postLessonFavorites(Integer lessonId) {
@@ -65,7 +66,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
         if (lessonId == null) {
             return;
         }
-
+/*
         subscription = dataManager.postLessonFavorites(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<CLessonFavorite>() {
@@ -81,6 +82,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failPostLessonFavorites(getErrorCause(e));
                     }
                 }, context));
+  */
     }
 
     public void deleteLessonFavorites(Integer lessonId) {
@@ -88,7 +90,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
         if (lessonId == null) {
             return;
         }
-
+/*
         subscription = dataManager.deleteLessonFavorites(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<Void>() {
@@ -104,11 +106,12 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failDeleteLessonFavorites(getErrorCause(e));
                     }
                 }, context));
+  */
     }
 
     public void cancelLesson(Integer lessonId) {
         checkViewAttached();
-
+/*
         subscription = dataManager.cancelLesson(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<CLesson>() {
@@ -124,5 +127,6 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failCancelLesson(getErrorCause(e));
                     }
                 });
+  */
     }
 }
