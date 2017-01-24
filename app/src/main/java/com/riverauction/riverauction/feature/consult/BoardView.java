@@ -20,11 +20,8 @@ import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseFrameLayout;
-import com.riverauction.riverauction.eventbus.CancelEvent;
-import com.riverauction.riverauction.eventbus.MakeBiddingEvent;
-import com.riverauction.riverauction.eventbus.PostBiddingEvent;
+import com.riverauction.riverauction.eventbus.BoardFilterEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
-import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
 import com.riverauction.riverauction.feature.consult.filter.ConsultFilterActivity;
 import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.main.MainTabTracker;
@@ -79,6 +76,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
         makeViewPagerSlidingTabLayout();
         MainTabTracker.registerTabCallback(this, 1, getContext());
+
+
         filterButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ConsultFilterActivity.class);
             if(viewPager.getCurrentItem()==0)
@@ -123,13 +122,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     }
 
     @SuppressWarnings("unused")
-    public void onEventMainThread(final MakeBiddingEvent event) {
-        adapter.clearActiveLessonsAndBidding();
-       // getActiveLessonAndLessonBiddings();
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(final SelectTeacherEvent event) {
+    public void onEventMainThread(final BoardFilterEvent event) {
+        /*
         adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
         adapter.clearBoard(1);
@@ -138,27 +132,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         getBoardList(1,null);
         getBoardList(2,null);
         getBoardList(3,null);
+        */
     }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(final CancelEvent event) {
-        adapter.clearActiveLessonsAndBidding();
-        //getActiveLessonAndLessonBiddings();
-        adapter.clearBoard(1);
-        adapter.clearBoard(2);
-        adapter.clearBoard(3);
-        getBoardList(1,null);
-        getBoardList(2,null);
-        getBoardList(3,null);
-    }
-
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(final PostBiddingEvent event) {
-        adapter.clearActiveLessons();
-        getActiveBoardList(null);
-    }
-
 
     private List<BoardPagerItem> makeTabPagerItems() {
         List<BoardPagerItem> tabPagerItems = Lists.newArrayList();
@@ -191,8 +166,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             getBoardList(2,null);
             getBoardList(3,null);
         } else if (CUserType.STUDENT == user.getType()) {
-            adapter.clearActiveLessonsAndBidding();
-            getActiveBoardList(null);
+            //adapter.clearActiveLessonsAndBidding();
+           // getActiveBoardList(null);
             adapter.clearBoard(1);
             adapter.clearBoard(2);
             adapter.clearBoard(3);
