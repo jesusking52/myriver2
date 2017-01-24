@@ -9,8 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.api.model.CLesson;
-import com.riverauction.riverauction.api.model.CLessonStatus;
+import com.riverauction.riverauction.api.model.CBoard;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,8 +44,8 @@ public class BoardItemView extends LinearLayout {
         setGravity(Gravity.CENTER_VERTICAL);
     }
 
-    public void setContent(CLesson lesson) {
-        if (lesson == null || lesson.getOwner() == null) {
+    public void setContent(CBoard board) {
+        if (board == null) {
             return;
         }
         /*
@@ -66,15 +65,15 @@ public class BoardItemView extends LinearLayout {
         if (lesson.getPreferredPrice() != null) {
             preferredPriceView.setText(getResources().getString(R.string.item_lesson_preferred_price, lesson.getPreferredPrice()));
         }
-*/
-        setLessonStatusAndTime(lesson);
+        */
+        //setLessonStatusAndTime(board);
     }
-
-    private void setLessonStatusAndTime(CLesson lesson) {
-        CLessonStatus lessonStatus = lesson.getStatus();
+/*
+    private void setLessonStatusAndTime(CBoard board) {
+        CLessonStatus boardStatus = board.getStatus();
         if (lessonStatus == null) {
             return;
         }
-
     }
+    */
 }

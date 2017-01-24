@@ -1,5 +1,6 @@
 package com.riverauction.riverauction.feature.consult;
 
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.base.MvpView;
@@ -13,14 +14,14 @@ public interface BoardMvpView extends MvpView {
     //boolean failGetLessonBiddings(CErrorCause errorCause);
     //void loadingGetActiveLessonList();
     // active
-    void successGetActiveList(List<CLesson> lessons, Integer nextToken);
-    boolean failGetActiveList(CErrorCause errorCause);
-    void loadingGetActiveList();
+    //void successGetActiveList(List<CLesson> lessons, Integer nextToken);
+    //boolean failGetActiveList(CErrorCause errorCause);
+    //void loadingGetActiveList();
     // history
-   void successGetHistoryList(Integer boardid,List<CLesson> lessons, Integer nextToken);
-    boolean failGetHistoryList(Integer boardid,CErrorCause errorCause);
-   void loadingGetHistoryList(Integer boardid);
+    void successBoardList(Integer boardid, List<CBoard> lessons, Integer nextToken);
+    boolean failGetBoardList(Integer boardid,CErrorCause errorCause);
+    void loadingGetBoardList(Integer boardid);
 
-    void successCancelLesson(CLesson lesson);
-    boolean failCancelLesson(CErrorCause errorCause);
+    //void successCancelLesson(CLesson lesson);
+    //boolean failCancelLesson(CErrorCause errorCause);
 }

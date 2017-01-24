@@ -7,11 +7,11 @@ import android.widget.TextView;
 
 import com.riverauction.riverauction.R;
 
-public class MyLessonTabPagerItem {
+public class BoardPagerItem {
     private final int titleResId;
     private final int index;
 
-    public MyLessonTabPagerItem(int titleResId, int index) {
+    public BoardPagerItem(int titleResId, int index) {
         this.titleResId = titleResId;
         this.index = index;
     }
