@@ -28,6 +28,9 @@ public class CBoard {
     @JsonProperty("category_id")
     private Integer categoryId;
 
+    @JsonProperty("category2_id")
+    private Integer category2Id;
+
     @JsonProperty("content")
     private String content;
 
@@ -59,6 +62,14 @@ public class CBoard {
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Integer getCategory2Id() {
+        return category2Id;
+    }
+
+    public void setCategory2Id(Integer category2Id) {
+        this.category2Id = category2Id;
     }
 
     public String getContent() {

@@ -106,29 +106,31 @@ public class TeacherItemView extends LinearLayout {
         }
 
         if(teacher.getRank() != null){
-            switch (teacher.getRank())
-            {
-                case "1":
-                    imgRank.setImageResource(R.drawable.star1);
-                case "2":
-                    imgRank.setImageResource(R.drawable.star2);
-                case "3":
-                    imgRank.setImageResource(R.drawable.star3);
-                case "4":
-                    imgRank.setImageResource(R.drawable.star4);
-                case "5":
-                    imgRank.setImageResource(R.drawable.star5);
-                case "6":
-                    imgRank.setImageResource(R.drawable.star6);
-                case "7":
-                    imgRank.setImageResource(R.drawable.star7);
-                case "8":
-                    imgRank.setImageResource(R.drawable.star8);
-                case "9":
-                    imgRank.setImageResource(R.drawable.star9);
-                case "10":
-                    imgRank.setImageResource(R.drawable.star10);
+
+            if(teacher.getRank().equals("0")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("1")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("2")) {
+                imgRank.setImageResource(R.drawable.star2);
+            }else if(teacher.getRank().equals("3")) {
+                imgRank.setImageResource(R.drawable.star3);
+            }else if(teacher.getRank().equals("4")) {
+                imgRank.setImageResource(R.drawable.star4);
+            }else if(teacher.getRank().equals("5")) {
+                imgRank.setImageResource(R.drawable.star5);
+            }else if(teacher.getRank().equals("6")) {
+                imgRank.setImageResource(R.drawable.star6);
+            }else if(teacher.getRank().equals("7")) {
+                imgRank.setImageResource(R.drawable.star7);
+            }else if(teacher.getRank().equals("8")) {
+                imgRank.setImageResource(R.drawable.star8);
+            }else if(teacher.getRank().equals("9")) {
+                imgRank.setImageResource(R.drawable.star9);
+            }else if(teacher.getRank().equals("10")) {
+                imgRank.setImageResource(R.drawable.star10);
             }
+
         }
     }
 }

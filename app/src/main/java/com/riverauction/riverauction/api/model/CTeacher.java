@@ -56,7 +56,7 @@ public class CTeacher {
     @JsonProperty("rank")
     private String rank;
 
-    @JsonProperty("rankcount")
+    @JsonProperty("review_Cnt")
     private String rankcount;
 
     public String getUniversity() {

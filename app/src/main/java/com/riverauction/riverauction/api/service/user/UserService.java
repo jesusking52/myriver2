@@ -70,7 +70,7 @@ public interface UserService {
     @POST("/api/users/{userId}/profile_photos")
     Observable<APISuccessResponse<CUser>> postProfilePhoto(@Path("userId") Integer userId, @Part("file") TypedFile file);
 
-    @PATCH("/api/users/{userId}/review_write")
+    @POST("/api/users/{userId}/review_write")
     Observable<APISuccessResponse<Boolean>> writeReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
 }

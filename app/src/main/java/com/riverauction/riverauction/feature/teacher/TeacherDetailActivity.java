@@ -36,6 +36,8 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
+import static com.riverauction.riverauction.R.id.img_rank;
+
 public class TeacherDetailActivity extends BaseActivity implements TeacherDetailMvpView {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.teacher.TeacherDetailActivity.";
     public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
@@ -57,6 +59,11 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     @Bind(R.id.phone_number_button) TextView phoneNumberButton;
     @Bind(R.id.riview_button) TextView riviewbutton;
     @Bind(R.id.review_list) ImageView reviewlist;
+    @Bind(img_rank) ImageView imgRank;
+
+    @Bind(R.id.riview_layout) View riviewLayout;
+    @Bind(R.id.noriview_layout) View noRiviewLayout;
+    @Bind(R.id.review_review_count) TextView reviewCount;
 
     // 찜하기d
     private MenuItem likeMenuItem;
@@ -117,7 +124,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             riviewbutton.setVisibility(View.VISIBLE);
 
             //일단 따라 넣었음. 선생이 아닌 경우
-            reviewlist.setOnClickListener(v -> {
+            riviewLayout.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ReviewList.class);
                 intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, userId);
                 startActivity(intent);
@@ -213,6 +220,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         setTeacher(user.getTeacher());
 
         descriptionView.setText(user.getTeacher().getDescription());
+
         setLikeMenuItem();
     }
 
@@ -267,6 +275,41 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
 
         if (teacher.getDescription() != null) {
             descriptionView.setText(teacher.getDescription());
+        }
+
+
+        if(Integer.parseInt(teacher.getRankcount())>0)
+        {
+            noRiviewLayout.setVisibility(View.GONE);
+            riviewLayout.setVisibility(View.VISIBLE);
+            reviewCount.setText("총 "+teacher.getRankcount()+"개 리뷰");
+            if(teacher.getRank().equals("0")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("1")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("2")) {
+                imgRank.setImageResource(R.drawable.star2);
+            }else if(teacher.getRank().equals("3")) {
+                imgRank.setImageResource(R.drawable.star3);
+            }else if(teacher.getRank().equals("4")) {
+                imgRank.setImageResource(R.drawable.star4);
+            }else if(teacher.getRank().equals("5")) {
+                imgRank.setImageResource(R.drawable.star5);
+            }else if(teacher.getRank().equals("6")) {
+                imgRank.setImageResource(R.drawable.star6);
+            }else if(teacher.getRank().equals("7")) {
+                imgRank.setImageResource(R.drawable.star7);
+            }else if(teacher.getRank().equals("8")) {
+                imgRank.setImageResource(R.drawable.star8);
+            }else if(teacher.getRank().equals("9")) {
+                imgRank.setImageResource(R.drawable.star9);
+            }else if(teacher.getRank().equals("10")) {
+                imgRank.setImageResource(R.drawable.star10);
+            }
+        }else
+        {
+            riviewLayout.setVisibility(View.GONE);
+            noRiviewLayout.setVisibility(View.VISIBLE);
         }
 
         if (biddingPrice == -1) {

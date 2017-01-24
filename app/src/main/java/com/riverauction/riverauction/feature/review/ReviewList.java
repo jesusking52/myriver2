@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,15 +70,16 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         getSupportActionBar().setTitle(R.string.review_list_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        presenter.getReviews(teacherId, 0);
+    }
 
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
-        reviewItems.add(makeReviewItem("2016.12.01", 5, "gogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogogo", "bigchoi"));
+    private void setAdaptor(APISuccessResponse<List<CReview>> response){
+        List<CReview> newReview = response.getResult();
+        for(int i=0;i<newReview.size();i++)
+        {
+            CReview review = newReview.get(i);
+            reviewItems.add(makeReviewItem(review.getCreatedAt(), review.getRank(), review.getReview(), review.getUserid()));
+        }
 
         adapter = new ReviewItemAdapter(reviewItems);
 
@@ -87,19 +89,14 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        //presenter.getUser(user.getId());
     }
-
-    private void setAdaptor(APISuccessResponse<List<CReview>> response){
-        List<CReview> newReview = response.getResult();
-
-    }
-    private CReviewItem makeReviewItem(String createAt, Integer rank, String review, String userName) {
+    private CReviewItem makeReviewItem(long createAt, Integer rank, String review, String userName) {
         CReviewItem shopItem = new CReviewItem();
-        shopItem.setCreateAt(createAt);
+        shopItem.setCreateAt(DateUtils.getRelativeTimeSpanString(createAt));
         shopItem.setRank(rank);
         shopItem.setReview(review);
         shopItem.setUserName(userName);
+
         return shopItem;
     }
 

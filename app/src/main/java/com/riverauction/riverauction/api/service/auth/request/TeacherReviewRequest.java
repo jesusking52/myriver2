@@ -12,10 +12,10 @@ public class TeacherReviewRequest {
     public TeacherReviewRequest() {
     }
 
-    public TeacherReviewRequest(String rank, String review, String teacherid) {
+    public TeacherReviewRequest(String rank, String review, String teacher_id) {
         this.rank = rank;
         this.review = review;
-        this.teacherid = teacherid;
+        this.teacher_id = teacher_id;
     }
 
     @JsonProperty("rank")
@@ -24,13 +24,13 @@ public class TeacherReviewRequest {
     @JsonProperty("review")
     private String review;
 
-    @JsonProperty("teacherid")
-    private String teacherid;
+    @JsonProperty("teacher_id")
+    private String teacher_id;
 
     public static class Builder {
         private String rank;
         private String review;
-        private String teacherid;
+        private String teacher_id;
 
         public Builder setRank(String rank) {
             this.rank = rank;
@@ -41,13 +41,13 @@ public class TeacherReviewRequest {
             this.review = review;
             return this;
         }
-        public Builder setTeacherid(String teacherid) {
-            this.teacherid = teacherid;
+        public Builder setTeacherid(String teacher_id) {
+            this.teacher_id = teacher_id;
             return this;
         }
 
         public TeacherReviewRequest build() {
-            return new TeacherReviewRequest(rank, review, teacherid);
+            return new TeacherReviewRequest(rank, review, teacher_id);
         }
     }
 }

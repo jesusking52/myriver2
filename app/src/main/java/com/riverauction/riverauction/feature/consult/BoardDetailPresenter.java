@@ -2,12 +2,15 @@ package com.riverauction.riverauction.feature.consult;
 
 import android.content.Context;
 
-import com.riverauction.riverauction.api.model.CLesson;
-import com.riverauction.riverauction.api.model.CLessonFavorite;
+import com.riverauction.riverauction.api.model.CBoard;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
+import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
 import com.riverauction.riverauction.rxjava.DialogSubscriber;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,92 +40,124 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
         }
     }
 
-    public void getLesson(Integer lessonId) {
+    public void getBoardDetail(Integer boardId) {
         checkViewAttached();
-        if (lessonId == null) {
+        if (boardId == null) {
             return;
         }
 
-        subscription = dataManager.getLesson(lessonId)
+        subscription = dataManager.getBoardDetail(boardId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<CLesson>() {
+                .subscribe(new APISubscriber<CBoard>() {
 
                     @Override
-                    public void onNext(CLesson lesson) {
-                        super.onNext(lesson);
-                        getMvpView().successGetLesson(lesson);
+                    public void onNext(CBoard board) {
+                        super.onNext(board);
+                        getMvpView().successGetBoard(board);
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetLesson(getErrorCause(e));
+                        return getMvpView().failGetBoard(getErrorCause(e));
                     }
                 });
     }
 
-    public void postLessonFavorites(Integer lessonId) {
-        checkViewAttached();
-        if (lessonId == null) {
+    public void getBoardReply(Integer boardId,Integer userId) {
+        if (userId == null) {
             return;
         }
-
-        subscription = dataManager.postLessonFavorites(lessonId)
+        checkViewAttached();
+        subscription = dataManager.getBoardReply(boardId, userId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CLessonFavorite>() {
+                .subscribe(new APISubscriber<APISuccessResponse<List<CBoard>>>() {
+                    @Override
+                    public void onStart() {
+                        super.onStart();
+                        getMvpView().loadingGetReplyList(boardId);
+                    }
 
                     @Override
-                    public void onNext(CLessonFavorite lessonFavorite) {
-                        super.onNext(lessonFavorite);
-                        getMvpView().successPostLessonFavorites(lessonFavorite);
+                    public void onNext(APISuccessResponse<List<CBoard>> response) {
+                        super.onNext(response);
+                        getMvpView().successGetReplyList(boardId, response);
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failPostLessonFavorites(getErrorCause(e));
+                        return getMvpView().failGetReplyList(boardId, getErrorCause(e));
+                    }
+                });
+    }
+
+    public void postBoardRegist(Integer boardId, BoardWriteRequest request) {
+        checkViewAttached();
+        if (boardId == null) {
+            return;
+        }
+
+        subscription = dataManager.postBoardRegist(boardId, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
+
+                    @Override
+                    public void onNext(CBoard boardRegist) {
+                        super.onNext(boardRegist);
+                        getMvpView().successRegistReply(boardRegist);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failRegistReply(getErrorCause(e));
                     }
                 }, context));
     }
 
-    public void deleteLessonFavorites(Integer lessonId) {
+    public void postBoardModify(Integer boardId, BoardWriteRequest request) {
         checkViewAttached();
-        if (lessonId == null) {
+        if (boardId == null) {
             return;
         }
 
-        subscription = dataManager.deleteLessonFavorites(lessonId)
+        subscription = dataManager.postBoardModify(boardId, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
+
+                    @Override
+                    public void onNext(CBoard boardRegist) {
+                        super.onNext(boardRegist);
+                        getMvpView().successModifyReply(boardRegist);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failModifyReply(getErrorCause(e));
+                    }
+                }, context));
+    }
+
+    public void deleteBoard(Integer boardId, Integer replyId) {
+        checkViewAttached();
+        if (boardId == null) {
+            return;
+        }
+
+        subscription = dataManager.deleteLessonFavorites(boardId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<Void>() {
 
                     @Override
                     public void onNext(Void result) {
                         super.onNext(result);
-                        getMvpView().successDeleteLessonFavorites();
+                        getMvpView().successDeleteReply();
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failDeleteLessonFavorites(getErrorCause(e));
+                        return getMvpView().failDeleteReply(getErrorCause(e));
                     }
                 }, context));
     }
 
-    public void cancelLesson(Integer lessonId) {
-        checkViewAttached();
 
-        subscription = dataManager.cancelLesson(lessonId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<CLesson>() {
-
-                    @Override
-                    public void onNext(CLesson lesson) {
-                        super.onNext(lesson);
-                        getMvpView().successCancelLesson(lesson);
-                    }
-
-                    @Override
-                    public boolean onErrors(Throwable e) {
-                        return getMvpView().failCancelLesson(getErrorCause(e));
-                    }
-                });
-    }
 }

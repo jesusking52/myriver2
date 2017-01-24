@@ -15,6 +15,7 @@ import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.api.service.auth.AuthService;
+import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.auth.request.CertifyPhoneNumberRequest;
 import com.riverauction.riverauction.api.service.auth.request.EmailCredentialRequest;
 import com.riverauction.riverauction.api.service.auth.request.SignUpRequest;
@@ -111,10 +112,6 @@ public class DataManager {
 
     public Observable<APISuccessResponse<List<CLessonBidding>>> getLessonBiddings(Integer lessonId, Integer nextToken) {
         return lessonService.getLessonBiddings(lessonId, nextToken);
-    }
-
-    public Observable<CLessonBidding> postLessonBiddings(Integer lessonId, LessonBiddingRequest request) {
-        return lessonService.postLessonBiddings(lessonId, request).map(APISuccessResponse::getResult);
     }
 
     public Observable<CLessonFavorite> postLessonFavorites(Integer lessonId) {
@@ -233,7 +230,32 @@ public class DataManager {
     //보드
     public Observable<APISuccessResponse<List<CBoard>>> getBoards(Integer categoryIdx, Integer nextToken) {
         return boardService.getBoards(categoryIdx, nextToken);
-}
+    }
+    //보드 상세
+    public Observable<CBoard> getBoardDetail(Integer boardId) {
+        return boardService.getBoardDetail(boardId).map(APISuccessResponse::getResult);
+    }
 
+    //보드 답글
+    public Observable<APISuccessResponse<List<CBoard>>> getBoardReply(Integer boardIdx, Integer userId) {
+        return boardService.getBoardReply(boardIdx, userId);
+    }
 
+    public Observable<CLessonBidding> postLessonBiddings(Integer lessonId, LessonBiddingRequest request) {
+        return lessonService.postLessonBiddings(lessonId, request).map(APISuccessResponse::getResult);
+    }
+
+    //리뷰쓰기
+    public Observable<CBoard> postBoardRegist(Integer userId, BoardWriteRequest request) {
+        return boardService.postBoardRegist(userId, request).map(APISuccessResponse::getResult);
+    }
+
+    //리뷰수정
+    public Observable<CBoard> postBoardModify(Integer userId, BoardWriteRequest request) {
+        return boardService.postBoardModify(userId, request).map(APISuccessResponse::getResult);
+    }
+
+    public Observable<Void> deleteLessonFavorites(Integer boardId, Integer replyId) {
+        return boardService.deleteBoard(boardId, replyId).map(APISuccessResponse::getResult);
+    }
 }

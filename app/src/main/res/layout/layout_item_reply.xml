@@ -47,11 +47,20 @@
     </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="50dp">
         <TextView
             android:id="@+id/reply_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="left"
+            android:text="나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기"
+            />
+        <EditText
+            android:id="@+id/reply_edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_gravity="bottom"
             android:gravity="left"
             android:text="나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기나의 답변이다~! 여기"

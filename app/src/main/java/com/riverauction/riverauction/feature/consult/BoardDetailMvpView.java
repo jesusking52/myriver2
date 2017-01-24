@@ -2,9 +2,6 @@ package com.riverauction.riverauction.feature.consult;
 
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.model.CLesson;
-import com.riverauction.riverauction.api.model.CLessonFavorite;
-import com.riverauction.riverauction.api.model.CReply;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.MvpView;
 
@@ -24,30 +21,22 @@ import java.util.List;
 10. 답글 실패
  */
 public interface BoardDetailMvpView extends MvpView {
-/*
-    void successGetLesson(CLesson lesson);
-    boolean failGetLesson(CErrorCause errorCause);
-    void successPostLessonFavorites(CLessonFavorite lessonFavorite);
-    boolean failPostLessonFavorites(CErrorCause errorCause);
-    void successDeleteLessonFavorites();
-    boolean failDeleteLessonFavorites(CErrorCause errorCause);
-    void successCancelLesson(CLesson lesson);
-    boolean failCancelLesson(CErrorCause errorCause);
-*/
+
     //여기부터 시작
     void successGetBoard(CBoard board);
     boolean failGetBoard(CErrorCause errorCause);
 
-    void successGetReply( APISuccessResponse<List<CBoard>> response);
-    boolean failGetReply(CErrorCause errorCause);
+    void loadingGetReplyList(Integer boardId);
+    void successGetReplyList(Integer boardId, APISuccessResponse<List<CBoard>> response);
+    boolean failGetReplyList(Integer boardId, CErrorCause errorCause);
 
-    void successModifyReply();
+    void successModifyReply(CBoard boardRegist);
     boolean failModifyReply(CErrorCause errorCause);
 
     void successDeleteReply();
     boolean failDeleteReply(CErrorCause errorCause);
 
-    void successRegistReply();
+    void successRegistReply(CBoard boardRegist);
     boolean failRegistReply(CErrorCause errorCause);
 
 }

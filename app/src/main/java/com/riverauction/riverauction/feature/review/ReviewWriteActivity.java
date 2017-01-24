@@ -24,6 +24,7 @@ import com.riverauction.riverauction.api.service.auth.request.TeacherReviewReque
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.feature.photo.ProfileImageView;
+import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
 
@@ -79,7 +80,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         presenter.getUserProfile(teacherId, true);
 
         //수정인 경우
-        if(reviewIdx>-1)
+        if(reviewIdx>0)
         {
             presenter.getUserReview(reviewIdx);
         }
@@ -94,7 +95,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             //실제로 티처아이디다
-            teacherId = bundle.getInt(EXTRA_USER_ID, -1);
+            teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
 
             if (teacherId == -1) {
                 //리뷰리스트에서 온 경우
@@ -251,8 +252,10 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     }
 
     private TeacherReviewRequest buildReviewRequest() {
+        String ranking = reviewRankSpinner.getSelectedItem().toString();
         return new TeacherReviewRequest.Builder()
-                .setRank(reviewRankSpinner.getSelectedItem().toString())
+                .setRank("3")
+                .setTeacherid(teacherId.toString())
                 .setReview(review.getText().toString())
                 .build();
     }
@@ -285,13 +288,13 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     }
 
     @Override
-    public void successPatchUser(CUser user) {
+    public void successWriteReview(Boolean user) {
         setResult(RESULT_OK);
         finish();
     }
 
     @Override
-    public boolean failPatchUser(CErrorCause errorCause) {
+    public boolean failWriteReview(CErrorCause errorCause) {
         return false;
     }
 

@@ -15,8 +15,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static android.R.attr.phoneNumber;
-
 public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
     private final DataManager dataManager;
     private Subscription subscription;
@@ -44,23 +42,23 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
         if (userId == null) {
             return;
         }
-        /*
+
         subscription = dataManager.writeReview(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
 
                     @Override
-                    public void onNext(CUser user) {
-                        super.onNext(user);
-                        getMvpView().successPatchUser(user);
+                    public void onNext(Boolean result) {
+                        super.onNext(result);
+                        getMvpView().successWriteReview(result);
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failPatchUser(getErrorCause(e));
+                        return getMvpView().failWriteReview(getErrorCause(e));
                     }
                 }, context));
-                */
+
     }
 
     public void getUserProfile(Integer userId, Boolean phoneNumber) {

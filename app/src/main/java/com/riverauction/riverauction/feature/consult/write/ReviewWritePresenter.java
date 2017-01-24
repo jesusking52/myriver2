@@ -44,7 +44,7 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
         if (userId == null) {
             return;
         }
-        /*
+/*
         subscription = dataManager.writeReview(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
@@ -60,7 +60,7 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
                         return getMvpView().failPatchUser(getErrorCause(e));
                     }
                 }, context));
-                */
+*/
     }
 
     public void getUserProfile(Integer userId, Boolean phoneNumber) {

@@ -14,7 +14,7 @@ public class CReview {
     private Integer rank;
 
     @JsonProperty("review")
-    private CUserType review;
+    private String review;
 
     @JsonProperty("userid")
     private String userid;
@@ -33,11 +33,11 @@ public class CReview {
         this.rank = rank;
     }
 
-    public CUserType getReview() {
+    public String getReview() {
         return review;
     }
 
-    public void setReview(CUserType review) {
+    public void setReview(String review) {
         this.review = review;
     }
 
