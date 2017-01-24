@@ -8,7 +8,6 @@ import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
-import com.riverauction.riverauction.rxjava.DialogSubscriber;
 
 import java.util.List;
 
@@ -46,7 +45,8 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
             return;
         }
 
-        subscription = dataManager.getBoardDetail(boardId)
+/*
+        subscription = dataManager.getLesson(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<CBoard>() {
 
@@ -61,6 +61,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failGetBoard(getErrorCause(e));
                     }
                 });
+                */
     }
 
     public void getBoardReply(Integer boardId,Integer userId) {
@@ -96,7 +97,8 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
             return;
         }
 
-        subscription = dataManager.postBoardRegist(boardId, request)
+/*
+        subscription = dataManager.postLessonFavorites(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
 
@@ -111,6 +113,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failRegistReply(getErrorCause(e));
                     }
                 }, context));
+  */
     }
 
     public void postBoardModify(Integer boardId, BoardWriteRequest request) {
@@ -119,7 +122,8 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
             return;
         }
 
-        subscription = dataManager.postBoardModify(boardId, request)
+/*
+        subscription = dataManager.deleteLessonFavorites(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
 
@@ -134,15 +138,14 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                         return getMvpView().failModifyReply(getErrorCause(e));
                     }
                 }, context));
+  */
     }
 
     public void deleteBoard(Integer boardId, Integer replyId) {
         checkViewAttached();
-        if (boardId == null) {
-            return;
-        }
 
-        subscription = dataManager.deleteLessonFavorites(boardId)
+/*
+        subscription = dataManager.cancelLesson(lessonId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DialogSubscriber<>(new APISubscriber<Void>() {
 
@@ -156,7 +159,9 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                     public boolean onErrors(Throwable e) {
                         return getMvpView().failDeleteReply(getErrorCause(e));
                     }
-                }, context));
+
+                });
+  */
     }
 
 
