@@ -5,6 +5,7 @@ import android.content.Context;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
@@ -39,30 +40,30 @@ public class BoardPresenter extends BasePresenter<BoardMvpView> {
     }
 
 
-    public void getBoardList(Integer boardId,Integer userId, Integer nextToken) {
-        if (userId == null) {
+    public void getBoardList(Integer categoryId, GetBoardsParams params) {
+        if (params == null) {
             return;
         }
         checkViewAttached();
-        subscription = dataManager.getBoards(boardId, nextToken)
+        subscription = dataManager.getBoards(categoryId, params)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<APISuccessResponse<List<CBoard>>>() {
                     @Override
                     public void onStart() {
                         super.onStart();
-                        getMvpView().loadingGetBoardList(boardId);
+                        getMvpView().loadingGetBoardList(categoryId);
                     }
 
                     @Override
                     public void onNext(APISuccessResponse<List<CBoard>> result) {
                         super.onNext(result);
-                        getMvpView().successBoardList(boardId,result.getResult(), result.getNextToken());
+                        getMvpView().successBoardList(categoryId,result.getResult(), result.getNextToken());
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
 
-                        return getMvpView().failGetBoardList(boardId,getErrorCause(e));
+                        return getMvpView().failGetBoardList(categoryId,getErrorCause(e));
                     }
                 });
     }

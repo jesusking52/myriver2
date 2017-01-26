@@ -19,6 +19,7 @@ import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BaseFrameLayout;
 import com.riverauction.riverauction.eventbus.BoardFilterEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
@@ -41,7 +42,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     public static final String EXTRA_CATEGORY_ID = EXTRA_PREFIX + "category";
     @Inject
     BoardPresenter presenter;
-
+    private GetBoardsParams.Builder builder;
     @Bind(R.id.filter_button) View filterButton;
     @Bind(R.id.board_active_empty_button) TextView boardWriteButton;
     @Bind(R.id.my_lesson_sliding_tabs) SlidingTabLayout slidingTabLayout;
@@ -73,7 +74,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         RiverAuctionApplication.getApplication().getComponent().inject(this);
         presenter.attachView(this, context);
         user = UserStates.USER.get(stateCtx);
-
+        builder = createGetBoardsParamsBuilder();
         makeViewPagerSlidingTabLayout();
         MainTabTracker.registerTabCallback(this, 1, getContext());
 
@@ -123,15 +124,20 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
     @SuppressWarnings("unused")
     public void onEventMainThread(final BoardFilterEvent event) {
-        /*
-        adapter.clearActiveLessonsAndBidding();
-        //getActiveLessonAndLessonBiddings();
+        builder = event.getBuilder();
         adapter.clearBoard(1);
         adapter.clearBoard(2);
         adapter.clearBoard(3);
-        getBoardList(1,null);
-        getBoardList(2,null);
-        getBoardList(3,null);
+        //nextToken = null;
+        //statusView.showLoadingView();
+        getBoardList(1,builder.build());
+        getBoardList(2,builder.build());
+        getBoardList(3,builder.build());
+        /*
+        adapter.clearActiveLessonsAndBidding();
+        //getActiveLessonAndLessonBiddings();
+
+
         */
     }
 
@@ -156,6 +162,13 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     @Override
     public void onEnterTab() {
 
+        adapter.clearBoard(1);
+        adapter.clearBoard(2);
+        adapter.clearBoard(3);
+        getBoardList(1,builder.build());
+        getBoardList(2,builder.build());
+        getBoardList(3,builder.build());
+        /*
         if (CUserType.TEACHER == user.getType()) {
             adapter.clearActiveLessons();
             getActiveBoardList(null);
@@ -175,6 +188,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             getBoardList(2,null);
             getBoardList(3,null);
         }
+        */
 
     }
 
@@ -186,8 +200,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         //presenter.getActiveBoard(user.getId(), nextToken);
     }
 
-    private void getBoardList(Integer boardCategory,Integer nextToken) {
-        presenter.getBoardList(boardCategory,user.getId(), nextToken);
+    private void getBoardList(Integer boardCategory,GetBoardsParams params) {
+        presenter.getBoardList(boardCategory, params);
     }
 
       @Override
@@ -206,7 +220,12 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
           adapter.setHistoryViewLoading(boardid);
       }
 
-
+    /**
+     * 비어있는 GetBoardsParams.Builder 를 만든다
+     */
+    private GetBoardsParams.Builder createGetBoardsParamsBuilder() {
+        return new GetBoardsParams.Builder();
+    }
     /**
      * View Pager 의 Adapter
      */
@@ -242,7 +261,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     boardListView = new BoardListView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getBoardList(1,nextToken);
+                            getBoardList(1,builder.build());
 
                         }
                     };
@@ -254,7 +273,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     boardListView2 = new BoardListView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getBoardList(2,nextToken);
+                            getBoardList(2,builder.build());
                         }
                     };
                     view = boardListView2;
@@ -266,7 +285,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                     boardListView3 = new BoardListView(getContext()) {
                         @Override
                         public void loadMore(Integer nextToken) {
-                            getBoardList(3,nextToken);
+                            getBoardList(3,builder.build());
                         }
                     };
                     view = boardListView3;

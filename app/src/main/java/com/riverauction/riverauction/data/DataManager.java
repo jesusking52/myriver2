@@ -23,6 +23,7 @@ import com.riverauction.riverauction.api.service.auth.request.TeacherReviewReque
 import com.riverauction.riverauction.api.service.auth.response.IssueTokenResult;
 import com.riverauction.riverauction.api.service.auth.response.SignUpResult;
 import com.riverauction.riverauction.api.service.board.BoardService;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.api.service.info.InfoService;
 import com.riverauction.riverauction.api.service.lesson.LessonService;
 import com.riverauction.riverauction.api.service.lesson.params.GetLessonsParams;
@@ -228,8 +229,8 @@ public class DataManager {
     }
 
     //보드
-    public Observable<APISuccessResponse<List<CBoard>>> getBoards(Integer categoryIdx, Integer nextToken) {
-        return boardService.getBoards(categoryIdx, nextToken);
+    public Observable<APISuccessResponse<List<CBoard>>> getBoards(Integer categoryIdx, GetBoardsParams params) {
+        return boardService.getBoards(categoryIdx, params);
     }
     //보드 상세
     public Observable<CBoard> getBoardDetail(Integer boardId) {

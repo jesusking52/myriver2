@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
+import com.riverauction.riverauction.feature.utils.DataUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,25 +50,17 @@ public class BoardItemView extends LinearLayout {
         if (board == null) {
             return;
         }
-        /*
-        if (!Strings.isNullOrEmpty(lesson.getName()) || lesson.getGender() != null) {
-            String nameAndGenderString = DataUtils.convertToAnonymousName(lesson.getName()) + " " + DataUtils.convertGenderToShortString(getContext(), lesson.getGender());
-            nameAndGenderView.setText(nameAndGenderString);
-        }
 
-        String availableSubjectString = DataUtils.convertSubjectToString(lesson.getAvailableSubjects());
-        if (!Strings.isNullOrEmpty(availableSubjectString)) {
-            availableSubjectsView.setText(availableSubjectString);
-        }
-        if (lesson.hasAddress()) {
-            locationView.setText(DataUtils.convertLocationToString(lesson.getLocation()));
-        }
+        if(board.getCategory2Id()!=0){
 
-        if (lesson.getPreferredPrice() != null) {
-            preferredPriceView.setText(getResources().getString(R.string.item_lesson_preferred_price, lesson.getPreferredPrice()));
         }
-        */
-        //setLessonStatusAndTime(board);
+        itemSummary.setText(board.getContent());
+        boardRegisterId.setText(board.getUserid());
+        //registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
+        viewCount.setText(board.getViewCnt());
+        reviewCnt.setText(board.getReplyCnt());
+
+        //setboardStatusAndTime(board);
     }
 /*
     private void setLessonStatusAndTime(CBoard board) {
