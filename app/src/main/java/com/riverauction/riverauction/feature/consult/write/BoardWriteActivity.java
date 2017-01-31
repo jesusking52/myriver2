@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
@@ -23,14 +25,15 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
+import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLocation;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CStudentStatus;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
@@ -57,9 +60,9 @@ import static com.riverauction.riverauction.api.model.CStudentStatus.MIDDLE_SCHO
 import static com.riverauction.riverauction.api.model.CStudentStatus.ORDINARY;
 import static com.riverauction.riverauction.api.model.CStudentStatus.RETRY_UNIVERSITY;
 import static com.riverauction.riverauction.api.model.CStudentStatus.UNIVERSITY;
-import static com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity.EXTRA_LESSON;
+import static com.riverauction.riverauction.feature.consult.BoardDetailActivity.EXTRA_BOARD;
 
-public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpView, IListDialogListener {
+public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpView, IListDialogListener {
     private final static int REQUEST_SEARCH_LOCATION = 0x01;
     public static final int PERMISSION_STORAGE_CAMERA = 0x01;
     public static final int PERMISSION_STORAGE_GALLERY = 0x02;
@@ -78,6 +81,7 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     EditText content;
     @Bind(R.id.profile_change_photo_container) View changePhotoButton;
     // address 정보
+    private MenuItem likeMenuItem;
     private CLocation location;
     private CUser user;
     private int reviewIdx;
@@ -86,9 +90,9 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     private Integer CATEGORY;
     private Integer IDX;
     private String boardImagePath;
-
+    private boolean isRegist;
     // from bundle
-    private CLesson lesson;
+    private CBoard board;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -99,31 +103,24 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     public int getLayoutResId() {
         return R.layout.activity_board_write;
     }
-
+    String boardValue="";
+    String categoryValue="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getDataFromBundle(getIntent().getExtras());//변수 전달
-
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
         user = UserStates.USER.get(stateCtx);
-
         getSupportActionBar().setTitle(R.string.board_write_button);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(IDX != -1){
-            //넘겨받고 처리 추가 예정
-        }
-
         // basic
-        if(CATEGORY != -1) {
+        if(CATEGORY != null) {
             initializeRankSpinner1();
             setCategory(CATEGORY);//카테고리 선택
             initializeRankSpinner2(CATEGORY);
         }
-
 
         boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -145,6 +142,7 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -165,15 +163,14 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
         });
         presenter.getUserProfile(teacherId, true);
 
-        //수정인 경우
-        if (reviewIdx > -1) {
-            presenter.getUserReview(reviewIdx);
-        }
+        getDataFromBundle(getIntent().getExtras());//변수 전달
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         changePhotoButton.setOnClickListener(v -> showProfilePhotoDialog());
+
+
     }
 
     public void showProfilePhotoDialog() {
@@ -199,34 +196,81 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
             CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
             IDX = bundle.getInt(BoardDetailActivity.MODES, -1);
 
-            Parcelable parcelable = bundle.getParcelable(EXTRA_LESSON);
-            if (parcelable == null) {
-                throw new IllegalStateException("lesson must be exist");
-            } else {
-                lesson = ParcelableWrappers.unwrap(parcelable);
+            Parcelable parcelable = bundle.getParcelable(EXTRA_BOARD);
+            if (parcelable != null) {
+                board = ParcelableWrappers.unwrap(parcelable);
+                subject.setText(board.getSubject());
+                content.setText(board.getContent());
+                initializeRankSpinner1();
+                setCategory(board.getCategoryId());//카테고리 선택
+                initializeRankSpinner2(board.getCategoryId());
+                setCategory2(board.getCategory2Id()%10);//10 자리 제거
+                isRegist = false;
+            }else{
+                isRegist = true;
             }
-            //Toast.makeText(BoardWriteActivity.this, "CATEGORY=", Toast.LENGTH_SHORT);
         }
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_common_confirm, menu);
+        inflater.inflate(R.menu.menu_favorite, menu);
+        likeMenuItem = menu.getItem(0);
+        likeMenuItem.setActionView(R.layout.action_layout_board);
+        likeMenuItem.setVisible(true);
+        setLikeMenuItem(isRegist);
         return true;
     }
 
+    public void setSpinnerValue(){
+        if(boardSpinner.getSelectedItemPosition() == 1)
+        {
+            boardValue = "1";
+            if(categorySpinner.getSelectedItemPosition()==1)
+            {
+                categoryValue ="11";
+            }else  if(categorySpinner.getSelectedItemPosition()==2)
+            {
+                categoryValue ="12";
+            }else  if(categorySpinner.getSelectedItemPosition()==3)
+            {
+                categoryValue ="13";
+            }else  if(categorySpinner.getSelectedItemPosition()==4)
+            {
+                categoryValue ="14";
+            }
+        }else if(boardSpinner.getSelectedItemPosition() == 2)
+        {
+            boardValue = "2";
+            if(categorySpinner.getSelectedItemPosition()==1)
+            {
+                categoryValue ="21";
+            }else  if(categorySpinner.getSelectedItemPosition()==2)
+            {
+                categoryValue ="22";
+            }else  if(categorySpinner.getSelectedItemPosition()==3)
+            {
+                categoryValue ="23";
+            }
+        }else if(boardSpinner.getSelectedItemPosition() == 3)
+        {
+            boardValue = "3";
+            if(categorySpinner.getSelectedItemPosition()==1)
+            {
+                categoryValue ="31";
+            }else  if(categorySpinner.getSelectedItemPosition()==2)
+            {
+                categoryValue ="32";
+            }
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_common_confirm) {
-            if (isValidCheckBasic()) {
 
-                presenter.writeReview(user.getId(), buildReviewRequest());
-
-            }
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -240,6 +284,44 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
 
     private void setCategory(int point) {
         boardSpinner.setSelection(point);
+    }
+
+    private void setCategory2(int point) {
+        categorySpinner.setSelection(point);
+    }
+
+    private void setLikeMenuItem(boolean isRegist) {
+        if (likeMenuItem == null) {
+            return;
+        }
+
+        likeMenuItem.setVisible(true);
+        TextView favoriteTextView = (TextView) likeMenuItem.getActionView().findViewById(R.id.favorite_text_view);
+        if (isRegist) {
+            favoriteTextView.setText(R.string.board_regist);
+            likeMenuItem.getActionView().setOnClickListener(item -> {
+                // 등록
+                setSpinnerValue();
+                BoardWriteRequest request = new BoardWriteRequest.Builder()
+                        .setReplyIdx(0).setCategoryId(Integer.parseInt(boardValue)).setSubject(subject.getText().toString()).setCategory2Id(Integer.parseInt(categoryValue))
+                        .setReplyCnt(0).setViewCnt(0).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").build();
+
+                presenter.writeBoard(user.getId(), request);
+            });
+
+        } else {
+            favoriteTextView.setText(R.string.review_list_modify);
+            likeMenuItem.getActionView().setOnClickListener(item -> {
+                //수정
+                setSpinnerValue();
+                BoardWriteRequest request = new BoardWriteRequest.Builder()
+                        .setBoardIdx(board.getBoardIdx()).setReplyIdx(0).setSubject(subject.getText().toString()).setCategoryId(Integer.parseInt(boardValue)).setCategory2Id(Integer.parseInt(categoryValue))
+                        .setReplyCnt(board.getReplyCnt()).setViewCnt(board.getViewCnt()).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").build();
+
+                presenter.postBoardModify(user.getId(), request);
+            });
+            setCategory2(board.getCategory2Id()%10);//10 자리 제거
+        }
     }
 
     private void initializeRankSpinner1() {
@@ -364,13 +446,14 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
     }
 
     @Override
-    public void successPatchUser(CUser user) {
+    public void successRegist(Boolean user) {
+        Toast.makeText(context, "질문이 작성되었습니다.", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
     }
 
     @Override
-    public boolean failPatchUser(CErrorCause errorCause) {
+    public boolean failRegist(CErrorCause errorCause) {
         return false;
     }
 
@@ -417,6 +500,18 @@ public class BoardWriteActivity extends BaseActivity implements ReviewWriteMvpVi
 
     @Override
     public boolean failPostPreferences(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successModify(Boolean boardRegist) {
+        Toast.makeText(context, "질문이 수정되었습니다.", Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public boolean failModify(CErrorCause errorCause) {
         return false;
     }
 

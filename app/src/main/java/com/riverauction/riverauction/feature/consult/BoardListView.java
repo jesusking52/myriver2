@@ -26,6 +26,7 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
     private BoardAdapter adapter;
 
     private List<CBoard> boards = Lists.newArrayList();
+    private CBoard board;
     private Integer nextToken;
 
     public BoardListView(Context context) {
@@ -47,7 +48,7 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
         LayoutInflater inflater = LayoutInflater.from(getContext());
 
         TextView emptyView = (TextView) inflater.inflate(R.layout.status_empty_view, this, false);
-        emptyView.setText(R.string.my_lesson_history_empty_view);
+        emptyView.setText(R.string.board_ongoing_empty_view);
         addView(emptyView);
         setEmptyView(emptyView);
 
@@ -123,9 +124,9 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
     private class BoardAdapter extends LoadMoreRecyclerViewAdapter {
         private static final int TYPE_ITEM = 1;
 
-        public BoardAdapter(List<CBoard> lessons) {
-            Preconditions.checkNotNull(lessons);
-            this.items = lessons;
+        public BoardAdapter(List<CBoard> boards) {
+            Preconditions.checkNotNull(boards);
+            this.items = boards;
         }
 
         @Override
@@ -138,13 +139,17 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
 
         @Override
         public void onBindViewItemHolder(RecyclerView.ViewHolder holder, int position) {
-            CBoard board = boards.get(position);
+            board = boards.get(position);
             BoardHolder boardHolder = ((BoardHolder) holder);
             boardHolder.boardItemView.setContent(board);
             boardHolder.boardItemView.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), BoardDetailActivity.class);
-                intent.putExtra(BoardDetailActivity.EXTRA_LESSON_ID, board.getUserid());
-                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, board.getUserid());
+                intent.putExtra(BoardDetailActivity.EXTRA_BOARD_ID, board.getBoardIdx());
+                intent.putExtra(BoardDetailActivity.EXTRA_REPLY_ID, board.getReplyIdx());
+                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, Integer.parseInt(board.getUserid()));
+                intent.putExtra(BoardDetailActivity.EXTRA_CATEGORY_ID, board.getCategoryId());
+                intent.putExtra(BoardDetailActivity.EXTRA_VIEW_ID, board.getViewCnt());
+
                 getContext().startActivity(intent);
             });
         }

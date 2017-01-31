@@ -76,7 +76,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         user = UserStates.USER.get(stateCtx);
         builder = createGetBoardsParamsBuilder();
         makeViewPagerSlidingTabLayout();
-        MainTabTracker.registerTabCallback(this, 1, getContext());
+        MainTabTracker.registerTabCallback(this, 5, getContext());
 
 
         filterButton.setOnClickListener(v -> {
@@ -125,14 +125,20 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     @SuppressWarnings("unused")
     public void onEventMainThread(final BoardFilterEvent event) {
         builder = event.getBuilder();
-        adapter.clearBoard(1);
-        adapter.clearBoard(2);
-        adapter.clearBoard(3);
-        //nextToken = null;
-        //statusView.showLoadingView();
-        getBoardList(1,builder.build());
-        getBoardList(2,builder.build());
-        getBoardList(3,builder.build());
+
+        if(builder.category_id==1)
+        {
+            adapter.clearBoard(1);
+            getBoardList(1,builder.build());
+        }else if(builder.category_id==2) {
+            adapter.clearBoard(2);
+            getBoardList(2,builder.build());
+        }else if(builder.category_id==3) {
+            adapter.clearBoard(3);
+            getBoardList(3,builder.build());
+        }
+
+
         /*
         adapter.clearActiveLessonsAndBidding();
         //getActiveLessonAndLessonBiddings();
@@ -162,13 +168,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     @Override
     public void onEnterTab() {
 
-        adapter.clearBoard(1);
-        adapter.clearBoard(2);
-        adapter.clearBoard(3);
-        getBoardList(1,builder.build());
-        getBoardList(2,builder.build());
-        getBoardList(3,builder.build());
-        /*
         if (CUserType.TEACHER == user.getType()) {
             adapter.clearActiveLessons();
             getActiveBoardList(null);
@@ -188,8 +187,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             getBoardList(2,null);
             getBoardList(3,null);
         }
-        */
-
     }
 
     @Override
@@ -200,8 +197,17 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         //presenter.getActiveBoard(user.getId(), nextToken);
     }
 
+
     private void getBoardList(Integer boardCategory,GetBoardsParams params) {
-        presenter.getBoardList(boardCategory, params);
+        if (params!=null) {
+            presenter.getBoardList(boardCategory, params);
+        }else{
+            builder = createGetBoardsParamsBuilder();
+            builder.setreply_idx(0);
+            presenter.getBoardList(boardCategory, builder.build());
+        }
+
+
     }
 
       @Override
@@ -211,13 +217,13 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
 
       @Override
       public boolean failGetBoardList(Integer boardid, CErrorCause errorCause) {
-          adapter.setHistoryViewError( boardid);
+          adapter.setBoardViewError( boardid);
           return false;
       }
 
       @Override
       public void loadingGetBoardList(Integer boardid) {
-          adapter.setHistoryViewLoading(boardid);
+          adapter.setBoardViewLoading(boardid);
       }
 
     /**
@@ -368,7 +374,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         }
 
         // history
-        public void setHistoryViewLoading(Integer boardid) {
+        public void setBoardViewLoading(Integer boardid) {
 
             if (boardid == 1) {
                 boardListView.setLoading();
@@ -392,7 +398,7 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
                 boardListView3.setContent(board, nextToken);
             }
         }
-        public void setHistoryViewError(Integer boardid) {
+        public void setBoardViewError(Integer boardid) {
 
             if (boardid == 1) {
                 boardListView.setError();

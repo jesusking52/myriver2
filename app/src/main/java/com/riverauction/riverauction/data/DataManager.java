@@ -247,16 +247,16 @@ public class DataManager {
     }
 
     //리뷰쓰기
-    public Observable<CBoard> postBoardRegist(Integer userId, BoardWriteRequest request) {
+    public Observable<Boolean> postBoardRegist(Integer userId, BoardWriteRequest request) {
         return boardService.postBoardRegist(userId, request).map(APISuccessResponse::getResult);
     }
 
     //리뷰수정
-    public Observable<CBoard> postBoardModify(Integer userId, BoardWriteRequest request) {
+    public Observable<Boolean> postBoardModify(Integer userId, BoardWriteRequest request) {
         return boardService.postBoardModify(userId, request).map(APISuccessResponse::getResult);
     }
 
-    public Observable<Void> deleteLessonFavorites(Integer boardId, Integer replyId) {
-        return boardService.deleteBoard(boardId, replyId).map(APISuccessResponse::getResult);
+    public Observable<Boolean> deleteBoard(Integer userId, BoardWriteRequest request){
+        return boardService.deleteBoard(userId, request).map(APISuccessResponse::getResult);
     }
 }

@@ -8,8 +8,8 @@ import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import java.util.List;
 
 import retrofit.http.Body;
-import retrofit.http.DELETE;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
@@ -26,13 +26,13 @@ public interface BoardService {
     @GET("/api/boardreply/{boardId}")
     Observable<APISuccessResponse<List<CBoard>>>  getBoardReply(@Path("boardId") Integer boardId, @Query("userId") Integer userId);
 
-    @GET("/api/boardreply/regist/{boardId}")
-    Observable<APISuccessResponse<CBoard>>  postBoardRegist(@Path("boardId") Integer boardId,  @Body BoardWriteRequest request);
+    @POST("/api/board/{userId}/board_write")
+    Observable<APISuccessResponse<Boolean>> postBoardRegist(@Path("userId") Integer boardId,  @Body BoardWriteRequest request);
 
-    @GET("/api/boardreply/modify/{boardId}")
-    Observable<APISuccessResponse<CBoard>>  postBoardModify(@Path("boardId") Integer boardId,  @Body BoardWriteRequest request);
+    @POST("/api/board/{userId}/board_modify")
+    Observable<APISuccessResponse<Boolean>>  postBoardModify(@Path("userId") Integer boardId,  @Body BoardWriteRequest request);
 
-    @DELETE("/api/boarddelete/{boardId}/{replyId}")
-    Observable<APISuccessResponse<Void>> deleteBoard(@Path("boardId") Integer boardId, @Path("replyId") Integer replyId);
+    @POST("/api/board/{userId}/board_delete")
+    Observable<APISuccessResponse<Boolean>> deleteBoard(@Path("userId") Integer boardId,  @Body BoardWriteRequest request);
 
 }

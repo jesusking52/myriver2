@@ -2,8 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,7 +36,7 @@
                     android:minLines="1"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:text="문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠"
+                    android:text="문과 3학년 교차지원에 대해 문의 드립니다."
                     android:textSize="15sp"
                     android:textColor="@color/river_auction_black"/>
 
@@ -123,7 +121,7 @@
                 android:id="@+id/boardContents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠"
+                android:text=""
                 android:paddingLeft="18dp"
                 android:paddingTop="18dp"
                 android:paddingRight="18dp"
@@ -133,7 +131,7 @@
                 android:id="@+id/boardModify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠"
+                android:text=""
                 android:paddingLeft="18dp"
                 android:paddingTop="18dp"
                 android:visibility="gone"
@@ -196,6 +194,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/river_auction_greyish"
                 android:visibility="gone"
+                android:layout_marginRight="4dp"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
@@ -212,8 +211,7 @@
                     android:gravity="bottom"
                     android:paddingLeft="18dp"
                     android:textSize="11sp"
-                    android:textColor="@color/river_auction_dark_sky_blue"
-                    android:text="1"/>
+                    android:textColor="@color/river_auction_dark_sky_blue"/>
             </LinearLayout>
             <!-- 리플라이 있을 때-->
             <LinearLayout
@@ -254,12 +252,14 @@
                             android:gravity="left"
                             android:text="나의 답변이다~! 여기"
                             />
-                        <!-- 아이디 라인 -->
+
+                        <!-- 아이디 라인 사용 안함 -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_marginLeft="20dp"
+                            android:visibility="gone"
                             android:background="@android:color/white"
                             android:layout_marginBottom="3dp">
                             <TextView
@@ -337,16 +337,7 @@
                     />
             </LinearLayout>
             <include layout="@layout/divider_dark"/>
-            <TextView
-                android:id="@+id/replyContents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠문과 3학년 교차지원에 대해 문의 드립니다. 무조건 성공하게 해 주세요~ 뿌빠라뿌빠"
-                android:paddingLeft="18dp"
-                android:paddingTop="18dp"
-                android:paddingRight="18dp"
-                android:paddingBottom="24dp"/>
-            <include layout="@layout/divider_dark"/>
+
 
         </LinearLayout>
     </ScrollView>

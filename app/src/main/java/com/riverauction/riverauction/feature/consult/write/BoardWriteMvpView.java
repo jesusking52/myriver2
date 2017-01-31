@@ -5,9 +5,9 @@ import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.MvpView;
 
-public interface ReviewWriteMvpView extends MvpView {
-    void successPatchUser(CUser user);
-    boolean failPatchUser(CErrorCause errorCause);
+public interface BoardWriteMvpView extends MvpView {
+    void successRegist(Boolean boardRegist);
+    boolean failRegist(CErrorCause errorCause);
     void successGetUser(CUser user);
     boolean failGetUser(CErrorCause errorCause);
     void successGetReview(CReview response);
@@ -15,4 +15,7 @@ public interface ReviewWriteMvpView extends MvpView {
     void successPostProfilePhoto(CUser user);
     boolean failPostProfilePhoto(CErrorCause errorCause);
     boolean failPostPreferences(CErrorCause errorCause);
+
+    void successModify(Boolean boardRegist);
+    boolean failModify(CErrorCause errorCause);
 }

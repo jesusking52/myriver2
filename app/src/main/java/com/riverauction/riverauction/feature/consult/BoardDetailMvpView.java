@@ -2,7 +2,6 @@ package com.riverauction.riverauction.feature.consult;
 
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.MvpView;
 
 import java.util.List;
@@ -23,20 +22,22 @@ import java.util.List;
 public interface BoardDetailMvpView extends MvpView {
 
     //여기부터 시작
-    void successGetBoard(CBoard board);
-    boolean failGetBoard(CErrorCause errorCause);
+    //void successGetBoard(CBoard board);
+    //boolean failGetBoard(CErrorCause errorCause);
+    void successBoardList(Integer boardid, List<CBoard> boards, Integer nextToken);
+    boolean failGetBoardList(Integer boardid,CErrorCause errorCause);
 
     void loadingGetReplyList(Integer boardId);
-    void successGetReplyList(Integer boardId, APISuccessResponse<List<CBoard>> response);
+    void successGetReplyList(Integer boardid, List<CBoard> boards, Integer nextToken);
     boolean failGetReplyList(Integer boardId, CErrorCause errorCause);
 
-    void successModifyReply(CBoard boardRegist);
+    void successModifyReply(Boolean boardRegist);
     boolean failModifyReply(CErrorCause errorCause);
 
-    void successDeleteReply();
+    void successDeleteReply(Boolean boardRegist);
     boolean failDeleteReply(CErrorCause errorCause);
 
-    void successRegistReply(CBoard boardRegist);
+    void successRegistReply(Boolean boardRegist);
     boolean failRegistReply(CErrorCause errorCause);
 
 }

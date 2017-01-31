@@ -27,6 +27,12 @@ public class BoardWriteRequest {
     @JsonProperty("category_id")
     private Integer categoryId;
 
+    @JsonProperty("category2_id")
+    private Integer category2Id;
+
+    @JsonProperty("subject")
+    private String subject;
+
     @JsonProperty("content")
     private String content;
 
@@ -41,15 +47,18 @@ public class BoardWriteRequest {
 
 
 
-    public BoardWriteRequest(String userid, String teacherid, Integer boardIdx, Integer replyIdx, Long createdAt, Integer categoryId, String content, Integer viewCnt) {
+    public BoardWriteRequest(String userid, String teacherid, Integer boardIdx, Integer replyIdx, Long createdAt, Integer categoryId, Integer category2Id, String content, Integer viewCnt, String subject, Integer replyCnt) {
         this.userid = userid;
         this.teacherid = teacherid;
         this.boardIdx = boardIdx;
         this.replyIdx = replyIdx;
         this.createdAt = createdAt;
         this.categoryId = categoryId;
+        this.category2Id = category2Id;
         this.content = content;
         this.viewCnt = viewCnt;
+        this.subject = subject;
+        this.replyCnt = replyCnt;
     }
 
     public static class Builder {
@@ -65,12 +74,15 @@ public class BoardWriteRequest {
 
         private Integer categoryId;
 
+        private Integer category2Id;
+
         private String content;
 
         private Integer viewCnt;
 
         private Integer replyCnt;
 
+        private String subject;
 
         public Builder setUserid(String userid) {
             this.userid = userid;
@@ -102,8 +114,18 @@ public class BoardWriteRequest {
             return this;
         }
 
+        public Builder setCategory2Id(Integer category2Id) {
+            this.category2Id = category2Id;
+            return this;
+        }
+
         public Builder setContent(String content) {
             this.content = content;
+            return this;
+        }
+
+        public Builder setSubject(String subject) {
+            this.subject = subject;
             return this;
         }
 
@@ -118,7 +140,7 @@ public class BoardWriteRequest {
         }
 
         public BoardWriteRequest build() {
-            return new BoardWriteRequest( userid,  teacherid,  boardIdx,  replyIdx,  createdAt,  categoryId,  content,  viewCnt);
+            return new BoardWriteRequest( userid,  teacherid,  boardIdx,  replyIdx,  createdAt,  categoryId, category2Id,  content,  viewCnt, subject, replyCnt);
         }
     }
 }

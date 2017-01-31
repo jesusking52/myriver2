@@ -5,6 +5,7 @@ import android.content.Context;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
@@ -40,69 +41,66 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
         }
     }
 
-    public void getBoardDetail(Integer boardId) {
-        checkViewAttached();
-        if (boardId == null) {
-            return;
-        }
+    public void getBoardDetail(Integer categoryId, GetBoardsParams params) {
 
-        subscription = dataManager.getBoardDetail(boardId)
+        checkViewAttached();
+        subscription = dataManager.getBoards(categoryId, params)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<CBoard>() {
+                .subscribe(new APISubscriber<APISuccessResponse<List<CBoard>>>() {
 
                     @Override
-                    public void onNext(CBoard board) {
-                        super.onNext(board);
-                        getMvpView().successGetBoard(board);
+                    public void onNext(APISuccessResponse<List<CBoard>> result) {
+                        super.onNext(result);
+                        getMvpView().successBoardList(categoryId, result.getResult(), result.getNextToken());
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetBoard(getErrorCause(e));
+
+                        return getMvpView().failGetBoardList(categoryId, getErrorCause(e));
                     }
                 });
-
     }
 
-    public void getBoardReply(Integer boardId,Integer userId) {
-        if (userId == null) {
+    public void getBoardReply(Integer categoryId, GetBoardsParams params) {
+        if (categoryId == null) {
             return;
         }
         checkViewAttached();
-        subscription = dataManager.getBoardReply(boardId, userId)
+        subscription = dataManager.getBoards(categoryId, params)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<APISuccessResponse<List<CBoard>>>() {
                     @Override
                     public void onStart() {
                         super.onStart();
-                        getMvpView().loadingGetReplyList(boardId);
+                        getMvpView().loadingGetReplyList(categoryId);
                     }
 
                     @Override
-                    public void onNext(APISuccessResponse<List<CBoard>> response) {
-                        super.onNext(response);
-                        getMvpView().successGetReplyList(boardId, response);
+                    public void onNext(APISuccessResponse<List<CBoard>> result) {
+                        super.onNext(result);
+                        getMvpView().successGetReplyList(categoryId, result.getResult(), result.getNextToken());
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetReplyList(boardId, getErrorCause(e));
+                        return getMvpView().failGetReplyList(categoryId, getErrorCause(e));
                     }
                 });
     }
 
-    public void postBoardRegist(Integer boardId, BoardWriteRequest request) {
+    public void postBoardRegist(Integer userId, BoardWriteRequest request) {
         checkViewAttached();
-        if (boardId == null) {
+        if (userId == null) {
             return;
         }
 
-        subscription = dataManager.postBoardRegist(boardId, request)
+        subscription = dataManager.postBoardRegist(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
 
                     @Override
-                    public void onNext(CBoard boardRegist) {
+                    public void onNext(Boolean boardRegist) {
                         super.onNext(boardRegist);
                         getMvpView().successRegistReply(boardRegist);
                     }
@@ -115,17 +113,17 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
 
     }
 
-    public void postBoardModify(Integer boardId, BoardWriteRequest request) {
+    public void postBoardModify(Integer userId, BoardWriteRequest request) {
         checkViewAttached();
-        if (boardId == null) {
+        if (userId == null) {
             return;
         }
-        subscription = dataManager.postBoardModify(boardId, request)
+        subscription = dataManager.postBoardModify(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CBoard>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
 
                     @Override
-                    public void onNext(CBoard boardRegist) {
+                    public void onNext(Boolean boardRegist) {
                         super.onNext(boardRegist);
                         getMvpView().successModifyReply(boardRegist);
                     }
@@ -138,21 +136,21 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
 
     }
 
-    public void deleteBoard(Integer boardId, Integer replyId) {
+    public void deleteBoard(Integer userId, BoardWriteRequest request) {
         checkViewAttached();
 
-        if (boardId == null) {
+        if (userId == null) {
             return;
         }
 
-        subscription = dataManager.deleteLessonFavorites(boardId)
+        subscription = dataManager.deleteBoard(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<Void>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
 
                     @Override
-                    public void onNext(Void result) {
+                    public void onNext(Boolean result) {
                         super.onNext(result);
-                        getMvpView().successDeleteReply();
+                        getMvpView().successDeleteReply(result);
                     }
 
                     @Override

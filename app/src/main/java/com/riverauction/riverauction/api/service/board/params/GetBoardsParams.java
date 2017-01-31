@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class GetBoardsParams extends HashMap<String, String> {
 
-    private GetBoardsParams(Integer favorite,
+    private GetBoardsParams(Integer user_id,
                             Integer universities,
                             Integer high,
                             Integer middle,
@@ -14,12 +14,17 @@ public class GetBoardsParams extends HashMap<String, String> {
                             Integer other,
                             Integer student,
                             Integer parents,
-                            String search,
-                            Integer nextToken) {
+                            Integer board_idx,
+                            Integer reply_idx,
+                            Integer category_id,
+                            String category2_id,
+                            String content,
+                            Integer nextToken,
+                            Integer view_Cnt) {
 
 
-        if (favorite != null) {
-            put("favorite", String.valueOf(favorite));
+        if (user_id != null) {
+            put("user_id", String.valueOf(user_id));
         }
 
         if (universities != null) {
@@ -54,8 +59,28 @@ public class GetBoardsParams extends HashMap<String, String> {
             put("student", String.valueOf(student));
         }
 
-        if (search != null) {
-            put("search", String.valueOf(search));
+        if (board_idx != null) {
+            put("board_idx", String.valueOf(board_idx));
+        }
+
+        if (reply_idx != null) {
+            put("reply_idx", String.valueOf(reply_idx));
+        }
+
+        if (category_id != null) {
+            put("category_id", String.valueOf(category_id));
+        }
+
+        if (category2_id != null) {
+            put("category2_id", String.valueOf(category2_id));
+        }
+
+        if (view_Cnt != null) {
+            put("view_Cnt", String.valueOf(view_Cnt));
+        }
+
+        if (content != null) {
+            put("content", String.valueOf(content));
         }
 
         if (parents != null) {
@@ -68,7 +93,7 @@ public class GetBoardsParams extends HashMap<String, String> {
     }
 
     public static class Builder {
-        private Integer favorite;
+        private Integer user_id;
         private Integer universities;
         private Integer high;
         private Integer middle;
@@ -78,11 +103,31 @@ public class GetBoardsParams extends HashMap<String, String> {
         private Integer other;
         private Integer student;
         private Integer parents;
+        private Integer board_idx;
+        private Integer reply_idx;
+        private Integer view_Cnt;
         private Integer nextToken;
-        private String search;
+        public Integer category_id;
+        private String category2_id;
+        private String content;
 
-        public Builder setFavorite(Integer favorite) {
-            this.favorite = favorite;
+        public Builder setuser_id(Integer user_id) {
+            this.user_id = user_id;
+            return this;
+        }
+
+        public Builder setboard_idx(Integer board_idx) {
+            this.board_idx = board_idx;
+            return this;
+        }
+
+        public Builder setreply_idx(Integer reply_idx) {
+            this.reply_idx = reply_idx;
+            return this;
+        }
+
+        public Builder setView_Cnt(Integer view_Cnt) {
+            this.view_Cnt = view_Cnt;
             return this;
         }
 
@@ -131,8 +176,8 @@ public class GetBoardsParams extends HashMap<String, String> {
             return this;
         }
 
-        public Builder setSearch(String search) {
-            this.search = search;
+        public Builder setcontent(String content) {
+            this.content = content;
             return this;
         }
 
@@ -141,8 +186,17 @@ public class GetBoardsParams extends HashMap<String, String> {
             return this;
         }
 
+        public Builder setCateogry2Id(String category2_id) {
+            this.category2_id = category2_id;
+            return this;
+        }
+
+        public Builder setCateogryId(Integer category_id) {
+            this.category_id = category_id;
+            return this;
+        }
         public GetBoardsParams build() {
-            return new GetBoardsParams(favorite, universities, high, middle, overseas, human, nature, other, student, parents,search, nextToken);
+            return new GetBoardsParams(user_id, universities, high, middle, overseas, human, nature, other, student, parents, board_idx, reply_idx, category_id, category2_id, content, nextToken, view_Cnt);
         }
     }
 }

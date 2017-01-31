@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
-import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
+import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
+public class ReviewWritePresenter extends BasePresenter<BoardWriteMvpView> {
     private final DataManager dataManager;
     private Subscription subscription;
 
@@ -27,7 +27,7 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
     }
 
     @Override
-    public void attachView(ReviewWriteMvpView mvpView, Context context) {
+    public void attachView(BoardWriteMvpView mvpView, Context context) {
         super.attachView(mvpView, context);
     }
 
@@ -39,28 +39,50 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
         }
     }
 
-    public void writeReview(Integer userId, TeacherReviewRequest request) {
+    public void writeBoard(Integer userId, BoardWriteRequest request) {
         checkViewAttached();
         if (userId == null) {
             return;
         }
-/*
-        subscription = dataManager.writeReview(userId, request)
+
+        subscription = dataManager.postBoardRegist(userId, request)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
 
                     @Override
-                    public void onNext(CUser user) {
+                    public void onNext(Boolean user) {
                         super.onNext(user);
-                        getMvpView().successPatchUser(user);
+                        getMvpView().successRegist(user);
                     }
 
                     @Override
                     public boolean onErrors(Throwable e) {
-                        return getMvpView().failPatchUser(getErrorCause(e));
+                        return getMvpView().failRegist(getErrorCause(e));
                     }
                 }, context));
-*/
+
+    }
+    public void postBoardModify(Integer userId, BoardWriteRequest request) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+        subscription = dataManager.postBoardModify(userId, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean boardRegist) {
+                        super.onNext(boardRegist);
+                        getMvpView().successModify(boardRegist);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failModify(getErrorCause(e));
+                    }
+                }, context));
+
     }
 
     public void getUserProfile(Integer userId, Boolean phoneNumber) {

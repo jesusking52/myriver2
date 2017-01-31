@@ -8,10 +8,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
-import com.riverauction.riverauction.feature.utils.DataUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,20 +52,48 @@ public class BoardItemView extends LinearLayout {
         if(board.getCategory2Id()!=0){
 
         }
-        itemSummary.setText(board.getContent());
+        itemSummary.setText(board.getSubject());
         boardRegisterId.setText(board.getUserid());
-        //registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
-        viewCount.setText(board.getViewCnt());
-        reviewCnt.setText(board.getReplyCnt());
+        registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
+        if(board.getViewCnt() == null)
+            viewCount.setText("0");
+        else
+            viewCount.setText(board.getViewCnt().toString());
 
-        //setboardStatusAndTime(board);
-    }
-/*
-    private void setLessonStatusAndTime(CBoard board) {
-        CLessonStatus boardStatus = board.getStatus();
-        if (lessonStatus == null) {
-            return;
+        if(board.getReplyCnt() == null)
+            reviewCnt.setText("0");
+        else
+            reviewCnt.setText(board.getReplyCnt().toString());
+
+        switch (board.getCategory2Id()){
+            case 11:
+                categoryLabel.setImageResource(R.drawable.grade_university);
+                break;
+            case 12:
+                categoryLabel.setImageResource(R.drawable.grade_high);
+                break;
+            case 13:
+                categoryLabel.setImageResource(R.drawable.grade_middle);
+                break;
+            case 14:
+                categoryLabel.setImageResource(R.drawable.grade_global);
+                break;
+            case 21:
+                categoryLabel.setImageResource(R.drawable.literature);
+                break;
+            case 22:
+                categoryLabel.setImageResource(R.drawable.nature);
+                break;
+            case 23:
+                categoryLabel.setImageResource(R.drawable.other);
+                break;
+            case 31:
+                categoryLabel.setImageResource(R.drawable.category_student);
+                break;
+            case 32:
+                categoryLabel.setImageResource(R.drawable.category_parents);
+                break;
+
         }
     }
-    */
 }

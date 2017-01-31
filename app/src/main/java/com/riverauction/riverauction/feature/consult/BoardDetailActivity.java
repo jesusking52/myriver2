@@ -15,18 +15,20 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
+import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.model.CLessonStatus;
 import com.riverauction.riverauction.api.model.CUser;
-import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
+import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.photo.ProfileImageView;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
@@ -37,10 +39,16 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 
+import static com.riverauction.riverauction.R.id.reply_title;
+
 public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpView {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.lesson.BoardDetailActivity.";
-    public static final String EXTRA_LESSON_ID = EXTRA_PREFIX + "extra_lesson_id";
+    public static final String EXTRA_BOARD = EXTRA_PREFIX + "extra_board_id";
+    public static final String EXTRA_BOARD_ID = EXTRA_PREFIX + "extra_lesson_id";
     public static final String EXTRA_OWNER_ID = EXTRA_PREFIX + "extra_owner_id";
+    public static final String EXTRA_CATEGORY_ID = EXTRA_PREFIX + "extra_category_id";
+    public static final String EXTRA_REPLY_ID = EXTRA_PREFIX + "extra_reply_id";
+    public static final String EXTRA_VIEW_ID = EXTRA_PREFIX + "extra_view_id";
     private static final int REQUEST_POST_BIDDING = 0x01;
 
     @Inject
@@ -50,28 +58,34 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.board_register_id) TextView registId;
     @Bind(R.id.register_time) TextView registTime;
     @Bind(R.id.view_count) TextView viewCnt;
+    @Bind(R.id.review_cnt2) TextView reviewCnt2;
     @Bind(R.id.modify) View modify;
     @Bind(R.id.delete) View delete;
     @Bind(R.id.reply) View reply;
     @Bind(R.id.noReply) View noReply;
     @Bind(R.id.category_label) ImageView categoryLabel;
 
-    @Bind(R.id.boardModify) View boardModify;
+    @Bind(R.id.reply_title) TextView replyTitle;
+    @Bind(R.id.boardModify) EditText boardModify;
+    @Bind(R.id.reply_content) EditText replyContent;
+
     @Bind(R.id.reply_container) View replyContainer;
     @Bind(R.id.replyLayout) View replyLayout;
     @Bind(R.id.item_teacher_profile_image2) ProfileImageView profile;
     private Integer boardId;
+    private Integer replyId;
     private Integer ownerId;
     // 로그인 된 유저
     private CUser me;
     private  CBoard board;
     private Integer CATEGORY;
+    private Integer VIEWCNT;
     private Integer nextToken;
     //여기부터 추가
     List<CBoard> boardList;
     private MenuItem likeMenuItem;
-
-
+    private GetBoardsParams.Builder builder;
+    private GetBoardsParams.Builder builderReply;
     private BoardDetailActivity.BoardItemAdapter adapter;
     private List<CBoard> boardItems = Lists.newArrayList();
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
@@ -86,13 +100,19 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         return R.layout.activity_board_detail;
     }
 
-    private CBoard makeShopItem(String contents, long createAt, String title, String teacherId) {
-        CBoard shopItem = new CBoard();
-        shopItem.setContent(contents);
-        shopItem.setCreatedAt(createAt);
+    private CBoard makeReplyItem(String contents, long createAt, String title, String teacherId) {
+        CBoard replyItem = new CBoard();
+        replyItem.setContent(contents);
+        replyItem.setCreatedAt(createAt);
         //shopItem.setTitle(title);
-        shopItem.setTeacherid(teacherId);
-        return shopItem;
+        replyItem.setTeacherid(teacherId);
+        return replyItem;
+    }
+    /**
+     * 비어있는 GetBoardsParams.Builder 를 만든다
+     */
+    private GetBoardsParams.Builder createGetBoardsParamsBuilder() {
+        return new GetBoardsParams.Builder();
     }
 
     @Override
@@ -107,39 +127,40 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         getSupportActionBar().setTitle(R.string.board_write_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        presenter.getBoardDetail(boardId);
-        presenter.getBoardReply(boardId,me.getId());
-        //여기부터 추가
-        boardItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
-        boardItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
-        boardItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
-        boardItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
-        boardItems.add(makeShopItem("내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무내용무", 3, "나의 답변1", "행"));
 
-        adapter = new BoardItemAdapter(boardItems);
+        builder = createGetBoardsParamsBuilder();
+        builder.setboard_idx(boardId);
+        builder.setView_Cnt(VIEWCNT);
+        builder.setreply_idx(0);
+        presenter.getBoardDetail(CATEGORY, builder.build());
+
+        builderReply = createGetBoardsParamsBuilder();
+        builderReply.setboard_idx(boardId);
+        builderReply.setreply_idx(-1);
+        presenter.getBoardReply(CATEGORY, builderReply.build());
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         RecyclerView.ItemDecoration itemDecoration = DividerUtils.getHorizontalDividerItemDecoration(context);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
         noReply.setVisibility(View.GONE);
         //답글
         reply.setOnClickListener(v -> {
             profile.loadProfileImage(me);
+            replyTitle.setText("매칭튜터"+me.getId()+"님의 답변입니다.");
             replyLayout.setVisibility(View.VISIBLE);
             noReply.setVisibility(View.GONE);
             replyContainer.setVisibility(View.GONE);
-            setLikeMenuItem(true, board);
+            setLikeMenuItem(true, board, replyContent);
         });
         //수정하기
         modify.setOnClickListener(v -> {
-            replyLayout.setVisibility(View.GONE);
-            noReply.setVisibility(View.GONE);
-            replyContainer.setVisibility(View.GONE);
-            boardContent.setVisibility(View.GONE);
-            boardModify.setVisibility(View.VISIBLE);
-            setLikeMenuItem(false, board);
+
+            Intent intent = new Intent(context, BoardWriteActivity.class);
+            intent.putExtra(EXTRA_BOARD, ParcelableWrappers.wrap(board));
+            startActivity(intent);
         });
         //삭제하기
         delete.setOnClickListener(v -> {
@@ -149,7 +170,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                     .setMessage(R.string.board_delete)
                     .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
                         // 삭제 태움
-                        presenter.deleteBoard(boardId,0);
+                        BoardWriteRequest request = new BoardWriteRequest.Builder()
+                                .setBoardIdx(boardId).setReplyIdx(0).build();
+                        presenter.deleteBoard(me.getId(),request);
                     })
                     .setCancelable(true)
                     .show();
@@ -174,7 +197,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         return super.onOptionsItemSelected(item);
     }
 
-    private void setLikeMenuItem(boolean isRegist, CBoard board) {
+    private void setLikeMenuItem(boolean isRegist, CBoard board, EditText contentText) {
         if (likeMenuItem == null) {
             return;
         }
@@ -185,13 +208,14 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             favoriteTextView.setText(R.string.board_regist);
             likeMenuItem.getActionView().setOnClickListener(item -> {
                 // 등록
-                postRegistDialog(board);
+                postRegistDialog(board, contentText.getText().toString());
             });
         } else {
             favoriteTextView.setText(R.string.review_list_modify);
             likeMenuItem.getActionView().setOnClickListener(item -> {
                 //수정
-                postModifyDialog(board);
+
+                postModifyDialog(board, contentText.getText().toString());
             });
         }
     
@@ -201,7 +225,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     public void onActivityResult(int requestCode, int resultCode, Intent data, Bundle bundle) {
         super.onActivityResult(requestCode, resultCode, data, bundle);
         if (REQUEST_POST_BIDDING == requestCode && RESULT_OK == resultCode) {
-            presenter.getBoardDetail(boardId);
+            presenter.getBoardDetail(CATEGORY, builder.build());
         }
     }
 
@@ -217,8 +241,10 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     // boardId, ownerId 를 이전 화면에서 넘겨받는다
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
-            CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
-            boardId = bundle.getInt(EXTRA_LESSON_ID, -1);
+            //CATEGORY = bundle.getInt(BoardView.EXTRA_CATEGORY_ID, -1);
+            CATEGORY = bundle.getInt(EXTRA_CATEGORY_ID, -1);
+            VIEWCNT =  bundle.getInt(EXTRA_CATEGORY_ID, -1);
+            boardId = bundle.getInt(EXTRA_BOARD_ID, -1);
             if (boardId == -1) {
                 throw new IllegalStateException("boardId must be exist");
             }
@@ -227,19 +253,29 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             if (ownerId == -1) {
                 throw new IllegalStateException("ownerId must be exist");
             }
+            replyId = bundle.getInt(EXTRA_REPLY_ID, -1);
+            if (replyId == -1) {
+                throw new IllegalStateException("replyId must be exist");
+            }
+
         }
     }
 
+    CBoard RegistBoard;
     /**
      * 등록
      */
-    private void postRegistDialog(CBoard board) {
+    private void postRegistDialog(CBoard board, String registText) {
+        RegistBoard = board;
+        RegistBoard.setContent(registText);
         new AlertDialog.Builder(context)
                 .setTitle(R.string.board_regist)
                 .setMessage(R.string.board_regist_message)
                 .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                    BoardWriteRequest request = new BoardWriteRequest.Builder().setBoardIdx(boardId).setCategoryId(CATEGORY).setTeacherid(me.getId().toString()).build();
-                    presenter.postBoardRegist(board.getBoardIdx(), request);
+                    BoardWriteRequest request = new BoardWriteRequest.Builder()
+                            .setBoardIdx(boardId).setReplyIdx(lastReplyIdx+1).setCategoryId(CATEGORY).setCategory2Id(RegistBoard.getCategory2Id()).setReplyCnt(0).setViewCnt(0)
+                            .setContent(RegistBoard.getContent()).setUserid(me.getId().toString()).setTeacherid(me.getId().toString()).build();
+                    presenter.postBoardRegist(me.getId(), request);
                 })
                 .setNegativeButton(R.string.common_button_no, null)
                 .show();
@@ -248,13 +284,17 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     /**
      * 수정
      */
-    private void postModifyDialog(CBoard board) {
+    private void postModifyDialog(CBoard board, String modifyText) {
+        RegistBoard = board;
+        RegistBoard.setContent(modifyText);
         new AlertDialog.Builder(context)
                 .setTitle(R.string.review_list_modify)
                 .setMessage(R.string.board_modify_content)
                 .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                    BoardWriteRequest request = new BoardWriteRequest.Builder().setBoardIdx(board.getBoardIdx()).setReplyIdx(board.getReplyIdx()).setTeacherid(me.getId().toString()).build();
-                    presenter.postBoardModify(boardId, request);
+                    BoardWriteRequest request = new BoardWriteRequest.Builder()
+                            .setBoardIdx(RegistBoard.getBoardIdx()).setReplyIdx(RegistBoard.getReplyIdx()).setCategoryId(CATEGORY).setCategory2Id(RegistBoard.getCategory2Id()).setViewCnt(0).setReplyCnt(0)
+                            .setContent(RegistBoard.getContent()).setUserid(me.getId().toString()).setTeacherid(me.getId().toString()).build();
+                    presenter.postBoardModify(me.getId(), request);
                 })
                 .setNegativeButton(R.string.common_button_no, null)
                 .show();
@@ -272,41 +312,44 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             return;
         }
         this.board = board;
-        if(board.getContent().length()>20)
-            itemsummary.setText(board.getContent().substring(0,20)+"...");
-        else
-            itemsummary.setText(board.getContent());
 
+        itemsummary.setText(board.getSubject());
         boardContent.setText(board.getContent());
-        registId.setText(board.getBoardIdx());
+        registId.setText(board.getBoardIdx().toString());
         registTime.setText(DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
-        viewCnt.setText(board.getViewCnt());
+        if(board.getViewCnt() != null)
+            viewCnt.setText(board.getViewCnt().toString());
+        else
+            viewCnt.setText("0");
+
+        reviewCnt2.setText(board.getReplyCnt().toString());
+
         switch (board.getCategory2Id()){
-            case 21:
+            case 11:
                 categoryLabel.setImageResource(R.drawable.grade_university);
                 break;
-            case 22:
+            case 12:
                 categoryLabel.setImageResource(R.drawable.grade_high);
                 break;
-            case 23:
+            case 13:
                 categoryLabel.setImageResource(R.drawable.grade_middle);
                 break;
-            case 24:
+            case 14:
                 categoryLabel.setImageResource(R.drawable.grade_global);
                 break;
-            case 31:
+            case 21:
                 categoryLabel.setImageResource(R.drawable.literature);
                 break;
-            case 32:
+            case 22:
                 categoryLabel.setImageResource(R.drawable.nature);
                 break;
-            case 33:
+            case 23:
                 categoryLabel.setImageResource(R.drawable.other);
                 break;
-            case 41:
+            case 31:
                 categoryLabel.setImageResource(R.drawable.category_student);
                 break;
-            case 42:
+            case 32:
                 categoryLabel.setImageResource(R.drawable.category_parents);
                 break;
 
@@ -331,62 +374,33 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         descriptionView.setText(lesson.getDescription());
 */
     }
+    Integer lastReplyIdx = 0;
+    private void setReply(List<CBoard> boardNewList, Integer nextToken) {
 
-    private void setReply(APISuccessResponse<List<CBoard>> response) {
-
-        List<CBoard> boardNewList = response.getResult();
-        Integer newNextToken = response.getNextToken();
         if (boardNewList.size() == 0 && boardNewList.size() == 0) {
             //statusView.showEmptyView();
             return;
         }
-        //statusView.showResultView();
+        this.nextToken = nextToken;
 
-        boardList.addAll(boardNewList);
-        nextToken = newNextToken;
-
-        //adapter.setNextToken(nextToken);
-        //adapter.setErrorLoadMore(false);
-        adapter = new BoardItemAdapter(boardNewList);
-        adapter.notifyDataSetChanged();
-    }
-
-    private void setLessonStatus(CLessonStatus lessonStatus) {
-        /*
-        biddingStatusView.setVisibility(View.GONE);
-        dealingStatusView.setVisibility(View.GONE);
-        canceledStatusView.setVisibility(View.GONE);
-        finishedStatusView.setVisibility(View.GONE);
-        switch (lessonStatus) {
-            case BIDDING: {
-                biddingStatusView.setVisibility(View.VISIBLE);
-                remainTimeView.setText(DataUtils.convertRemainTimeToString(context, lesson.getExpiresIn()));
-                remainTimeView.setTextColor(getResources().getColor(R.color.river_auction_greyish_brown_two));
-                break;
-            }
-            case DEALING: {
-                dealingStatusView.setVisibility(View.VISIBLE);
-                remainTimeView.setText(DataUtils.convertRemainTimeToString(context, lesson.getExpiresIn()));
-                remainTimeView.setTextColor(getResources().getColor(R.color.river_auction_greyish_brown_two));
-                break;
-            }
-            case CANCELED: {
-                canceledStatusView.setVisibility(View.VISIBLE);
-                canceledCreatedAtView.setText(DateUtils.getRelativeTimeSpanString(lesson.getCreatedAt()));
-                remainTimeView.setText("00:00");
-                remainTimeView.setTextColor(getResources().getColor(R.color.river_auction_greyish));
-                break;
-            }
-            case FINISHED: {
-                finishedStatusView.setVisibility(View.VISIBLE);
-                finishedCreatedAtView.setText(DateUtils.getRelativeTimeSpanString(lesson.getCreatedAt()));
-                remainTimeView.setText("00:00");
-                remainTimeView.setTextColor(getResources().getColor(R.color.river_auction_greyish));
-                break;
-            }
+        for(int i=0;i<boardNewList.size();i++)
+        {
+            CBoard board = boardNewList.get(i);
+            boardItems.add(makeReplyItem( board.getContent(), board.getCreatedAt(), board.getContent(), board.getTeacherid()));
+            lastReplyIdx = board.getReplyIdx();
         }
-        */
+        adapter = new BoardItemAdapter(boardNewList);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = DividerUtils.getHorizontalDividerItemDecoration(context);
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        //adapter.notifyDataSetChanged();
     }
+
 
     private void showOrHideButtons() {
         /*
@@ -443,12 +457,15 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
 
+
     @Override
-    public void successGetBoard(CBoard board) {
-        setContent(board);
+    public void successBoardList(Integer boardid, List<CBoard> board, Integer nextToken) {
+        CBoard boardContent = board.get(0);
+        setContent(boardContent);
     }
+
     @Override
-    public boolean failGetBoard(CErrorCause errorCause) {
+    public boolean failGetBoardList(Integer boardid, CErrorCause errorCause) {
         return false;
     }
 
@@ -458,8 +475,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     @Override
-    public void successGetReplyList(Integer boardId, APISuccessResponse<List<CBoard>> response) {
-        setReply(response);
+    public void successGetReplyList(Integer boardid, List<CBoard> boards, Integer nextToken) {
+        setReply(boards, nextToken);
     }
 
     @Override
@@ -468,8 +485,10 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     @Override
-    public void successModifyReply(CBoard boardRegist) {
-
+    public void successModifyReply(Boolean boardRegist) {
+        Toast.makeText(context, "글이 수정되었습니다.", Toast.LENGTH_SHORT).show();
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
@@ -478,7 +497,13 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     @Override
-    public void successDeleteReply(){}
+    public void successDeleteReply(Boolean boardRegist){
+        Toast.makeText(context, "답변글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+        //Intent intent = new Intent(this, BoardView.class);
+        //startActivity(intent);
+        finish();
+        //startActivity(getIntent());
+    }
 
     @Override
     public boolean failDeleteReply(CErrorCause errorCause) {
@@ -486,10 +511,15 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     }
 
     @Override
-    public void successRegistReply(CBoard boardRegist){}
+    public void successRegistReply(Boolean boardRegist){
+        Toast.makeText(context, "답변글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
+        finish();
+        startActivity(getIntent());
+    }
 
     @Override
     public boolean failRegistReply(CErrorCause errorCause) {
+        Toast.makeText(context, "실패하였습니다.", Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -498,7 +528,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
      */
     public static class ReplyItemHolder extends RecyclerView.ViewHolder {
         public TextView replytitle;
-        public TextView replyContent;
+        public TextView replyContents;
+        public TextView replyRegisterId;
         public TextView replyTime;
         public ProfileImageView profileImageView;
         public EditText editContent;
@@ -508,13 +539,15 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         public ReplyItemHolder(View itemView) {
             super(itemView);
             profileImageView = (ProfileImageView) itemView.findViewById(R.id.item_teacher_profile_image);
-            replytitle = (TextView) itemView.findViewById(R.id.reply_title);
-            replyContent = (TextView) itemView.findViewById(R.id.reply_content);
+            replytitle = (TextView) itemView.findViewById(reply_title);
+            replyContents = (TextView) itemView.findViewById(R.id.reply_contents);
+
             editContent = (EditText) itemView.findViewById(R.id.reply_edit_content);
             replyTime = (TextView) itemView.findViewById(R.id.reply_time);
             modifylayout = (View) itemView.findViewById(R.id.modifylayout);
             modify = (ImageView) itemView.findViewById(R.id.modify);
             delete = (ImageView) itemView.findViewById(R.id.delete);
+            replyRegisterId  = (TextView) itemView.findViewById(R.id.reply_register_id);
         }
     }
 
@@ -545,19 +578,29 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         @Override
         public void onBindViewHolder(ReplyItemHolder holder, int position) {
             CBoard boardItem = boardItems.get(position);
-            holder.replyContent.setText(boardItem.getContent());
-            holder.replytitle.setText("하드코딩");
+            holder.replyContents.setText(boardItem.getContent());
+            holder.replytitle.setText("매칭튜터 "+boardItem.getReplyIdx()+" 님의 답변입니다.");
             holder.replyTime.setText(DateUtils.getRelativeTimeSpanString(boardItem.getCreatedAt()));
-
-            //if(me.getId().equals(boardItem.getUserid()) ){
+            holder.replyRegisterId.setText(boardItem.getReplyIdx().toString());
+            if(!me.getId().equals(boardItem.getUserid()) ){
                 holder.modifylayout.setVisibility(View.VISIBLE);
                 holder.modify.setOnClickListener(v -> {
-                    replyLayout.setVisibility(View.GONE);
+                    /*
+                    //replyLayout.setVisibility(View.GONE);
                     noReply.setVisibility(View.GONE);
                     replyContainer.setVisibility(View.GONE);
                     boardContent.setVisibility(View.GONE);
                     boardModify.setVisibility(View.VISIBLE);
-                    setLikeMenuItem(false, boardItem);
+                    boardModify.setText(boardItem.getContent());
+                    setLikeMenuItem(false, boardItem, boardModify);
+*/
+                    profile.loadProfileImage(me);
+                    replyTitle.setText("매칭튜터"+me.getId()+"님의 답변입니다.");
+                    replyLayout.setVisibility(View.VISIBLE);
+                    noReply.setVisibility(View.GONE);
+                    replyContent.setText(boardItem.getContent());
+                    replyContainer.setVisibility(View.GONE);
+                    setLikeMenuItem(false, boardItem, replyContent);
                 });
 
                 holder.delete.setOnClickListener(v -> {
@@ -566,17 +609,19 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                             .setTitle(R.string.review_delete)
                             .setMessage(R.string.board_delete2)
                             .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                                presenter.deleteBoard(boardItem.getBoardIdx(), boardItem.getReplyIdx());
+                                BoardWriteRequest request = new BoardWriteRequest.Builder()
+                                        .setBoardIdx(boardItem.getBoardIdx()).setReplyIdx(boardItem.getReplyIdx()).build();
+                                presenter.deleteBoard(me.getId(), request);
                             })
                             .setCancelable(true)
                             .show();
                 });
-                /*
+
             }else
             {
                 holder.modifylayout.setVisibility(View.GONE);
             }
-            */
+
             holder.profileImageView.loadProfileImage(me);
         }
 

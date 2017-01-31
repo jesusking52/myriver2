@@ -228,17 +228,63 @@ public class ConsultFilterActivity extends BaseActivity implements ConsultFilter
     private void search() {
 
         GetBoardsParams.Builder builder = new GetBoardsParams.Builder();
-        builder.setFavorite(setValue(myIconView.isSelected()));
+        builder.setuser_id(setValue(myIconView.isSelected()));
+
         builder.setUniversities(setValue(univIconView.isSelected()));
         builder.setHigh(setValue(highIconView.isSelected()));
         builder.setMiddle(setValue(middleIconView.isSelected()));
         builder.setOverseas(setValue(overseasIconView.isSelected()));
+
         builder.setHuman(setValue(humanIconView.isSelected()));
         builder.setNature(setValue(natureIconView.isSelected()));
         builder.setOther(setValue(otherIconView.isSelected()));
+
         builder.setStudent(setValue(studentIconView.isSelected()));
         builder.setParents(setValue(parentsIconView.isSelected()));
-        builder.setSearch(searchText.getText().toString());
+
+        builder.setcontent(searchText.getText().toString());
+        String category2Id = "";
+        if(univIconView.isSelected())
+        {
+            category2Id+=",11";
+        }
+        if(highIconView.isSelected())
+        {
+            category2Id+=",12";
+        }
+        if(middleIconView.isSelected())
+        {
+            category2Id+=",13";
+        }
+        if(overseasIconView.isSelected())
+        {
+            category2Id+=",14";
+        }
+        if(humanIconView.isSelected())
+        {
+            category2Id+=",21";
+        }
+        if(natureIconView.isSelected())
+        {
+            category2Id+=",22";
+        }
+        if(otherIconView.isSelected())
+        {
+            category2Id+=",23";
+        }
+        if(studentIconView.isSelected())
+        {
+            category2Id+=",31";
+        }
+        if(parentsIconView.isSelected())
+        {
+            category2Id+=",32";
+        }
+        if(category2Id.length()>0)
+            category2Id = category2Id.substring(1);//,첫번째 ,제거
+        builder.setCateogry2Id(category2Id);
+        builder.setCateogryId(CATEGORY);
+        builder.setreply_idx(0);
         RiverAuctionEventBus.getEventBus().post(new BoardFilterEvent(builder));
 
     }
