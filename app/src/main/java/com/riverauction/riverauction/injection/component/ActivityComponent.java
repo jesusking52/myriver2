@@ -12,6 +12,7 @@ import com.riverauction.riverauction.feature.common.dayofweek.SelectDayOfWeeksAc
 import com.riverauction.riverauction.feature.common.gender.SelectGenderActivity;
 import com.riverauction.riverauction.feature.common.location.SelectLocationActivity;
 import com.riverauction.riverauction.feature.common.price.SelectPriceRangeActivity;
+import com.riverauction.riverauction.feature.common.review.ReviewActivity;
 import com.riverauction.riverauction.feature.common.studentstatus.SelectStudentStatusActivity;
 import com.riverauction.riverauction.feature.common.subject.SelectSubjectsActivity;
 import com.riverauction.riverauction.feature.common.university.SelectUniversityActivity;
@@ -101,5 +102,6 @@ public interface ActivityComponent {
         void inject(BoardWriteActivity activity);
         void inject(ConsultFilterActivity activity);
         void inject(BoardDetailActivity activity);
+        void inject(ReviewActivity activity);
 //        void inject(MapView mapView);
 }

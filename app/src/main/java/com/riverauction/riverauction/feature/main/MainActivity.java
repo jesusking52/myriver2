@@ -19,11 +19,13 @@ import android.view.ViewGroup;
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.DisplayUtils;
 import com.riverauction.riverauction.R;
+import com.riverauction.riverauction.api.model.CDayOfWeekType;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.LaunchActivity;
+import com.riverauction.riverauction.feature.common.review.ReviewDialog;
 import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.lesson.LessonView;
 import com.riverauction.riverauction.feature.mylesson.MyLessonView;
@@ -68,6 +70,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     private List<MainTabPagerItem> tabPagerItems = Lists.newArrayList();
 
     private CUser me;
+
+    private List<CDayOfWeekType> selectedDayOfWeeks = Lists.newArrayList();
 
     @Override
     public int getLayoutResId() {
@@ -349,6 +353,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 container.addView(view);
             }
 
+            ReviewDialog dialog = new ReviewDialog(context);
+            dialog.show();
             return view;
         }
 

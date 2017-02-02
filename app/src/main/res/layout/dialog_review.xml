@@ -3,6 +3,30 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_centerVertical="true"
+            android:textSize="17sp"
+            android:textColor="@color/river_auction_greyish_brown"
+            android:text="@string/common_available_days_of_week_choose"/>
+
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginRight="18dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_close"/>
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -37,9 +61,9 @@
     </LinearLayout>
 
     <View
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp"
-    android:background="@color/river_auction_white_six"/>
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/river_auction_white_six"/>
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -80,27 +104,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/review_title"/>
-            <RelativeLayout
-                android:id="@+id/sign_up_address_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/shape_color_white_border_white_five">
-
-                <EditText
-                    android:id="@+id/review"
-                    android:layout_width="wrap_content"
-                    android:layout_height="80dp"
-                    android:layout_marginLeft="19dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:singleLine="false"
-                    android:layout_centerVertical="true"
-                    android:textSize="15sp"
-                    android:hint="@string/review_hint"/>
-
-
-            </RelativeLayout>
-        </LinearLayout>
+            </LinearLayout>
     </ScrollView>
+
+    <TextView
+        style="@style/LightishBlueButton"
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/common_button_confirm"/>
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.riverauction.riverauction.feature.common.dayofweek;
+package com.riverauction.riverauction.feature.common.review;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,13 +20,15 @@ import javax.inject.Inject;
 import butterknife.Bind;
 
 //TODO: 안쓴다
-public class SelectDayOfWeeksActivity extends BaseActivity implements SelectDayOfWeeksMvpView {
+public class ReviewActivity extends BaseActivity implements SelectDayOfWeeksMvpView {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.dayofweek.price.ReviewActivity";
     public static final String EXTRA_SELECTED_DAY_OF_WEEKS = EXTRA_PREFIX + "extra_selected_day_of_weeks";
 
-    @Inject SelectDayOfWeeksPresenter presenter;
+    @Inject
+    SelectDayOfWeeksPresenter presenter;
 
-    @Bind(R.id.select_day_of_week_view) SelectDayOfWeeksView selectDayOfWeeksView;
+    @Bind(R.id.select_day_of_week_view)
+    SelectDayOfWeeksView selectDayOfWeeksView;
 
     private List<CDayOfWeekType> selectedDayOfWeeks = Lists.newArrayList();
 

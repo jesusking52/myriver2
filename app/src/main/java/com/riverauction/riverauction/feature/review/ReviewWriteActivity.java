@@ -22,8 +22,8 @@ import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.feature.common.ReviewInfoView2;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
-import com.riverauction.riverauction.feature.photo.ProfileImageView;
 import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
@@ -49,8 +49,9 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     // basic
     @Bind(R.id.review_rank) Spinner reviewRankSpinner;
     @Bind(R.id.review) EditText review;
-    @Bind(R.id.profile_photo_view) ProfileImageView profilePhotoView;
-    @Bind(R.id.profile_user_name) TextView userNameView;
+    @Bind(R.id.basic_info_view) ReviewInfoView2 basicInfoView;
+    //@Bind(R.id.profile_photo_view) ProfileImageView profilePhotoView;
+    //@Bind(R.id.profile_user_name) TextView userNameView;
     @Bind(R.id.profile_university) TextView profileuniversity;
     // address 정보
     private CLocation location;
@@ -311,8 +312,9 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         }
         teacher = user.getTeacher();
         photoSelector = new PhotoSelector(this);
-        profilePhotoView.loadProfileImage(user);
-        userNameView.setText(user.getName());
+        //profilePhotoView.loadProfileImage(user);
+        //userNameView.setText(user.getName());
+        basicInfoView.setContent(user);
         profileuniversity.setText(teacher.getUniversity());
     }
 
