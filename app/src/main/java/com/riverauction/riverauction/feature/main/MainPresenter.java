@@ -6,6 +6,7 @@ import com.jhcompany.android.libs.injection.DaggerService;
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.riverauction.riverauction.RiverAuctionApplication;
 import com.riverauction.riverauction.api.model.CSubjectGroup;
+import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.injection.component.ApplicationComponent;
@@ -43,6 +44,29 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    public void getUserProfile(Integer userId, Boolean phoneNumber) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.getUserProfile(userId, phoneNumber)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+
+                    @Override
+                    public void onNext(CUser user) {
+                        super.onNext(user);
+                        getMvpView().successGetUser(user);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failGetUser(getErrorCause(e));
+                    }
+                }, context));
     }
 
     public void getSubjectGroups() {

@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             // "경매목록" default
             viewPager.setCurrentItem(2);
         }
-
+        presenter.getUserProfile(3, true);
         // 서버에서 변경될수 있으니 수시로 가져온다
         presenter.getSubjectGroups();
     }
@@ -195,38 +195,6 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             Intent notificationIntent = new Intent(this, NotificationActivity.class);
             startActivity(notificationIntent);
         }
-
-        // TODO: scheme
-//        StartActivityRequest redirectRequest = extras.getParcelable(EXTRA_ACTIVITY_REQUEST);
-//        if (redirectRequest != null) {
-//            Intent outIntent = StartActivityRequest.createMainActivityInStackActivity(this, redirectRequest);
-//            startActivity(outIntent);
-//            return;
-//        }
-//
-//        int redirectCode = extras.getInt(EXTRA_ACTIVITY_REDIRECT, EXTRA_ACTIVITY_REDIRECT_HOME);
-//
-//        if (redirectCode > 0) {
-//            switch (redirectCode){
-//                case EXTRA_ACTIVITY_REDIRECT_HOME:
-//                    mViewPager.setCurrentItem(INDEX_TAB_HOME);
-//                    break;
-//                case EXTRA_ACTIVITY_REDIRECT_PLACE:
-//                    mViewPager.setCurrentItem(INDEX_TAB_NEARBY);
-//                    if (nearbyView != null) {
-//                        nearbyView.refreshIntent();
-//                    }
-//                    break;
-//                case EXTRA_ACTIVITY_REDIRECT_THEME:
-//                    mViewPager.setCurrentItem(INDEX_TAB_THEME);
-//                    break;
-//                case EXTRA_ACTIVITY_REDIRECT_PROFILE:
-//                    mViewPager.setCurrentItem(INDEX_TAB_PROFILE);
-//                    break;
-//                default:
-//            }
-//            return;
-//        }
     }
 
     private void makeTabPagerItems() {
@@ -307,6 +275,17 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         return false;
     }
 
+    @Override
+    public void successGetUser(CUser user) {
+        ReviewDialog dialog = new ReviewDialog(context, user);
+        dialog.show();
+    }
+
+    @Override
+    public boolean failGetUser(CErrorCause errorCause) {
+        return false;
+    }
+
     /**
      * View Pager 의 Adapter
      */
@@ -353,8 +332,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
                 container.addView(view);
             }
 
-            ReviewDialog dialog = new ReviewDialog(context);
-            dialog.show();
+
             return view;
         }
 

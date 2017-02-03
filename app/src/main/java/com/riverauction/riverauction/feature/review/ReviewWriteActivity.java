@@ -72,7 +72,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         presenter.attachView(this, this);
         user = UserStates.USER.get(stateCtx);
 
-        getSupportActionBar().setTitle(R.string.sign_up_basic_info_action_bar_title);
+        getSupportActionBar().setTitle(R.string.review_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
