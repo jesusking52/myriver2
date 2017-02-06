@@ -21,8 +21,10 @@ import com.jhcompany.android.libs.utils.DisplayUtils;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CDayOfWeekType;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.LaunchActivity;
 import com.riverauction.riverauction.feature.common.review.ReviewDialog;
@@ -36,6 +38,7 @@ import com.riverauction.riverauction.feature.tutorial.TutorialActivity;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.slidingtab.SlidingTabLayout;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,7 +60,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
      * MainActivity 위에 모든 Activity 를 finish 시키고, MainActivity 를 finish 하고 LaunchActivity 를 실행시키는 코드
      */
     private static final int EXTRA_ACTIVITY_REDIRECT_RESTART = 0xFF;
-
+    private int iReview = 0;
     @Inject MainPresenter presenter;
 
     @Bind(R.id.main_view_pager) ViewPager viewPager;
@@ -119,9 +122,10 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             // "경매목록" default
             viewPager.setCurrentItem(2);
         }
-        presenter.getUserProfile(3, true);
+        presenter.getMyTeacher(me.getId());
         // 서버에서 변경될수 있으니 수시로 가져온다
         presenter.getSubjectGroups();
+
     }
 
     @Override
@@ -279,10 +283,64 @@ public class MainActivity extends BaseActivity implements MainMvpView {
     public void successGetUser(CUser user) {
         ReviewDialog dialog = new ReviewDialog(context, user);
         dialog.show();
+        presenter.confirmMyTeacher(me.getId(), nowUserId);
     }
 
     @Override
     public boolean failGetUser(CErrorCause errorCause) {
+        return false;
+    }
+    Integer nowUserId;
+    @Override
+    public void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response) {
+        List<CMyTeacher> teachers = response.getResult();
+        Date midnight = new Date();
+        midnight.setHours(0);
+        midnight.setMinutes(0);
+        midnight.setSeconds(0);
+        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        {
+            String serviceMonth = me.getServiceMonth();
+            String serviceStart = me.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+
+            Date now = new Date();
+            for(int i=0;i<teachers.size();i++)
+            {
+                CMyTeacher nowTeacher = teachers.get(i);
+                Date choiceDate = new Date(nowTeacher.getCreateAt());
+                choiceDate.setDate(14);
+                if(choiceDate.getTime()<now.getTime())
+                {
+                    iReview = nowTeacher.getUserId();
+                    nowUserId = Integer.parseInt(nowTeacher.getCheckedUserId());
+                    presenter.getUserProfile(nowUserId, true);
+
+                    break;
+                }
+
+            }
+        }else
+        {
+            iReview=-1;
+            return;
+        }
+
+    }
+
+    @Override
+    public boolean failGetMyTeacher(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successConfirmMyTeacher(Boolean response) {
+
+    }
+
+    @Override
+    public boolean failConfirmMyTeacher(CErrorCause errorCause) {
         return false;
     }
 

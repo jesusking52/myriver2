@@ -40,6 +40,27 @@
                 android:textSize="21sp"
                 android:textColor="@color/river_auction_dodger_blue"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:textColor="@color/river_auction_black"
+                android:text="기간"/>
+
+            <TextView
+                android:id="@+id/shop_my_item_during"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:textColor="@color/river_auction_dodger_blue"/>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CNotification;
 import com.riverauction.riverauction.api.model.CReceipt;
 import com.riverauction.riverauction.api.model.CReview;
@@ -259,4 +260,17 @@ public class DataManager {
     public Observable<Boolean> deleteBoard(Integer userId, BoardWriteRequest request){
         return boardService.deleteBoard(userId, request).map(APISuccessResponse::getResult);
     }
+
+    public Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(Integer userId) {
+        return userService.getMyTeacher(userId);
+    }
+
+    public Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(Integer userId) {
+        return userService.getMyBidding(userId);
+    }
+
+    public Observable<Boolean> confirmMyTeacher(Integer userId, Integer teacherId) {
+        return userService.confirmMyTeacher(userId, teacherId);
+    }
+
 }

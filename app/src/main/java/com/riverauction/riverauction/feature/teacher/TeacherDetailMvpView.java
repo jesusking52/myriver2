@@ -1,9 +1,13 @@
 package com.riverauction.riverauction.feature.teacher;
 
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CUser;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.MvpView;
+
+import java.util.List;
 
 public interface TeacherDetailMvpView extends MvpView {
     void successGetUser(CUser user);
@@ -18,4 +22,12 @@ public interface TeacherDetailMvpView extends MvpView {
 
     void successPostSelectTeacher(CUser user);
     boolean failPostSelectTeacher(CErrorCause errorCause);
+
+    void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response);
+
+    boolean failGetMyTeacher(CErrorCause errorCause);
+
+    void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response);
+
+    boolean failGetMyBidding(CErrorCause errorCause);
 }

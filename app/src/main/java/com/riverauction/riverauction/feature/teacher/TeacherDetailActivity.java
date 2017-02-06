@@ -15,12 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.RiverAuctionConstant;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.FavoriteChangedEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
@@ -31,6 +32,9 @@ import com.riverauction.riverauction.feature.review.ReviewList;
 import com.riverauction.riverauction.feature.review.ReviewWriteActivity;
 import com.riverauction.riverauction.inapppurchase.util.InAppPurchaseUtils;
 import com.riverauction.riverauction.states.UserStates;
+
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -78,6 +82,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     // 입찰 선택에 사용된다
     private boolean isSelectTeacherButton;
     private Integer lessonId;
+    private Integer todayChoice;
 
     @Override
     public int getLayoutResId() {
@@ -95,24 +100,39 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         getSupportActionBar().setTitle(R.string.teacher_detail_action_bar_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        presenter.getUserProfile(userId, true);
+
 
         if (isSelectTeacherButton) {
-            phoneNumberButton.setText(R.string.lesson_bidding_list_dialog_title);
-            phoneNumberButton.setOnClickListener(v -> {
-                if (lessonId != -1) {
-                    new AlertDialog.Builder(context)
-                            .setTitle(R.string.lesson_bidding_list_dialog_negative_button)
-                            .setPositiveButton(R.string.lesson_bidding_list_dialog_positive_button, (dialog, which) -> {
-                                // 입찰 선택
-                                presenter.postSelectTeacher(lessonId, userId);
-                            })
-                            .show();
-                }
-                //Toast.makeText(this, "test1", Toast.LENGTH_SHORT).show();
-            });
-            phoneNumberButton.setVisibility(View.VISIBLE);
+            presenter.getMyBidding(userId);//비딩 내역 가져옴
+            if(todayChoice==-1)
+            {
+                Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+            }
+            else if(todayChoice<3) {
+                phoneNumberButton.setText(R.string.lesson_bidding_list_dialog_title);
+                phoneNumberButton.setOnClickListener(v -> {
+                    if (lessonId != -1) {
+
+                           new AlertDialog.Builder(context)
+                                   .setTitle(R.string.lesson_bidding_list_dialog_negative_button)
+                                   .setPositiveButton(R.string.lesson_bidding_list_dialog_positive_button, (dialog, which) -> {
+                                       // 입찰 선택
+                                       presenter.postSelectTeacher(lessonId, userId);
+                                   })
+                                   .show();
+
+                    }
+                    //Toast.makeText(this, "test1", Toast.LENGTH_SHORT).show();
+                });
+                phoneNumberButton.setVisibility(View.VISIBLE);
+            }else
+            {
+                Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
+            }
 
         }else{
+            presenter.getMyTeacher(userId);
             //일단 따라 넣었음. 선생이 아닌 경우
             riviewbutton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ReviewWriteActivity.class);
@@ -132,7 +152,8 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             });
             reviewlist.setVisibility(View.VISIBLE);
         }
-        presenter.getUserProfile(userId, true);
+
+
     }
 
     @Override
@@ -195,14 +216,24 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     }
 
     private void showPhoneNumberDialog() {
-        new AlertDialog.Builder(context)
-                .setTitle(R.string.teacher_phone_number_dialog_title)
-                .setMessage(getResources().getString(R.string.teacher_phone_number_dialog_message, RiverAuctionConstant.PRICE_SHOW_PHONE_NUMBER))
-                .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                    presenter.checkPhoneNumber(userId);
-                })
-                .setNegativeButton(R.string.common_button_no, null)
-                .show();
+        if(todayChoice==-1)
+        {
+            Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+        }
+        else if(todayChoice<3) {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.teacher_phone_number_dialog_title)
+                    //.setMessage(getResources().getString(R.string.teacher_phone_number_dialog_message, RiverAuctionConstant.PRICE_SHOW_PHONE_NUMBER))
+                    .setMessage("연락처를 확인하시겠습니까?\n하루에 3회만 확인하실 수 있습니다.")
+                    .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                        presenter.checkPhoneNumber(userId);
+                    })
+                    .setNegativeButton(R.string.common_button_no, null)
+                    .show();
+        }else
+        {
+            Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setContent(CUser user) {
@@ -222,6 +253,30 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         descriptionView.setText(user.getTeacher().getDescription());
 
         setLikeMenuItem();
+    }
+
+    private  boolean isUseYn(CUser user){
+        boolean isuseYn = false;
+        if(user.getServiceStart() != null && user.getServiceStart() != null)
+        {
+            String serviceMonth = user.getServiceMonth();
+            String serviceStart = user.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+            endDate.setTime(Long.parseLong(serviceStart));
+            int mMonth = startDate.getMonth();
+            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
+
+            Date now = new Date();
+
+            if(now.getTime()<endDate.getTime())
+                isuseYn = true;
+            else
+                isuseYn =  false;
+        }else
+            isuseYn =  false;
+        return  isuseYn;
     }
 
     private void setLikeMenuItem() {
@@ -385,6 +440,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
 
     @Override
     public void successPostSelectTeacher(CUser user) {
+
         teacher.setIsCheckedPhoneNumber(true);
         teacher.setPhoneNumber(user.getPhoneNumber());
         phoneNumberButton.setVisibility(View.GONE);
@@ -402,6 +458,89 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             Toast.makeText(context, R.string.lesson_bidding_select_fail_toast, Toast.LENGTH_SHORT).show();
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response) {
+        List<CMyTeacher> teachers = response.getResult();
+        Date midnight = new Date();
+        midnight.setHours(0);
+        midnight.setMinutes(0);
+        midnight.setSeconds(0);
+        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        {
+            String serviceMonth = me.getServiceMonth();
+            String serviceStart = me.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+            endDate.setTime(Long.parseLong(serviceStart));
+            Date now = new Date();
+            if(now.getTime()<endDate.getTime())
+            {
+                todayChoice=-1;
+                return;
+            }
+        }else
+        {
+            todayChoice=-1;
+            return;
+        }
+
+        for(int i=0;i<teachers.size();i++)
+        {
+            CMyTeacher nowTeacher = teachers.get(i);
+
+            if(nowTeacher.getCreateAt()>midnight.getTime())
+                todayChoice++;
+        }
+
+    }
+
+    @Override
+    public boolean failGetMyTeacher(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response) {
+        List<CMyTeacher> teachers = response.getResult();
+        Date midnight = new Date();
+        midnight.setHours(0);
+        midnight.setMinutes(0);
+        midnight.setSeconds(0);
+        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        {
+            String serviceMonth = me.getServiceMonth();
+            String serviceStart = me.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+            endDate.setTime(Long.parseLong(serviceStart));
+            Date now = new Date();
+            if(now.getTime()<endDate.getTime())
+            {
+                todayChoice=-1;
+                return;
+            }
+        }else
+        {
+            todayChoice=-1;
+            return;
+        }
+
+        for(int i=0;i<teachers.size();i++)
+        {
+            CMyTeacher nowTeacher = teachers.get(i);
+
+            if(nowTeacher.getCreateAt()>midnight.getTime())
+                todayChoice++;
+        }
+    }
+
+    @Override
+    public boolean failGetMyBidding(CErrorCause errorCause) {
         return false;
     }
 }

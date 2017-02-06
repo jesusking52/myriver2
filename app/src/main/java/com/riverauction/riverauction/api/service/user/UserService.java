@@ -1,5 +1,6 @@
 package com.riverauction.riverauction.api.service.user;
 
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
@@ -73,4 +74,12 @@ public interface UserService {
     @POST("/api/users/{userId}/review_write")
     Observable<APISuccessResponse<Boolean>> writeReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
+    @GET("/api/users/{userId}/get_my_number")
+    Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(@Path("userId") Integer userId);
+
+    @GET("/api/lessons/{userId}/user_biddings")
+    Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(@Path("userId") Integer userId);
+
+    @GET("/api/users/{userId}/{teacherId}/confirm_my_number")
+    Observable<Boolean> confirmMyTeacher(@Path("userId") Integer userId, @Path("teacherId") Integer teacherId);
 }

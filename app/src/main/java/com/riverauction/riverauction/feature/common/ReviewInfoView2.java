@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,6 +49,10 @@ public class ReviewInfoView2 extends LinearLayout {
     @Bind(R.id.basic_info_preferred_price_view) TextView preferredPriceView;
     @Bind(R.id.basic_info_price_seperation_view) View priceSeperationView;
     @Bind(R.id.basic_info_my_price_view) TextView myPriceView;
+    @Bind(R.id.review_ment1) TextView review_ment;
+    @Bind(R.id.layoutMent) View layoutMent;
+    @Bind(R.id.averagerank) TextView averagerank;
+    @Bind(R.id.averagerank2) ImageView imgRank;
 
     private StateCtx stateCtx;
     private CUser me;
@@ -56,6 +61,7 @@ public class ReviewInfoView2 extends LinearLayout {
         super(context);
         initialize(context);
     }
+
 
     public ReviewInfoView2(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,6 +99,7 @@ public class ReviewInfoView2 extends LinearLayout {
         if (lesson.getLocation() != null) {
             locationView.setText(DataUtils.convertLocationToString(lesson.getLocation()));
         }
+
 
         if (lesson.getGrade() == null) {
             universityAndMajorView.setText(DataUtils.convertStudentStatusToString(getContext(), lesson.getStudentStatus()));
@@ -182,14 +189,18 @@ public class ReviewInfoView2 extends LinearLayout {
             priceContainer.setVisibility(GONE);
         }
     }
-
+    public void setContent2(CUser user, boolean isMent) {
+        layoutMent.setVisibility(VISIBLE);
+        averagerank.setVisibility(GONE);
+        setContent(user);
+    }
     public void setContent(CUser user) {
         if (user == null) {
             return;
         }
 
         profileImageView.loadProfileImage(user);
-
+        review_ment.setText(user.getName()+"선생님에 대한");
         if (!Strings.isNullOrEmpty(user.getName()) || user.getGender() != null) {
             String nameAndGenderString = DataUtils.convertToAnonymousName(user.getName()) + " " + DataUtils.convertGenderToShortString(getContext(), user.getGender());
             nameAndGenderView.setText(nameAndGenderString);
@@ -206,7 +217,34 @@ public class ReviewInfoView2 extends LinearLayout {
         }
 
         priceContainer.setVisibility(GONE);
+        CTeacher teacher = user.getTeacher();
+        if(teacher.getRank() != null){
 
+            if(teacher.getRank().equals("0")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("1")) {
+                imgRank.setImageResource(R.drawable.star1);
+            }else if(teacher.getRank().equals("2")) {
+                imgRank.setImageResource(R.drawable.star2);
+            }else if(teacher.getRank().equals("3")) {
+                imgRank.setImageResource(R.drawable.star3);
+            }else if(teacher.getRank().equals("4")) {
+                imgRank.setImageResource(R.drawable.star4);
+            }else if(teacher.getRank().equals("5")) {
+                imgRank.setImageResource(R.drawable.star5);
+            }else if(teacher.getRank().equals("6")) {
+                imgRank.setImageResource(R.drawable.star6);
+            }else if(teacher.getRank().equals("7")) {
+                imgRank.setImageResource(R.drawable.star7);
+            }else if(teacher.getRank().equals("8")) {
+                imgRank.setImageResource(R.drawable.star8);
+            }else if(teacher.getRank().equals("9")) {
+                imgRank.setImageResource(R.drawable.star9);
+            }else if(teacher.getRank().equals("10")) {
+                imgRank.setImageResource(R.drawable.star10);
+            }
+
+        }
         setPhoneNumberView(user, null);
     }
 

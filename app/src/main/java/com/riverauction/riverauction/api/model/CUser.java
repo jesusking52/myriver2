@@ -57,6 +57,15 @@ public class CUser {
     @JsonProperty("is_checked_phone_number")
     private Boolean isCheckedPhoneNumber;
 
+    @JsonProperty("serviceMonth")
+    private String serviceMonth;
+
+    @JsonProperty("serviceStart")
+    private String serviceStart;
+
+    @JsonProperty("serviceEnd")
+    private String serviceEnd;
+
     public Integer getId() {
         return id;
     }
@@ -167,6 +176,30 @@ public class CUser {
 
     public void setIsCheckedPhoneNumber(Boolean isCheckedPhoneNumber) {
         this.isCheckedPhoneNumber = isCheckedPhoneNumber;
+    }
+
+    public String getServiceMonth() {
+        return serviceMonth;
+    }
+
+    public void setServiceMonth(String serviceMonth) {
+        this.serviceMonth = serviceMonth;
+    }
+
+    public String getServiceStart() {
+        return serviceStart;
+    }
+
+    public void setServiceStart(String serviceStart) {
+        this.serviceStart = serviceStart;
+    }
+
+    public String getServiceEnd() {
+        return serviceEnd;
+    }
+
+    public void setServiceEnd(String serviceEnd) {
+        this.serviceEnd = serviceEnd;
     }
 
     public Integer getCoins() {

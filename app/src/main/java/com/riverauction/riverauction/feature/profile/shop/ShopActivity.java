@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -55,10 +57,11 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
 
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
     @Bind(R.id.shop_my_item_count) TextView myItemCount;
+    @Bind(R.id.shop_my_item_during) TextView during;
 
     private ShopItemAdapter adapter;
     private List<CShopItem> shopItems = Lists.newArrayList();
-
+    private boolean isUseYn= false;
     private CUser user;
 
     @Override
@@ -97,16 +100,18 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
 
         if (BuildConfig.DEBUG) {
             // test 를 위한 skuID
-            shopItems.add(makeShopItem(SKU_PURCHASED, -1, null, 999));
+            shopItems.add(makeShopItem("1개월 13,600원", 1, "17,000원 20% off", 13600));
+            shopItems.add(makeShopItem("4개월 19,200원", 3, "24,000원 20% off", 19200));
+            shopItems.add(makeShopItem("6개월 23,200원", 6, "29,000원 20% off", 23200));
             shopItems.add(makeShopItem(SKU_CANCELED, -1, null, 999));
             shopItems.add(makeShopItem(SKU_REFUNDED, -1, null, 999));
             shopItems.add(makeShopItem(SKU_ITEM_UNAVAILABLE, -1, null, 999));
         }
         shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
         shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
+        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST13600, 1, "20% 할인", 13600));
+        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST19200, 3, "20% 할인", 19200));
+        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST23200, 6, "20% 할인", 23200));
 
         adapter = new ShopItemAdapter(shopItems);
 
@@ -148,9 +153,9 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
             }
             consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST3000);
             consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST5000);
-            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST10000);
-            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST20000);
-            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST50000);
+            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST13600);
+            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST19200);
+            consumeAsyncInInventory(inventory, RiverAuctionConstant.SKU_ID_COST23200);
 
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
         }
@@ -300,7 +305,29 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     }
 
     private void setMyCoins(CUser user) {
-        myItemCount.setText(getString(R.string.common_shop_item_count_unit, user.getCoins()));
+
+        if(user.getServiceMonth()==null)
+            user.setServiceMonth("0");
+        myItemCount.setText(getString(R.string.common_shop_item_count_unit, Integer.parseInt(user.getServiceMonth())));
+        if(user.getServiceStart() != null && user.getServiceStart() != null)
+        {
+            String serviceMonth = user.getServiceMonth();
+            String serviceStart = user.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+            endDate.setTime(Long.parseLong(serviceStart));
+
+            int mMonth = startDate.getMonth();
+            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
+
+            during.setText(DateUtils.getRelativeTimeSpanString(startDate.getTime()) +"~"+ DateUtils.getRelativeTimeSpanString(endDate.getTime()));
+            Date now = new Date();
+
+            if(now.getTime()<endDate.getTime())
+                isUseYn=true;
+        }
+
     }
 
     private CShopItem makeShopItem(String skuId, Integer count, String bonus, Integer price) {
@@ -392,15 +419,20 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
             String formattedString = formatter.format(shopItem.getPrice());
             holder.priceButton.setText(getString(R.string.common_shop_item_price_unit, formattedString));
             holder.priceButton.setOnClickListener(v -> {
-                // Purchase and Consume
-                new AlertDialog.Builder(context)
-                        .setTitle(R.string.shop_purchase_dialog_title)
-                        .setMessage(R.string.shop_purchase_dialog_message)
-                        .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                            purchaseItem(shopItem.getSkuId());
-                        })
-                        .setCancelable(true)
-                        .show();
+                if(!isUseYn) {
+                    // Purchase and Consume
+                    new AlertDialog.Builder(context)
+                            .setTitle(R.string.shop_purchase_dialog_title)
+                            .setMessage(R.string.shop_purchase_dialog_message)
+                            .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                                purchaseItem(shopItem.getSkuId());
+                            })
+                            .setCancelable(true)
+                            .show();
+                }else
+                {
+                    Toast.makeText(context, "이미 서비스를 이용 중입니다.", Toast.LENGTH_LONG).show();
+                }
             });
 
             if (!Strings.isNullOrEmpty(shopItem.getBonusDescription())) {

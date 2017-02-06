@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="10dp">
 
                 <ImageView
                     android:layout_width="12dp"
@@ -86,14 +86,40 @@
                     android:textSize="11sp"
                     android:textColor="@color/river_auction_brownish_grey" />
             </LinearLayout>
-            <!-- 학교 과 학년 -->
+
+            <!-- 멘트 -->
+            <LinearLayout
+                android:id="@+id/layoutMent"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="14sp"
+                    android:id="@+id/review_ment1"
+                    android:textColor="@color/river_auction_brownish_grey" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="14sp"
+                    android:text="@string/review_ment2"
+                    android:textColor="@color/river_auction_brownish_grey" />
+            </LinearLayout>
+            <!-- 별점 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:layout_marginBottom="3dp">
             <TextView
+                android:id="@+id/averagerank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -102,12 +128,12 @@
                 android:text="@string/review_list_average"
                 android:textColor="@color/river_auction_brownish_grey" />
             <ImageView
+                android:id="@+id/averagerank2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/star1"
-                android:text="@string/review_list_average"
+                android:textSize="20sp"
                 android:textColor="@color/river_auction_brownish_grey" />
             </LinearLayout>
             <!-- 장소-->

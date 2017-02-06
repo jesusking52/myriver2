@@ -2,19 +2,18 @@ package com.riverauction.riverauction.feature.common.review;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
-import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.common.ReviewInfoView2;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
-import com.riverauction.riverauction.feature.review.ReviewWriteMvpView;
+import com.riverauction.riverauction.feature.review.ReviewList;
+import com.riverauction.riverauction.feature.review.ReviewWriteActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,10 +25,12 @@ public class ReviewDialog extends Dialog  {
     @Bind(R.id.basic_info_view) ReviewInfoView2 basicInfoView;
     @Bind(R.id.profile_university) TextView profileuniversity;
     private CTeacher teacher;
+    private CUser user2;
     public ReviewDialog(Context context,CUser CUser) {
         super(context);
         initialize(context);
         setContent(CUser);
+        user2 = CUser;
     }
 
     public ReviewDialog(Context context, int theme) {
@@ -44,7 +45,7 @@ public class ReviewDialog extends Dialog  {
         teacher = user.getTeacher();
         //profilePhotoView.loadProfileImage(user);
         //userNameView.setText(user.getName());
-        basicInfoView.setContent(user);
+        basicInfoView.setContent2(user, true);
         profileuniversity.setText(teacher.getUniversity());
     }
     protected ReviewDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
@@ -60,7 +61,9 @@ public class ReviewDialog extends Dialog  {
         closeButton.setOnClickListener(v -> dismiss());
 
         confirmButton.setOnClickListener(v -> {
-
+            Intent intent = new Intent(context, ReviewWriteActivity.class);
+            intent.putExtra(ReviewList.EXTRA_USER_ID2, user2.getId());
+            context.startActivity(intent);
         });
     }
 

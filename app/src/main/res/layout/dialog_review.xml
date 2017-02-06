@@ -8,15 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:layout_centerVertical="true"
-            android:textSize="17sp"
-            android:textColor="@color/river_auction_greyish_brown"
-            android:text="@string/common_available_days_of_week_choose"/>
-
         <ImageView
             android:id="@+id/close_button"
             android:layout_width="24dp"
@@ -29,14 +20,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="300dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="300dp"
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:background="@android:color/white">
@@ -60,57 +51,10 @@
             android:textColor="@color/river_auction_brownish_grey"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/river_auction_white_six"/>
-
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!-- basic -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
-
-            <!-- 평점 -->
-            <TextView
-                style="@style/SignUpLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/review_rank_text"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:orientation="horizontal">
-                <!-- 평점 -->
-                <Spinner
-                    style="@style/Widget.ActionBar.Spinner"
-                    android:id="@+id/review_rank"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-            <!-- 리뷰 -->
-            <TextView
-                style="@style/SignUpLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/review_title"/>
-            </LinearLayout>
-    </ScrollView>
-
     <TextView
         style="@style/LightishBlueButton"
         android:id="@+id/confirm_button"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:text="@string/common_button_confirm"/>
+        android:text="@string/teacher_item_review_button"/>
 </LinearLayout>

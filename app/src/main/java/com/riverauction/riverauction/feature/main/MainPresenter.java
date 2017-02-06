@@ -2,24 +2,19 @@ package com.riverauction.riverauction.feature.main;
 
 import android.content.Context;
 
-import com.jhcompany.android.libs.injection.DaggerService;
-import com.jhcompany.android.libs.preference.StateCtx;
-import com.riverauction.riverauction.RiverAuctionApplication;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CSubjectGroup;
 import com.riverauction.riverauction.api.model.CUser;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
-import com.riverauction.riverauction.injection.component.ApplicationComponent;
 import com.riverauction.riverauction.rxjava.APISubscriber;
 import com.riverauction.riverauction.rxjava.DialogSubscriber;
-import com.riverauction.riverauction.states.UserStates;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -85,6 +80,53 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
                     public boolean onErrors(Throwable e) {
                         // 무시한다
                         return true;
+                    }
+                });
+    }
+
+
+    public void getMyTeacher(Integer userId) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.getMyTeacher(userId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new APISubscriber<APISuccessResponse<List<CMyTeacher>>>() {
+
+                    @Override
+                    public void onNext(APISuccessResponse<List<CMyTeacher>> response) {
+                        super.onNext(response);
+                        getMvpView().successGetMyTeacher(response);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failGetMyTeacher(getErrorCause(e));
+                    }
+                });
+    }
+
+    public void confirmMyTeacher(Integer userId, Integer teacherId) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.confirmMyTeacher(userId, teacherId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean response) {
+                        super.onNext(response);
+                        getMvpView().successConfirmMyTeacher(response);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failConfirmMyTeacher(getErrorCause(e));
                     }
                 });
     }
