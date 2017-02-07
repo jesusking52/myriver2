@@ -261,8 +261,8 @@ public class DataManager {
         return boardService.deleteBoard(userId, request).map(APISuccessResponse::getResult);
     }
 
-    public Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(Integer userId) {
-        return userService.getMyTeacher(userId);
+    public Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(Integer userId, Integer type) {
+        return userService.getMyTeacher(userId, type);
     }
 
     public Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(Integer userId) {

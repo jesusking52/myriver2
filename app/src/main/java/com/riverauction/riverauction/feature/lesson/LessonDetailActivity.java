@@ -18,8 +18,10 @@ import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
 import com.riverauction.riverauction.api.model.CLessonStatus;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
+import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.CancelEvent;
 import com.riverauction.riverauction.eventbus.FavoriteChangedEvent;
@@ -31,6 +33,9 @@ import com.riverauction.riverauction.feature.lesson.bidding.PostBiddingActivity;
 import com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity;
 import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.states.UserStates;
+
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -66,7 +71,7 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
 
     // 찜하기
     private MenuItem likeMenuItem;
-
+    private Integer todayChoice = 0;
     private Integer lessonId;
     private Integer ownerId;
     // 로그인 된 유저
@@ -93,6 +98,7 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         presenter.getLesson(lessonId);
+        presenter.getMyBidding(me.getId());//비딩 내역 가져옴
     }
 
     @Override
@@ -297,10 +303,19 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
             }
         }
         biddingButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PostBiddingActivity.class);
-            intent.putExtra(PostBiddingActivity.EXTRA_LESSON_PREFERRED_PRICE, (int) lesson.getPreferredPrice());
-            intent.putExtra(PostBiddingActivity.EXTRA_LESSON_ID, lessonId);
-            startActivityForResult(intent, REQUEST_POST_BIDDING);
+            if(todayChoice==-1)
+            {
+                Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+            }
+            else if(todayChoice<3) {
+                Intent intent = new Intent(context, PostBiddingActivity.class);
+                intent.putExtra(PostBiddingActivity.EXTRA_LESSON_PREFERRED_PRICE, (int) lesson.getPreferredPrice());
+                intent.putExtra(PostBiddingActivity.EXTRA_LESSON_ID, lessonId);
+                startActivityForResult(intent, REQUEST_POST_BIDDING);
+            }else
+            {
+                Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
+            }
         });
         biddingCancelButton.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
@@ -361,6 +376,47 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
 
     @Override
     public boolean failCancelLesson(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response) {
+        List<CMyTeacher> teachers = response.getResult();
+        Date midnight = new Date();
+        midnight.setHours(0);
+        midnight.setMinutes(0);
+        midnight.setSeconds(0);
+        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        {
+            String serviceMonth = me.getServiceMonth();
+            String serviceStart = me.getServiceStart();
+            Date startDate = new Date();
+            startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+            endDate.setTime(Long.parseLong(serviceStart));
+            Date now = new Date();
+            if(now.getTime()<endDate.getTime())
+            {
+                todayChoice=-1;
+                return;
+            }
+        }else
+        {
+            todayChoice=-1;
+            return;
+        }
+
+        for(int i=0;i<teachers.size();i++)
+        {
+            CMyTeacher nowTeacher = teachers.get(i);
+
+            if(nowTeacher.getCreateAt()>midnight.getTime())
+                todayChoice++;
+        }
+    }
+
+    @Override
+    public boolean failGetMyBidding(CErrorCause errorCause) {
         return false;
     }
 }

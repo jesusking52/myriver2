@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.riverauction.riverauction.R;
-import com.riverauction.riverauction.RiverAuctionConstant;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.service.lesson.request.LessonBiddingRequest;
@@ -115,7 +114,8 @@ public class PostBiddingActivity extends BaseActivity implements PostBiddingMvpV
     private void postLessonBiddingsDialog() {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.post_bidding_dialog_title)
-                .setMessage(getResources().getString(R.string.lesson_detail_bidding_dialog_message, RiverAuctionConstant.PRICE_POST_BIDDING))
+                //.setMessage(getResources().getString(R.string.lesson_detail_bidding_dialog_message, RiverAuctionConstant.PRICE_POST_BIDDING))
+                .setMessage("입찰 하시겠습니까?\n하루에 3회만 입찰 하실 수 있습니다.")
                 .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
                     Integer price = Integer.valueOf(biddingPriceView.getText().toString());
                     LessonBiddingRequest request = new LessonBiddingRequest.Builder().setPrice(price).build();

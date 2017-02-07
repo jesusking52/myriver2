@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             // "경매목록" default
             viewPager.setCurrentItem(2);
         }
-        presenter.getMyTeacher(me.getId());
+        presenter.getMyTeacher(me.getId(),0);
         // 서버에서 변경될수 있으니 수시로 가져온다
         presenter.getSubjectGroups();
 

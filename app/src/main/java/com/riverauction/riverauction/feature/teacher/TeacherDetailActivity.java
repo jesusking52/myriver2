@@ -82,7 +82,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     // 입찰 선택에 사용된다
     private boolean isSelectTeacherButton;
     private Integer lessonId;
-    private Integer todayChoice;
+    private Integer todayChoice=0;
 
     @Override
     public int getLayoutResId() {
@@ -104,7 +104,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
 
 
         if (isSelectTeacherButton) {
-            presenter.getMyBidding(userId);//비딩 내역 가져옴
+            //presenter.getMyBidding(userId);//비딩 내역 가져옴
             if(todayChoice==-1)
             {
                 Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
@@ -132,7 +132,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             }
 
         }else{
-            presenter.getMyTeacher(userId);
+            presenter.getMyTeacher(me.getId(),1);
             //일단 따라 넣었음. 선생이 아닌 경우
             riviewbutton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ReviewWriteActivity.class);

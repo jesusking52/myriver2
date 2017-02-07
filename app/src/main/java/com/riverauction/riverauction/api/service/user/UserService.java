@@ -74,8 +74,8 @@ public interface UserService {
     @POST("/api/users/{userId}/review_write")
     Observable<APISuccessResponse<Boolean>> writeReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
-    @GET("/api/users/{userId}/get_my_number")
-    Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(@Path("userId") Integer userId);
+    @GET("/api/users/{userId}/{type}/get_my_number")
+    Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(@Path("userId") Integer userId, @Path("type") Integer type);
 
     @GET("/api/lessons/{userId}/user_biddings")
     Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(@Path("userId") Integer userId);

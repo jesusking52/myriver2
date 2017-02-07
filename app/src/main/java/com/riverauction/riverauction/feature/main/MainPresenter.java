@@ -85,13 +85,13 @@ public class MainPresenter extends BasePresenter<MainMvpView> {
     }
 
 
-    public void getMyTeacher(Integer userId) {
+    public void getMyTeacher(Integer userId, Integer type) {
         checkViewAttached();
         if (userId == null) {
             return;
         }
 
-        subscription = dataManager.getMyTeacher(userId)
+        subscription = dataManager.getMyTeacher(userId, type)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<APISuccessResponse<List<CMyTeacher>>>() {
 
