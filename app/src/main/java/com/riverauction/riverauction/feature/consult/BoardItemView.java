@@ -53,6 +53,7 @@ public class BoardItemView extends LinearLayout {
 
         }
         itemSummary.setText(board.getSubject());
+        //String nameAndGenderString = DataUtils.convertToAnonymousName(user.getName()) + " " + DataUtils.convertGenderToShortString(getContext(), user.getGender());
         boardRegisterId.setText(board.getUserid());
         registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
         if(board.getViewCnt() == null)
@@ -61,9 +62,9 @@ public class BoardItemView extends LinearLayout {
             viewCount.setText(board.getViewCnt().toString());
 
         if(board.getReplyCnt() == null)
-            reviewCnt.setText("0");
+            reviewCnt.setText("조회수:0");
         else
-            reviewCnt.setText(board.getReplyCnt().toString());
+            reviewCnt.setText("조회수:"+board.getReplyCnt().toString());
 
         switch (board.getCategory2Id()){
             case 11:

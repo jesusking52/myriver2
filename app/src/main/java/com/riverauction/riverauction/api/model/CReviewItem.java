@@ -21,8 +21,8 @@ public class CReviewItem {
     @JsonProperty("rank")
     private Integer rank;
 
-    @JsonProperty("createAt")
-    private CharSequence createAt;
+    @JsonProperty("created_at")
+    private long createAt;
 
     @JsonProperty("review")
     private String review;
@@ -51,11 +51,11 @@ public class CReviewItem {
         this.rank = rank;
     }
 
-    public CharSequence getCreateAt() {
+    public long getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(CharSequence createAt) {
+    public void setCreateAt(long createAt) {
         this.createAt = createAt;
     }
 

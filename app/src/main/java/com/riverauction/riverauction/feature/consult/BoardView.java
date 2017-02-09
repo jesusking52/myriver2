@@ -45,8 +45,8 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     private GetBoardsParams.Builder builder;
     @Bind(R.id.filter_button) View filterButton;
     @Bind(R.id.board_active_empty_button) TextView boardWriteButton;
-    @Bind(R.id.my_lesson_sliding_tabs) SlidingTabLayout slidingTabLayout;
-    @Bind(R.id.my_lesson_view_pager) ViewPager viewPager;
+    @Bind(R.id.board_sliding_tabs) SlidingTabLayout slidingTabLayout;
+    @Bind(R.id.board_view_pager) ViewPager viewPager;
 
     private BoardPagerAdapter adapter;
     private CUser user;

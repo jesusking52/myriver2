@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginRight="14dp"
+            android:layout_marginRight="20dp"
             android:gravity="center_horizontal">
 
             <com.riverauction.riverauction.feature.photo.ProfileImageView
@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="3dp">
 
                 <ImageView
@@ -76,14 +77,13 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/river_auction_greyish_brown"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:singleLine="true"/>
                 <TextView
                     android:id="@+id/basic_info_university_status_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
                     android:textSize="11sp"
                     android:textColor="@color/river_auction_brownish_grey" />
             </LinearLayout>
@@ -93,7 +93,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="3dp">
+                android:layout_marginBottom="3dp"
+                android:weightSum="1">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,12 +105,13 @@
                 android:textColor="@color/river_auction_brownish_grey" />
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/star1"
                 android:text="@string/review_list_average"
-                android:textColor="@color/river_auction_brownish_grey" />
+                android:textColor="@color/river_auction_brownish_grey"
+                android:layout_weight="0.07" />
             </LinearLayout>
             <!-- 장소-->
             <LinearLayout

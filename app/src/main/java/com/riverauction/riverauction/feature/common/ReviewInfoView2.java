@@ -200,9 +200,9 @@ public class ReviewInfoView2 extends LinearLayout {
         }
 
         profileImageView.loadProfileImage(user);
-        review_ment.setText(user.getName()+"선생님에 대한");
         if (!Strings.isNullOrEmpty(user.getName()) || user.getGender() != null) {
             String nameAndGenderString = DataUtils.convertToAnonymousName(user.getName()) + " " + DataUtils.convertGenderToShortString(getContext(), user.getGender());
+            review_ment.setText(nameAndGenderString+"선생님에 대한");
             nameAndGenderView.setText(nameAndGenderString);
         }
         if (user.getLocation() != null) {

@@ -24,6 +24,7 @@ import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.common.ReviewInfoView;
+import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
@@ -46,6 +47,8 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     ReviewListPresenter presenter;
     @Bind(R.id.basic_info_view) ReviewInfoView basicInfoView;
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
+    @Bind(R.id.review_list_count) TextView reviewCount;
+
     // 로그인 한 유저
     private CUser user;
     private Integer teacherId;
@@ -90,9 +93,11 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
-    private CReviewItem makeReviewItem(long createAt, Integer rank, String review, String userName) {
+
+    private CReviewItem makeReviewItem(long createA, Integer rank, String review, String userName) {
         CReviewItem shopItem = new CReviewItem();
-        shopItem.setCreateAt(DateUtils.getRelativeTimeSpanString(createAt));
+        long sss=1111111;
+        shopItem.setCreateAt(sss);//DateUtils.getRelativeTimeSpanString(
         shopItem.setRank(rank);
         shopItem.setReview(review);
         shopItem.setUserName(userName);
@@ -145,7 +150,8 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     }
     @Override
     public void successGetReviews(APISuccessResponse<List<CReview>> response, Integer newNextToken) {
-        //adapter.setMessageViewResult((List<CReview>) response, newNextToken);
+        List<CReview> newReview = response.getResult();
+        reviewCount.setText("총 "+newReview.size()+"개의 리뷰");
         setAdaptor(response);
     }
 
@@ -202,8 +208,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         @Override
         public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
             CReviewItem reviewItem = reviewItems.get(position);
-
-            holder.writerView.setText(reviewItem.getReview());
+            holder.writerView.setText(DataUtils.convertToAnonymousName(reviewItem.getUserName())+"님의 리뷰");
 
             //자신의 댓글인 경우에만 노출
             if(reviewItem.getUserId() !=null && reviewItem.getUserId() == user.getId())
@@ -227,30 +232,31 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
                         .show();
             });
 
-            holder.createView.setText(reviewItem.getCreateAt());
+            holder.createView.setText(DateUtils.getRelativeTimeSpanString(reviewItem.getCreateAt()));
             holder.review.setText(reviewItem.getReview());
-            switch (reviewItem.getRank())
-            {
-                case 1:
-                    holder.starRank.setImageResource(R.drawable.star1);
-                case 2:
-                    holder.starRank.setImageResource(R.drawable.star2);
-                case 3:
-                    holder.starRank.setImageResource(R.drawable.star3);
-                case 4:
-                    holder.starRank.setImageResource(R.drawable.star4);
-                case 5:
-                    holder.starRank.setImageResource(R.drawable.star5);
-                case 6:
-                    holder.starRank.setImageResource(R.drawable.star6);
-                case 7:
-                    holder.starRank.setImageResource(R.drawable.star7);
-                case 8:
-                    holder.starRank.setImageResource(R.drawable.star8);
-                case 9:
-                    holder.starRank.setImageResource(R.drawable.star9);
-                case 10:
-                    holder.starRank.setImageResource(R.drawable.star10);
+
+            if(reviewItem.getRank().equals("0")) {
+                holder.starRank.setImageResource(R.drawable.star1);
+            }else if(reviewItem.getRank().equals("1")) {
+                holder.starRank.setImageResource(R.drawable.star1);
+            }else if(reviewItem.getRank().equals("2")) {
+                holder.starRank.setImageResource(R.drawable.star2);
+            }else if(reviewItem.getRank().equals("3")) {
+                holder.starRank.setImageResource(R.drawable.star3);
+            }else if(reviewItem.getRank().equals("4")) {
+                holder.starRank.setImageResource(R.drawable.star4);
+            }else if(reviewItem.getRank().equals("5")) {
+                holder.starRank.setImageResource(R.drawable.star5);
+            }else if(reviewItem.getRank().equals("6")) {
+                holder.starRank.setImageResource(R.drawable.star6);
+            }else if(reviewItem.getRank().equals("7")) {
+                holder.starRank.setImageResource(R.drawable.star7);
+            }else if(reviewItem.getRank().equals("8")) {
+                holder.starRank.setImageResource(R.drawable.star8);
+            }else if(reviewItem.getRank().equals("9")) {
+                holder.starRank.setImageResource(R.drawable.star9);
+            }else if(reviewItem.getRank().equals("10")) {
+                holder.starRank.setImageResource(R.drawable.star10);
             }
         }
 

@@ -18,9 +18,9 @@ public class BoardPagerItem {
 
     public View createTabView(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View tabView = inflater.inflate(R.layout.item_my_lesson_tab_pager, null);
+        View tabView = inflater.inflate(R.layout.item_board_tab_pager, null);
 
-        TextView titleView = (TextView) tabView.findViewById(R.id.my_lesson_pager_title);
+        TextView titleView = (TextView) tabView.findViewById(R.id.board_pager_title);
         titleView.setText(titleResId);
         return tabView;
     }
