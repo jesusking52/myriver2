@@ -2,6 +2,7 @@ package com.riverauction.riverauction.feature.review;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLocation;
@@ -34,10 +36,9 @@ import butterknife.Bind;
 
 public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpView {
     private final static int REQUEST_SEARCH_LOCATION = 0x01;
-
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.teacher.TeacherDetailActivity.";
     public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
-
+    public static final String EXTRA_REVIEW = EXTRA_PREFIX + "extra_review";
     private static final String EXTRA_PREFIX2 = "com.riverauction.riverauction.feature.review.ReviewList.";
     public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
     public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
@@ -58,7 +59,9 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     private CUser user;
     private int reviewIdx;
     private CTeacher teacher;
+    private CReview cReview;
     private Integer teacherId;
+    private  boolean isModify=false;
     @Override
     public int getLayoutResId() {
         return R.layout.activity_review_write;
@@ -80,11 +83,6 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         initializeRankSpinner();
         presenter.getUserProfile(teacherId, true);
 
-        //수정인 경우
-        if(reviewIdx>0)
-        {
-            presenter.getUserReview(reviewIdx);
-        }
 
     }
 
@@ -95,16 +93,17 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     // teacherId 를 이전 화면에서 넘겨받는다
     private void getDataFromBundle(Bundle bundle) {
         if (bundle != null) {
-            //실제로 티처아이디다
-            teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
 
-            if (teacherId == -1) {
-                //리뷰리스트에서 온 경우
-                teacherId = bundle.getInt(EXTRA_USER_ID2, -1);
-                reviewIdx = bundle.getInt(EXTRA_REVIEW_IDX, -1);
-                if (teacherId == -1) {
-                    throw new IllegalStateException("teacherId must be exist");
-                }
+            Parcelable parcelable = bundle.getParcelable(EXTRA_REVIEW);
+            if (parcelable != null) {
+                cReview = ParcelableWrappers.unwrap(parcelable);
+                teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
+                review.setText(cReview.getReview());
+                isModify = true;
+            }else
+            {
+                teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
+                isModify = true;
             }
 
         }
@@ -122,8 +121,10 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_common_confirm) {
             if (isValidCheckBasic()) {
-
-                presenter.writeReview(user.getId(), buildReviewRequest());
+                if(isModify)
+                    presenter.modifyReview(user.getId(), buildReviewRequest());
+                else
+                    presenter.writeReview(user.getId(), buildReviewRequest());
 
             }
             return true;
@@ -330,6 +331,17 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
 
     @Override
     public boolean failGetReview(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successModifyReview(Boolean result) {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public boolean failModifyReview(CErrorCause errorCause) {
         return false;
     }
 }

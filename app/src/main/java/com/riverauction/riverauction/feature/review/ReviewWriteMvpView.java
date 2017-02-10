@@ -12,4 +12,8 @@ public interface ReviewWriteMvpView extends MvpView {
     boolean failGetUser(CErrorCause errorCause);
     void successGetReview(CReview response);
     boolean failGetReview(CErrorCause errorCause);
+
+    void successModifyReview(Boolean result);
+
+    boolean failModifyReview(CErrorCause errorCause);
 }

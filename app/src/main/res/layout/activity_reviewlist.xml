@@ -25,12 +25,14 @@
         android:gravity="center_vertical"
         android:background="@color/river_auction_pale_grey">
         <ImageView
+            android:id="@+id/recent_Btn"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:src="@drawable/recent"/>
 
         <ImageView
+            android:id="@+id/rate_Btn"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/rate"
@@ -54,4 +56,16 @@
         android:id="@+id/shop_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/riview_button"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="@android:color/white"
+        android:text="@string/teacher_item_review_button"
+        android:background="@color/river_auction_dodger_blue"
+        android:visibility="gone"/>
 </LinearLayout>

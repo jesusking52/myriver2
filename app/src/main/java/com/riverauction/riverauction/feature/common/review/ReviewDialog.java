@@ -14,6 +14,7 @@ import com.riverauction.riverauction.feature.common.ReviewInfoView2;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.feature.review.ReviewList;
 import com.riverauction.riverauction.feature.review.ReviewWriteActivity;
+import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -62,7 +63,7 @@ public class ReviewDialog extends Dialog  {
 
         confirmButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, ReviewWriteActivity.class);
-            intent.putExtra(ReviewList.EXTRA_USER_ID2, user2.getId());
+            intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, user2.getId());
             context.startActivity(intent);
         });
     }

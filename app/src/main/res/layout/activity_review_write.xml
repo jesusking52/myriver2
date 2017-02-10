@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="140dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:background="@android:color/white">
@@ -89,17 +89,14 @@
 
                 <EditText
                     android:id="@+id/review"
+                    style="@style/EditTextStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="80dp"
-                    android:layout_marginLeft="19dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_height="240dp"
                     android:singleLine="false"
                     android:layout_centerVertical="true"
                     android:textSize="15sp"
+                    android:gravity="top"
                     android:hint="@string/review_hint"/>
-
-
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

@@ -9,6 +9,8 @@ import proguard.annotation.KeepClassMembers;
 @KeepClassMembers
 public class CReview {
 
+    @JsonProperty("reviewIdx")
+    private Integer reviewIdx;
 
     @JsonProperty("rank")
     private Integer rank;
@@ -19,11 +21,22 @@ public class CReview {
     @JsonProperty("userid")
     private String userid;
 
+    @JsonProperty("userName")
+    private String userName;
+
     @JsonProperty("teacherid")
     private String teacherid;
 
     @JsonProperty("createdAt")
     private long createdAt;
+
+    public Integer getReviewIdx() {
+        return reviewIdx;
+    }
+
+    public void setReviewIdx(Integer reviewIdx) {
+        this.reviewIdx = reviewIdx;
+    }
 
     public Integer getRank() {
         return rank;
@@ -61,9 +74,15 @@ public class CReview {
         return createdAt;
     }
 
-    public void setGetCreatedAt(long createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

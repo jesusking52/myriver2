@@ -10,20 +10,22 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
+import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReview;
-import com.riverauction.riverauction.api.model.CReviewItem;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.common.ReviewInfoView;
+import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
 import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
@@ -40,7 +42,6 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     public static final String EXTRA_USER_ID = EXTRA_PREFIX + "extra_user_id";
 
     private static final String EXTRA_PREFIX2 = "com.riverauction.riverauction.feature.review.ReviewList.";
-    public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
     public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
 
     @Inject
@@ -48,13 +49,15 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     @Bind(R.id.basic_info_view) ReviewInfoView basicInfoView;
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
     @Bind(R.id.review_list_count) TextView reviewCount;
-
+    @Bind(R.id.recent_Btn) ImageButton recentBtn;
+    @Bind(R.id.rate_Btn) ImageButton rateBtn;
+    @Bind(R.id.riview_button) TextView riviewbutton;
     // 로그인 한 유저
     private CUser user;
     private Integer teacherId;
 
     private ReviewItemAdapter adapter;
-    private List<CReviewItem> reviewItems = Lists.newArrayList();
+    private List<CReview> reviewItems = Lists.newArrayList();
     @Override
     public int getLayoutResId() {
         return R.layout.activity_reviewlist;
@@ -74,6 +77,23 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         presenter.getReviews(teacherId, 0);
+        recentBtn.setOnClickListener(v -> {
+            // 최신순 정렬
+            presenter.getReviews(teacherId, 0);
+        });
+        rateBtn.setOnClickListener(v -> {
+            // 평점순 정렬
+            presenter.getReviews(teacherId, 0);
+
+        });
+
+        riviewbutton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ReviewWriteActivity.class);
+            intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, teacherId);
+
+            startActivity(intent);
+            //Toast.makeText(this, "test2", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void setAdaptor(APISuccessResponse<List<CReview>> response){
@@ -94,10 +114,10 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         recyclerView.setAdapter(adapter);
     }
 
-    private CReviewItem makeReviewItem(long createA, Integer rank, String review, String userName) {
-        CReviewItem shopItem = new CReviewItem();
+    private CReview makeReviewItem(long createAt, Integer rank, String review, String userName) {
+        CReview shopItem = new CReview();
         long sss=1111111;
-        shopItem.setCreateAt(sss);//DateUtils.getRelativeTimeSpanString(
+        shopItem.setCreatedAt(createAt);//
         shopItem.setRank(rank);
         shopItem.setReview(review);
         shopItem.setUserName(userName);
@@ -141,11 +161,10 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     }
 
 
-    public void modifyReviewItem(int reviewIdx) {
+    public void modifyReviewItem(CReview reviewItem) {
         Intent intent = new Intent(context, ReviewWriteActivity.class);
-        intent.putExtra(ReviewList.EXTRA_USER_ID2, teacherId);
-        //리뷰 idx 수정 필요
-        intent.putExtra(ReviewList.EXTRA_REVIEW_IDX, reviewIdx);
+        intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, teacherId);
+        intent.putExtra(ReviewWriteActivity.EXTRA_REVIEW, ParcelableWrappers.wrap(reviewItem));
         startActivity(intent);
     }
     @Override
@@ -170,6 +189,17 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         return false;
     }
 
+    @Override
+    public void successDeleteReview(Boolean result) {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public boolean failDeleteReview(CErrorCause errorCause) {
+        return false;
+    }
+
     /**
      * ViewHolder
      */
@@ -179,6 +209,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         public TextView review;
         public ImageView starRank;
         public ImageView imgModify;
+        public ImageView imgDelete;
         public RelativeLayout modify_layout;
         public ReviewItemHolder(View itemView) {
             super(itemView);
@@ -187,6 +218,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             review = (TextView) itemView.findViewById(R.id.review_contents);
             starRank =(ImageView)itemView.findViewById(R.id.star_rank);
             imgModify = (ImageView)itemView.findViewById(R.id.img_modify);
+            imgDelete = (ImageView)itemView.findViewById(R.id.img_delete);
         }
     }
 
@@ -194,9 +226,9 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
      * Adapter
      */
     private class ReviewItemAdapter extends RecyclerView.Adapter<ReviewList.ReviewItemHolder> {
-        private List<CReviewItem> reviewItems;
+        private List<CReview> reviewItems;
 
-        public ReviewItemAdapter(List<CReviewItem> reviewItems) {
+        public ReviewItemAdapter(List<CReview> reviewItems) {
             this.reviewItems = reviewItems;
         }
 
@@ -207,11 +239,11 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
 
         @Override
         public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
-            CReviewItem reviewItem = reviewItems.get(position);
+            CReview reviewItem = reviewItems.get(position);
             holder.writerView.setText(DataUtils.convertToAnonymousName(reviewItem.getUserName())+"님의 리뷰");
 
             //자신의 댓글인 경우에만 노출
-            if(reviewItem.getUserId() !=null && reviewItem.getUserId() == user.getId())
+            if(reviewItem.getUserid() !=null && Integer.parseInt(reviewItem.getUserid()) == user.getId())
             {
                 holder.imgModify.setVisibility(View.VISIBLE);
             }else
@@ -220,19 +252,33 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
                 //holder.imgModify.setVisibility(View.INVISIBLE);
             }
 
+            holder.imgDelete.setOnClickListener(v -> {
+                // Purchase and Consume
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.review_delete)
+                        .setMessage(R.string.board_delete2)
+                        .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+
+                            presenter.deleteReview(user.getId(),reviewItem.getReviewIdx());
+                        })
+                        .setNegativeButton(R.string.common_button_cancel, null)
+                        .setCancelable(true)
+                        .show();
+            });
+
             holder.imgModify.setOnClickListener(v -> {
                 // Purchase and Consume
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.review_list_modify)
                         .setMessage(R.string.review_modify_dialog_message)
                         .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                            modifyReviewItem(reviewItem.getReviewIdx());
+                            modifyReviewItem(reviewItem);
                         })
                         .setCancelable(true)
                         .show();
             });
 
-            holder.createView.setText(DateUtils.getRelativeTimeSpanString(reviewItem.getCreateAt()));
+            holder.createView.setText(DateUtils.getRelativeTimeSpanString(reviewItem.getCreatedAt()));
             holder.review.setText(reviewItem.getReview());
 
             if(reviewItem.getRank().equals("0")) {

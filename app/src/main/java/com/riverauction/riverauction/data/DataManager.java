@@ -219,6 +219,16 @@ public class DataManager {
         return userService.writeReview(userId, request).map(APISuccessResponse::getResult);
     }
 
+    //리뷰수정
+    public Observable<Boolean> modifyReview(Integer userId, TeacherReviewRequest request) {
+        return userService.modifyReview(userId, request).map(APISuccessResponse::getResult);
+    }
+
+    //리뷰수정
+    public Observable<Boolean> deleteReview(Integer userId, Integer reviewId) {
+        return userService.deleteReview(userId, reviewId);
+    }
+
     //리뷰리스트
     public Observable<APISuccessResponse<List<CReview>>> getReviews(Integer teacherId, Integer nextToken) {
         return reviewService.getReviews(teacherId, nextToken);

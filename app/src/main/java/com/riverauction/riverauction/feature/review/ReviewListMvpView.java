@@ -16,4 +16,8 @@ public interface ReviewListMvpView extends MvpView {
     //선생님 프로필
     void successGetUser(CUser user);
     boolean failGetUser(CErrorCause errorCause);
+
+    void successDeleteReview(Boolean result);
+
+    boolean failDeleteReview(CErrorCause errorCause);
 }

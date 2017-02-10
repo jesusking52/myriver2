@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
     android:orientation="vertical"
     android:background="@android:color/white">
 
@@ -9,7 +9,7 @@
         android:id="@+id/basic_info_subject_curriculum_subject_container"
         android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical">
     <TextView
@@ -28,21 +28,15 @@
         android:weightSum="1">
         <ImageView
             android:id="@+id/star_rank"
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="20dp"
             android:src="@drawable/star1"
             android:text="@string/review_list_average"
             android:gravity="center_vertical"
+            android:layout_marginRight="30dp"
+            android:layout_centerVertical="true"
             android:textColor="@color/river_auction_brownish_grey" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textColor="@color/river_auction_brownish_grey_two"
-            android:text="2016.06.26"
-            android:layout_marginLeft="20dp"
-            android:gravity="center_vertical" />
         <TextView
             android:id="@+id/review_createat"
             android:layout_width="wrap_content"
@@ -50,50 +44,50 @@
             android:gravity="center_vertical"
             android:layout_marginRight="8dp"
             android:layout_centerVertical="true"
-            android:textSize="17sp"
+            android:textSize="12sp"
             android:textColor="@color/river_auction_black"/>
     </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/review_contents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:text=""
-                android:textColor="@color/river_auction_lightish_blue"/>
+                android:textColor="@color/river_auction_black"/>
         </ScrollView>
 
         <RelativeLayout
             android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right"
-        android:id="@+id/modify_layout"
-        android:background="@android:color/white">
-        <ImageView
-            android:id="@+id/img_modify"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="120dp"
-            android:src="@drawable/modify2"
-            android:layout_centerVertical="true"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="right"
+            android:id="@+id/modify_layout"
+            android:background="@android:color/white">
+            <ImageView
+                android:id="@+id/img_modify"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="100dp"
+                android:src="@drawable/modify2"
+                android:layout_centerVertical="true"/>
 
-        <ImageView
-            android:id="@+id/img_delete"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:layout_marginRight="80dp"
-            android:src="@drawable/delete2"
-            android:gravity="center"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
+            <ImageView
+                android:id="@+id/img_delete"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="30dp"
+                android:src="@drawable/delete2"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
 
-    </RelativeLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

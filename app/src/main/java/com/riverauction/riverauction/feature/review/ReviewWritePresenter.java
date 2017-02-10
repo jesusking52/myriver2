@@ -61,6 +61,30 @@ public class ReviewWritePresenter extends BasePresenter<ReviewWriteMvpView> {
 
     }
 
+    public void modifyReview(Integer userId, TeacherReviewRequest request) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.modifyReview(userId, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean result) {
+                        super.onNext(result);
+                        getMvpView().successModifyReview(result);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failModifyReview(getErrorCause(e));
+                    }
+                }, context));
+
+    }
+
     public void getUserProfile(Integer userId, Boolean phoneNumber) {
         checkViewAttached();
         if (userId == null) {

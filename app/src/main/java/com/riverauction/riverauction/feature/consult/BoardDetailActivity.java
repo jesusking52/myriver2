@@ -466,6 +466,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
 
     @Override
     public boolean failGetBoardList(Integer boardid, CErrorCause errorCause) {
+        finish();
+        startActivity(getIntent());
         return false;
     }
 

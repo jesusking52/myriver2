@@ -85,4 +85,29 @@ public class ReviewListPresenter extends BasePresenter<ReviewListMvpView> {
                     }
                 }, context));
     }
+
+
+    public void deleteReview(Integer userId, Integer reviewId) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.deleteReview(userId, reviewId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean result) {
+                        super.onNext(result);
+                        getMvpView().successDeleteReview(result);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failDeleteReview(getErrorCause(e));
+                    }
+                }, context));
+
+    }
 }
