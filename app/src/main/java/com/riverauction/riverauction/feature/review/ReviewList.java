@@ -10,10 +10,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
@@ -22,7 +22,9 @@ import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
+import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.base.BaseApplication;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.common.ReviewInfoView;
 import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
@@ -49,8 +51,8 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     @Bind(R.id.basic_info_view) ReviewInfoView basicInfoView;
     @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
     @Bind(R.id.review_list_count) TextView reviewCount;
-    @Bind(R.id.recent_Btn) ImageButton recentBtn;
-    @Bind(R.id.rate_Btn) ImageButton rateBtn;
+    @Bind(R.id.recent_Btn) ImageView recentBtn;
+    @Bind(R.id.rate_Btn) ImageView rateBtn;
     @Bind(R.id.riview_button) TextView riviewbutton;
     // 로그인 한 유저
     private CUser user;
@@ -76,15 +78,22 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         getSupportActionBar().setTitle(R.string.review_list_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        presenter.getReviews(teacherId, 0);
+        presenter.getReviews(teacherId, 0, 0);
         recentBtn.setOnClickListener(v -> {
-            // 최신순 정렬
-            presenter.getReviews(teacherId, 0);
+            // 최신순
+            adapter.reviewItems.clear();
+            presenter.getReviews(teacherId, 0, 0);
+            recentBtn.setImageResource(R.drawable.star1);
+            rateBtn.setImageResource(R.drawable.star1);
+            Toast.makeText(this, "최신순으로 정렬하였습니다.", Toast.LENGTH_SHORT).show();
         });
         rateBtn.setOnClickListener(v -> {
             // 평점순 정렬
-            presenter.getReviews(teacherId, 0);
-
+            adapter.reviewItems.clear();
+            presenter.getReviews(teacherId, 1, 0);
+            recentBtn.setImageResource(R.drawable.star1);
+            rateBtn.setImageResource(R.drawable.star1);
+            Toast.makeText(this, "평점순으로 정렬하였습니다.", Toast.LENGTH_SHORT).show();
         });
 
         riviewbutton.setOnClickListener(v -> {
@@ -101,7 +110,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         for(int i=0;i<newReview.size();i++)
         {
             CReview review = newReview.get(i);
-            reviewItems.add(makeReviewItem(review.getCreatedAt(), review.getRank(), review.getReview(), review.getUserid()));
+            reviewItems.add(makeReviewItem(review.getReviewIdx(),review.getCreatedAt(), review.getRank(), review.getReview(), review.getUserName(), review.getUserid()));
         }
 
         adapter = new ReviewItemAdapter(reviewItems);
@@ -114,14 +123,14 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         recyclerView.setAdapter(adapter);
     }
 
-    private CReview makeReviewItem(long createAt, Integer rank, String review, String userName) {
+    private CReview makeReviewItem(Integer reviewIdx, long createAt, Integer rank, String review, String userName, String userId) {
         CReview shopItem = new CReview();
-        long sss=1111111;
         shopItem.setCreatedAt(createAt);//
         shopItem.setRank(rank);
+        shopItem.setReviewIdx(reviewIdx);
         shopItem.setReview(review);
         shopItem.setUserName(userName);
-
+        shopItem.setUserid(userId);
         return shopItem;
     }
 
@@ -197,7 +206,20 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
 
     @Override
     public boolean failDeleteReview(CErrorCause errorCause) {
-        return false;
+        setResult(RESULT_OK);
+        finish();
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BaseApplication.getActivityManager().resumeActivity(this);
+        if(adapter != null) {
+            adapter.reviewItems.clear();
+            presenter.getReviews(teacherId, 0, 0);
+        }
+        LOGGER.debug("onResume()");
     }
 
     /**
@@ -219,6 +241,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             starRank =(ImageView)itemView.findViewById(R.id.star_rank);
             imgModify = (ImageView)itemView.findViewById(R.id.img_modify);
             imgDelete = (ImageView)itemView.findViewById(R.id.img_delete);
+            modify_layout= (RelativeLayout)itemView.findViewById(R.id.modify_layout);
         }
     }
 
@@ -237,6 +260,13 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             return new ReviewList.ReviewItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_review, parent, false));
         }
 
+        private TeacherReviewRequest buildReviewRequest(String reviewidx) {
+            return new TeacherReviewRequest.Builder()
+                    .setReviewidx(reviewidx)
+                    .setTeacherid(teacherId.toString())
+                    .build();
+        }
+
         @Override
         public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
             CReview reviewItem = reviewItems.get(position);
@@ -245,11 +275,11 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             //자신의 댓글인 경우에만 노출
             if(reviewItem.getUserid() !=null && Integer.parseInt(reviewItem.getUserid()) == user.getId())
             {
-                holder.imgModify.setVisibility(View.VISIBLE);
+                holder.modify_layout.setVisibility(View.VISIBLE);
             }else
             {
                 //일단 주석 처리
-                //holder.imgModify.setVisibility(View.INVISIBLE);
+                holder.modify_layout.setVisibility(View.INVISIBLE);
             }
 
             holder.imgDelete.setOnClickListener(v -> {
@@ -259,7 +289,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
                         .setMessage(R.string.board_delete2)
                         .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
 
-                            presenter.deleteReview(user.getId(),reviewItem.getReviewIdx());
+                            presenter.deleteReview(user.getId(),buildReviewRequest(reviewItem.getReviewIdx().toString()));
                         })
                         .setNegativeButton(R.string.common_button_cancel, null)
                         .setCancelable(true)
@@ -281,27 +311,27 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             holder.createView.setText(DateUtils.getRelativeTimeSpanString(reviewItem.getCreatedAt()));
             holder.review.setText(reviewItem.getReview());
 
-            if(reviewItem.getRank().equals("0")) {
+            if(reviewItem.getRank().equals(0)) {
                 holder.starRank.setImageResource(R.drawable.star1);
-            }else if(reviewItem.getRank().equals("1")) {
+            }else if(reviewItem.getRank().equals(1)) {
                 holder.starRank.setImageResource(R.drawable.star1);
-            }else if(reviewItem.getRank().equals("2")) {
+            }else if(reviewItem.getRank().equals(2)) {
                 holder.starRank.setImageResource(R.drawable.star2);
-            }else if(reviewItem.getRank().equals("3")) {
+            }else if(reviewItem.getRank().equals(3)) {
                 holder.starRank.setImageResource(R.drawable.star3);
-            }else if(reviewItem.getRank().equals("4")) {
+            }else if(reviewItem.getRank().equals(4)) {
                 holder.starRank.setImageResource(R.drawable.star4);
-            }else if(reviewItem.getRank().equals("5")) {
+            }else if(reviewItem.getRank().equals(5)) {
                 holder.starRank.setImageResource(R.drawable.star5);
-            }else if(reviewItem.getRank().equals("6")) {
+            }else if(reviewItem.getRank().equals(6)) {
                 holder.starRank.setImageResource(R.drawable.star6);
-            }else if(reviewItem.getRank().equals("7")) {
+            }else if(reviewItem.getRank().equals(7)) {
                 holder.starRank.setImageResource(R.drawable.star7);
-            }else if(reviewItem.getRank().equals("8")) {
+            }else if(reviewItem.getRank().equals(8)) {
                 holder.starRank.setImageResource(R.drawable.star8);
-            }else if(reviewItem.getRank().equals("9")) {
+            }else if(reviewItem.getRank().equals(9)) {
                 holder.starRank.setImageResource(R.drawable.star9);
-            }else if(reviewItem.getRank().equals("10")) {
+            }else if(reviewItem.getRank().equals(10)) {
                 holder.starRank.setImageResource(R.drawable.star10);
             }
         }

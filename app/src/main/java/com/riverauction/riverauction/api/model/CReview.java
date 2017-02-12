@@ -18,7 +18,7 @@ public class CReview {
     @JsonProperty("review")
     private String review;
 
-    @JsonProperty("userid")
+    @JsonProperty("user_id")
     private String userid;
 
     @JsonProperty("userName")

@@ -57,14 +57,14 @@ public class BoardItemView extends LinearLayout {
         boardRegisterId.setText(board.getUserid());
         registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
         if(board.getViewCnt() == null)
-            viewCount.setText("0");
+            viewCount.setText("조회수:0");
         else
-            viewCount.setText(board.getViewCnt().toString());
+            viewCount.setText("조회수:"+board.getViewCnt().toString());
 
         if(board.getReplyCnt() == null)
-            reviewCnt.setText("조회수:0");
+            reviewCnt.setText("0");
         else
-            reviewCnt.setText("조회수:"+board.getReplyCnt().toString());
+            reviewCnt.setText(board.getReplyCnt().toString());
 
         switch (board.getCategory2Id()){
             case 11:

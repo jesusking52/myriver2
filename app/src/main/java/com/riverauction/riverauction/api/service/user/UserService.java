@@ -77,8 +77,8 @@ public interface UserService {
     @POST("/api/users/{userId}/review_modify")
     Observable<APISuccessResponse<Boolean>> modifyReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
-    @GET("/api/users/{userId}/{reviewId}/review_delete")
-    Observable<Boolean> deleteReview(@Path("userId") Integer userId, @Path("reviewId") Integer reviewId);
+    @POST("/api/users/{userId}/review_delete")
+    Observable<Boolean> deleteReview(@Path("userId") Integer userId, @Body TeacherReviewRequest reviewId);
 
 
     @GET("/api/users/{userId}/{type}/get_my_number")

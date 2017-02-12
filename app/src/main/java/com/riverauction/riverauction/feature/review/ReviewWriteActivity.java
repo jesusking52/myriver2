@@ -70,6 +70,8 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // basic
+        initializeRankSpinner();
         getDataFromBundle(getIntent().getExtras());
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
@@ -79,8 +81,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // basic
-        initializeRankSpinner();
+
         presenter.getUserProfile(teacherId, true);
 
 
@@ -99,16 +100,51 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
                 cReview = ParcelableWrappers.unwrap(parcelable);
                 teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
                 review.setText(cReview.getReview());
+                reviewRankSpinner.setSelection(cReview.getRank());
                 isModify = true;
             }else
             {
                 teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
-                isModify = true;
+                isModify = false;
             }
-
         }
     }
 
+    String rankValue = "0";
+
+    public void setSpinnerValue(){
+        if(reviewRankSpinner.getSelectedItemPosition() == 1)
+        {
+            rankValue = "1";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 2)
+        {
+            rankValue = "2";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 3)
+        {
+            rankValue = "3";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 4)
+        {
+            rankValue = "4";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 5)
+        {
+            rankValue = "5";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 6)
+        {
+            rankValue = "6";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 7)
+        {
+            rankValue = "7";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 8)
+        {
+            rankValue = "8";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 9)
+        {
+            rankValue = "9";
+        }else if(reviewRankSpinner.getSelectedItemPosition() == 3)
+        {
+            rankValue = "10";
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,6 +265,10 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_2));
         reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_2_5));
         reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_3));
+        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_3_5));
+        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_4));
+        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_4_5));
+        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_5));
         reviewRankSpinner.setAdapter(reviewRankSpinnerAdapter);
     }
 
@@ -254,9 +294,15 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     }
 
     private TeacherReviewRequest buildReviewRequest() {
-        String ranking = reviewRankSpinner.getSelectedItem().toString();
+        int ranking = reviewRankSpinner.getSelectedItemPosition();
+        Integer ran = new Integer(ranking);
+        String reviewIdx = "0";
+        if(cReview != null)
+            reviewIdx = cReview.getReviewIdx().toString();
+        setSpinnerValue();
         return new TeacherReviewRequest.Builder()
-                .setRank("3")
+                .setReviewidx(reviewIdx)
+                .setRank(ran.toString())
                 .setTeacherid(teacherId.toString())
                 .setReview(review.getText().toString())
                 .build();

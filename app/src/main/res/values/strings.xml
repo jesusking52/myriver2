@@ -479,4 +479,5 @@
     <string name="board_delete2">삭제하시겠습니까?</string>
     <string name="board_regist_message">등록 하시겠습니까?</string>
     <string name="review_ment2">솔직한 리뷰를 남겨주세요!!</string>
+    <string name="answercount">답변 %d개</string>
 </resources>

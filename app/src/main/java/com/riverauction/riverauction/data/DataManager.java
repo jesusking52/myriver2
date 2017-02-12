@@ -225,13 +225,13 @@ public class DataManager {
     }
 
     //리뷰수정
-    public Observable<Boolean> deleteReview(Integer userId, Integer reviewId) {
+    public Observable<Boolean> deleteReview(Integer userId, TeacherReviewRequest reviewId) {
         return userService.deleteReview(userId, reviewId);
     }
 
     //리뷰리스트
-    public Observable<APISuccessResponse<List<CReview>>> getReviews(Integer teacherId, Integer nextToken) {
-        return reviewService.getReviews(teacherId, nextToken);
+    public Observable<APISuccessResponse<List<CReview>>> getReviews(Integer teacherId, Integer orderby, Integer nextToken) {
+        return reviewService.getReviews(teacherId, orderby, nextToken);
     }
 
     //리뷰

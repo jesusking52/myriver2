@@ -115,13 +115,6 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // basic
-        if(CATEGORY != null) {
-            initializeRankSpinner1();
-            setCategory(CATEGORY);//카테고리 선택
-            initializeRankSpinner2(CATEGORY);
-        }
-
         boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -207,6 +200,12 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
                 setCategory2(board.getCategory2Id()%10);//10 자리 제거
                 isRegist = false;
             }else{
+                // basic
+                if(CATEGORY != null) {
+                    initializeRankSpinner1();
+                    setCategory(CATEGORY);//카테고리 선택
+                    initializeRankSpinner2(CATEGORY);
+                }
                 isRegist = true;
             }
         }
@@ -320,7 +319,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
 
                 presenter.postBoardModify(user.getId(), request);
             });
-            setCategory2(board.getCategory2Id()%10);//10 자리 제거
+
         }
     }
 

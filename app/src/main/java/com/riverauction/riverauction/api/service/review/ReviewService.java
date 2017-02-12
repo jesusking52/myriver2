@@ -13,7 +13,7 @@ import rx.Observable;
 public interface ReviewService {
 
     @GET("/api/teachers/{teacherId}/reviews")
-    Observable<APISuccessResponse<List<CReview>>> getReviews(@Path("teacherId") Integer teacherId, @Query("next_token") Integer nextToken);
+    Observable<APISuccessResponse<List<CReview>>> getReviews(@Path("teacherId") Integer teacherId, @Query("orderby") Integer orderby, @Query("next_token") Integer nextToken);
 
     @GET("/api/teachers/{reviewIdx}")
     Observable<CReview>  getReview(@Path("reviewIdx") Integer teacherId);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class ReviewInfoView extends LinearLayout {
     @Bind(R.id.basic_info_preferred_price_view) TextView preferredPriceView;
     @Bind(R.id.basic_info_price_seperation_view) View priceSeperationView;
     @Bind(R.id.basic_info_my_price_view) TextView myPriceView;
+    @Bind(R.id.rank) ImageView rank;
 
     private StateCtx stateCtx;
     private CUser me;
@@ -212,6 +214,32 @@ public class ReviewInfoView extends LinearLayout {
 
     private void setTeacherContent(CUser user) {
         CTeacher teacher = user.getTeacher();
+
+        teacher.getRank();
+
+        if(teacher.getRank().equals("0")) {
+            rank.setImageResource(R.drawable.star1);
+        }else if(teacher.getRank().equals("1")) {
+            rank.setImageResource(R.drawable.star1);
+        }else if(teacher.getRank().equals("2")) {
+            rank.setImageResource(R.drawable.star2);
+        }else if(teacher.getRank().equals("3")) {
+            rank.setImageResource(R.drawable.star3);
+        }else if(teacher.getRank().equals("4")) {
+            rank.setImageResource(R.drawable.star4);
+        }else if(teacher.getRank().equals("5")) {
+            rank.setImageResource(R.drawable.star5);
+        }else if(teacher.getRank().equals("6")) {
+            rank.setImageResource(R.drawable.star6);
+        }else if(teacher.getRank().equals("7")) {
+            rank.setImageResource(R.drawable.star7);
+        }else if(teacher.getRank().equals("8")) {
+            rank.setImageResource(R.drawable.star8);
+        }else if(teacher.getRank().equals("9")) {
+            rank.setImageResource(R.drawable.star9);
+        }else if(teacher.getRank().equals("10")) {
+            rank.setImageResource(R.drawable.star10);
+        }
         if (!Strings.isNullOrEmpty(teacher.getUniversity()) || !Strings.isNullOrEmpty(teacher.getMajor())) {
             universityAndMajorView.setText(teacher.getUniversity() + " " + teacher.getMajor());
         }

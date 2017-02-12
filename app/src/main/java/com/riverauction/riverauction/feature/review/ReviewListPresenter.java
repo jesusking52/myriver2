@@ -5,6 +5,7 @@ import android.content.Context;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
+import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
@@ -40,13 +41,13 @@ public class ReviewListPresenter extends BasePresenter<ReviewListMvpView> {
         }
     }
 
-    public void getReviews(Integer userId, Integer newNextToken) {
+    public void getReviews(Integer userId, Integer orderby, Integer newNextToken) {
         checkViewAttached();
         if (newNextToken == null) {
             return;
         }
 
-        subscription = dataManager.getReviews(userId, newNextToken)
+        subscription = dataManager.getReviews(userId, orderby, newNextToken)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new APISubscriber<APISuccessResponse<List<CReview>>>() {
 
@@ -87,7 +88,7 @@ public class ReviewListPresenter extends BasePresenter<ReviewListMvpView> {
     }
 
 
-    public void deleteReview(Integer userId, Integer reviewId) {
+    public void deleteReview(Integer userId, TeacherReviewRequest reviewId) {
         checkViewAttached();
         if (userId == null) {
             return;

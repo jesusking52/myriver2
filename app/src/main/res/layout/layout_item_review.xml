@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@android:color/white">
 
@@ -9,7 +9,7 @@
         android:id="@+id/basic_info_subject_curriculum_subject_container"
         android:layout_marginLeft="15dp"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:orientation="vertical">
     <TextView
@@ -33,7 +33,7 @@
             android:src="@drawable/star1"
             android:text="@string/review_list_average"
             android:gravity="center_vertical"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="20dp"
             android:layout_centerVertical="true"
             android:textColor="@color/river_auction_brownish_grey" />
 
@@ -41,10 +41,10 @@
             android:id="@+id/review_createat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginRight="8dp"
+            android:gravity="bottom"
+            android:layout_marginRight="5dp"
             android:layout_centerVertical="true"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:textColor="@color/river_auction_black"/>
     </LinearLayout>
 

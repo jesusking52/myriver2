@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,10 +65,12 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.reply) View reply;
     @Bind(R.id.noReply) View noReply;
     @Bind(R.id.category_label) ImageView categoryLabel;
+    @Bind(R.id.answercount) TextView answercount;
 
     @Bind(R.id.reply_title) TextView replyTitle;
     @Bind(R.id.boardModify) EditText boardModify;
     @Bind(R.id.reply_content) EditText replyContent;
+    @Bind(R.id.modifylayout) LinearLayout modifylayout;
 
     @Bind(R.id.reply_container) View replyContainer;
     @Bind(R.id.replyLayout) View replyLayout;
@@ -155,6 +158,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             replyContainer.setVisibility(View.GONE);
             setLikeMenuItem(true, board, replyContent);
         });
+
         //수정하기
         modify.setOnClickListener(v -> {
 
@@ -313,12 +317,20 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         }
         this.board = board;
 
+        if(me.getId().toString().equals(board.getUserid())) {
+            delete.setVisibility(View.VISIBLE);
+            modify.setVisibility(View.VISIBLE);
+        }
+        else {
+            delete.setVisibility(View.GONE);
+            modify.setVisibility(View.GONE);
+        }
         itemsummary.setText(board.getSubject());
         boardContent.setText(board.getContent());
         registId.setText(board.getBoardIdx().toString());
         registTime.setText(DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
         if(board.getViewCnt() != null)
-            viewCnt.setText(board.getViewCnt().toString());
+            viewCnt.setText("조회수:"+board.getViewCnt().toString());
         else
             viewCnt.setText("0");
 
@@ -479,6 +491,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Override
     public void successGetReplyList(Integer boardid, List<CBoard> boards, Integer nextToken) {
         setReply(boards, nextToken);
+        if(boards.size()==0)
+            noReply.setVisibility(View.VISIBLE);
+        answercount.setText("답변 "+boards.size()+"개");
     }
 
     @Override
