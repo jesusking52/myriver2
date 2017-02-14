@@ -2,17 +2,23 @@ package com.riverauction.riverauction.feature.consult.write;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +33,7 @@ import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.model.CLocation;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CStudentStatus;
@@ -37,8 +44,6 @@ import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
-import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
-import com.riverauction.riverauction.eventbus.UploadProfilePhotoEvent;
 import com.riverauction.riverauction.feature.consult.BoardDetailActivity;
 import com.riverauction.riverauction.feature.consult.BoardView;
 import com.riverauction.riverauction.feature.photo.CPhotoInfo;
@@ -48,6 +53,11 @@ import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -79,6 +89,9 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     EditText subject;
     @Bind(R.id.content)
     EditText content;
+    @Bind(R.id.uploadImage)
+    ImageView upload_Image;
+
     @Bind(R.id.profile_change_photo_container) View changePhotoButton;
     // address 정보
     private MenuItem likeMenuItem;
@@ -114,7 +127,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         getSupportActionBar().setTitle(R.string.board_write_button);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        photoSelector = new PhotoSelector(this);
         boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -181,6 +194,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     private void setUserReview(CReview review) {
 
     }
+
 
     // 카테고리 코드
     private void getDataFromBundle(Bundle bundle) {
@@ -467,7 +481,6 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
             return;
         }
         teacher = user.getTeacher();
-        photoSelector = new PhotoSelector(this);
 
     }
 
@@ -487,9 +500,36 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     }
 
     @Override
-    public void successPostProfilePhoto(CUser user) {
-        UserStates.USER.set(stateCtx, user);
-        RiverAuctionEventBus.getEventBus().post(new UploadProfilePhotoEvent());
+    public void successPostProfilePhoto(List<CImage> boardpath) {
+        //UserStates.USER.set(stateCtx, user);
+        Toast.makeText(context, "질문이 수정되었습니다."+boardpath.toString(), Toast.LENGTH_SHORT).show();
+        CImage image = boardpath.get(2);
+        Spannable span = content.getText();
+        int start = content.getSelectionStart();
+        int end = content.getPaddingEnd();
+
+        //Bitmap bm = down.doInBackground(image.getSource());
+
+        String url = image.getSource().replace("https","http");
+        new AsyncTaskLoadImage(upload_Image).execute(url);
+
+
+        //RiverAuctionEventBus.getEventBus().post(new UploadProfilePhotoEvent());
+    }
+
+    public Bitmap getBitmapFromURL(String strURL) {
+        try {
+            URL url = new URL(strURL.replace("https","http"));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -562,7 +602,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         }
 
         if (boardImagePath != null) {
-            presenter.postProfilePhoto(user.getId(), new File(boardImagePath));
+            presenter.postBoardPhoto(user.getId(), new File(boardImagePath));
         }
     }
 
@@ -602,4 +642,30 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
                 break;
         }
     }
+}
+ class AsyncTaskLoadImage  extends AsyncTask<String, String, Bitmap> {
+    private final static String TAG = "AsyncTaskLoadImage";
+    private ImageView imageView;
+     private  Bitmap bit;
+    public AsyncTaskLoadImage(ImageView imageView) {
+        this.imageView = imageView;
+    }
+     public AsyncTaskLoadImage() {
+     }
+    @Override
+    protected Bitmap doInBackground(String... params) {
+        Bitmap bitmap = null;
+        try {
+            URL url = new URL(params[0]);
+            bitmap = BitmapFactory.decodeStream((InputStream)url.getContent());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        return bitmap;
+    }
+    @Override
+    protected void onPostExecute(Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+    }
+
 }

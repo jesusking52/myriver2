@@ -2,6 +2,7 @@ package com.riverauction.riverauction.feature.consult.write;
 
 import android.content.Context;
 
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.model.CReview;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
@@ -11,6 +12,7 @@ import com.riverauction.riverauction.rxjava.APISubscriber;
 import com.riverauction.riverauction.rxjava.DialogSubscriber;
 
 import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -130,17 +132,17 @@ public class ReviewWritePresenter extends BasePresenter<BoardWriteMvpView> {
     }
 
 
-    public void postProfilePhoto(Integer userId, File localFile) {
+    public void postBoardPhoto(Integer userId, File localFile) {
         checkViewAttached();
 
-        subscription = dataManager.postProfilePhoto(userId, localFile)
+        subscription = dataManager.postBoardPhoto(userId, localFile)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+                .subscribe(new DialogSubscriber<>(new APISubscriber<List<CImage>>() {
 
                     @Override
-                    public void onNext(CUser user) {
-                        super.onNext(user);
-                        getMvpView().successPostProfilePhoto(user);
+                    public void onNext(List<CImage> path) {
+                        super.onNext(path);
+                        getMvpView().successPostProfilePhoto(path);
                     }
 
                     @Override

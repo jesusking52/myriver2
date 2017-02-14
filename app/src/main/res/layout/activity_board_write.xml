@@ -79,7 +79,10 @@
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/shape_color_white_border_white_five"
                 android:layout_weight="1.25">
-
+                <ImageView
+                    android:id="@+id/uploadImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp" />
                 <EditText
                     android:id="@+id/content"
                     style="@style/EditTextStyle"

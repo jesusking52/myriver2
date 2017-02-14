@@ -334,7 +334,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         else
             viewCnt.setText("0");
 
-        reviewCnt2.setText(board.getReplyCnt().toString());
+        //reviewCnt2.setText(board.getReplyCnt().toString());
 
         switch (board.getCategory2Id()){
             case 11:
@@ -399,7 +399,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         {
             CBoard board = boardNewList.get(i);
             boardItems.add(makeReplyItem( board.getContent(), board.getCreatedAt(), board.getContent(), board.getTeacherid()));
-            lastReplyIdx = board.getReplyIdx();
+            if(lastReplyIdx<board.getReplyIdx())
+                lastReplyIdx = board.getReplyIdx();
         }
         adapter = new BoardItemAdapter(boardNewList);
 
@@ -494,6 +495,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         if(boards.size()==0)
             noReply.setVisibility(View.VISIBLE);
         answercount.setText("답변 "+boards.size()+"개");
+        reviewCnt2.setText(boards.size());
     }
 
     @Override
@@ -518,8 +520,8 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         Toast.makeText(context, "답변글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
         //Intent intent = new Intent(this, BoardView.class);
         //startActivity(intent);
-        finish();
-        //startActivity(getIntent());
+        //finish();
+        startActivity(getIntent());
     }
 
     @Override

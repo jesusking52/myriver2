@@ -3,6 +3,7 @@ package com.riverauction.riverauction.data;
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.jhcompany.android.libs.utils.Lists2;
 import com.riverauction.riverauction.api.model.CBoard;
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
@@ -194,6 +195,11 @@ public class DataManager {
         return userService.postProfilePhoto(userId, file).map(APISuccessResponse::getResult);
     }
 
+    public Observable<List<CImage>> postBoardPhoto(Integer userId, final File localFile) {
+        TypedFile file = new TypedFile("multipart/form-data", localFile);
+        return userService.postBoardPhoto(userId, file).map(APISuccessResponse::getResult);
+    }
+
     // InfoService
     public Observable<List<CSubjectGroup>> getSubjectGroups() {
         return infoService.getSubjectGroups().map(listAPISuccessResponse -> {
@@ -226,7 +232,7 @@ public class DataManager {
 
     //리뷰수정
     public Observable<Boolean> deleteReview(Integer userId, TeacherReviewRequest reviewId) {
-        return userService.deleteReview(userId, reviewId);
+        return userService.deleteReview(userId, reviewId).map(APISuccessResponse::getResult);
     }
 
     //리뷰리스트

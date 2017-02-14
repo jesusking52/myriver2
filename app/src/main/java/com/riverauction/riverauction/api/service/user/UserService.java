@@ -1,5 +1,6 @@
 package com.riverauction.riverauction.api.service.user;
 
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CLesson;
@@ -71,6 +72,10 @@ public interface UserService {
     @POST("/api/users/{userId}/profile_photos")
     Observable<APISuccessResponse<CUser>> postProfilePhoto(@Path("userId") Integer userId, @Part("file") TypedFile file);
 
+    @Multipart
+    @POST("/api/users/{userId}/upload_photos")
+    Observable<APISuccessResponse<List<CImage>>> postBoardPhoto(@Path("userId") Integer userId, @Part("file") TypedFile file);
+
     @POST("/api/users/{userId}/review_write")
     Observable<APISuccessResponse<Boolean>> writeReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
@@ -78,7 +83,7 @@ public interface UserService {
     Observable<APISuccessResponse<Boolean>> modifyReview(@Path("userId") Integer userId, @Body TeacherReviewRequest request);
 
     @POST("/api/users/{userId}/review_delete")
-    Observable<Boolean> deleteReview(@Path("userId") Integer userId, @Body TeacherReviewRequest reviewId);
+    Observable<APISuccessResponse<Boolean>> deleteReview(@Path("userId") Integer userId, @Body TeacherReviewRequest reviewId);
 
 
     @GET("/api/users/{userId}/{type}/get_my_number")
