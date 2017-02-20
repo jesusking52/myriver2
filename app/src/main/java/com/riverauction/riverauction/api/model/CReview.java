@@ -21,14 +21,15 @@ public class CReview {
     @JsonProperty("user_id")
     private String userid;
 
-    @JsonProperty("userName")
-    private String userName;
+    @JsonProperty("name")
+    private String name;
 
     @JsonProperty("teacherid")
     private String teacherid;
 
     @JsonProperty("createdAt")
     private long createdAt;
+
 
     public Integer getReviewIdx() {
         return reviewIdx;
@@ -78,11 +79,12 @@ public class CReview {
         this.createdAt = createdAt;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
+
 }

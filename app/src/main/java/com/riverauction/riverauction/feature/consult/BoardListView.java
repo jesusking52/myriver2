@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -139,16 +140,18 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
 
         @Override
         public void onBindViewItemHolder(RecyclerView.ViewHolder holder, int position) {
-            board = boards.get(position);
+            final CBoard boardNow = boards.get(position);
             BoardHolder boardHolder = ((BoardHolder) holder);
-            boardHolder.boardItemView.setContent(board);
+            boardHolder.boardItemView.setContent(boardNow);
             boardHolder.boardItemView.setOnClickListener(v -> {
+
+                Toast.makeText(getContext(), "선택->"+boardNow.getSubject(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), BoardDetailActivity.class);
-                intent.putExtra(BoardDetailActivity.EXTRA_BOARD_ID, board.getBoardIdx());
-                intent.putExtra(BoardDetailActivity.EXTRA_REPLY_ID, board.getReplyIdx());
-                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, Integer.parseInt(board.getUserid()));
-                intent.putExtra(BoardDetailActivity.EXTRA_CATEGORY_ID, board.getCategoryId());
-                intent.putExtra(BoardDetailActivity.EXTRA_VIEW_ID, board.getViewCnt());
+                intent.putExtra(BoardDetailActivity.EXTRA_BOARD_ID, boardNow.getBoardIdx());
+                intent.putExtra(BoardDetailActivity.EXTRA_REPLY_ID, boardNow.getReplyIdx());
+                intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, Integer.parseInt(boardNow.getUserid()));
+                intent.putExtra(BoardDetailActivity.EXTRA_CATEGORY_ID, boardNow.getCategoryId());
+                intent.putExtra(BoardDetailActivity.EXTRA_VIEW_ID, boardNow.getViewCnt());
 
                 getContext().startActivity(intent);
             });
@@ -165,3 +168,4 @@ public abstract class BoardListView extends StatusView implements MoreLoadable {
         }
     }
 }
+

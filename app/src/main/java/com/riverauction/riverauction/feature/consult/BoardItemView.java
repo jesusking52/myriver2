@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
+import com.riverauction.riverauction.feature.utils.DataUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,7 +55,7 @@ public class BoardItemView extends LinearLayout {
         }
         itemSummary.setText(board.getSubject());
         //String nameAndGenderString = DataUtils.convertToAnonymousName(user.getName()) + " " + DataUtils.convertGenderToShortString(getContext(), user.getGender());
-        boardRegisterId.setText(board.getUserid());
+        boardRegisterId.setText(DataUtils.convertToAnonymousName(board.getName()));
         registerTime.setText(android.text.format.DateUtils.getRelativeTimeSpanString(board.getCreatedAt()));
         if(board.getViewCnt() == null)
             viewCount.setText("조회수:0");

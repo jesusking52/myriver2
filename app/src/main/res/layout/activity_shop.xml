@@ -12,54 +12,88 @@
         android:gravity="center_horizontal"
         android:background="@android:color/white">
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:textSize="20dp"
+            android:textColor="@color/river_auction_black"
+            android:text="현재 이용중인 이용권"/>
+
+        <LinearLayout
+            android:id="@+id/notbuy"
+            android:visibility="gone"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
+            android:padding="20dp"
+            android:color="@color/river_auction_dodger_blue"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@color/river_auction_pale_grey"
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/big_icon_key"/>
-
+            android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="21sp"
-                android:textColor="@color/river_auction_black"
-                android:text="@string/shop_my_item_count"/>
-
+                android:gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/river_auction_warm_grey_two"
+                android:text="현재 이용중인"/>
             <TextView
-                android:id="@+id/shop_my_item_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="21sp"
-                android:textColor="@color/river_auction_dodger_blue"/>
+                android:gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/river_auction_warm_grey_two"
+                android:text="서비스 이용권이 없습니다."/>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="21sp"
-                android:textColor="@color/river_auction_black"
-                android:text="기간"/>
 
-            <TextView
-                android:id="@+id/shop_my_item_during"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="21sp"
-                android:textColor="@color/river_auction_dodger_blue"/>
+
+        <LinearLayout
+            android:id="@+id/buy"
+            android:layout_width="250dp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="70dp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:background="@color/river_auction_dodger_blue"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/shop_my_item_count"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="21sp"
+                    android:textColor="@android:color/white"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="30dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/shop_my_item_during"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="이용기간 (2016.01.20 ~ 2016.04.20"
+                    android:textColor="@color/river_auction_dodger_blue"/>
+            </LinearLayout>
         </LinearLayout>
 
         <TextView

@@ -83,16 +83,16 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
             // 최신순
             adapter.reviewItems.clear();
             presenter.getReviews(teacherId, 0, 0);
-            recentBtn.setImageResource(R.drawable.star1);
-            rateBtn.setImageResource(R.drawable.star1);
+            recentBtn.setImageResource(R.drawable.recent_focus);
+            rateBtn.setImageResource(R.drawable.rate);
             Toast.makeText(this, "최신순으로 정렬하였습니다.", Toast.LENGTH_SHORT).show();
         });
         rateBtn.setOnClickListener(v -> {
             // 평점순 정렬
             adapter.reviewItems.clear();
             presenter.getReviews(teacherId, 1, 0);
-            recentBtn.setImageResource(R.drawable.star1);
-            rateBtn.setImageResource(R.drawable.star1);
+            recentBtn.setImageResource(R.drawable.recent);
+            rateBtn.setImageResource(R.drawable.rate_focus);
             Toast.makeText(this, "평점순으로 정렬하였습니다.", Toast.LENGTH_SHORT).show();
         });
 
@@ -110,7 +110,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         for(int i=0;i<newReview.size();i++)
         {
             CReview review = newReview.get(i);
-            reviewItems.add(makeReviewItem(review.getReviewIdx(),review.getCreatedAt(), review.getRank(), review.getReview(), review.getUserName(), review.getUserid()));
+            reviewItems.add(makeReviewItem(review.getReviewIdx(),review.getCreatedAt(), review.getRank(), review.getReview(), review.getName(), review.getUserid()));
         }
 
         adapter = new ReviewItemAdapter(reviewItems);
@@ -129,7 +129,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         shopItem.setRank(rank);
         shopItem.setReviewIdx(reviewIdx);
         shopItem.setReview(review);
-        shopItem.setUserName(userName);
+        shopItem.setName(userName);
         shopItem.setUserid(userId);
         return shopItem;
     }
@@ -270,7 +270,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
         @Override
         public void onBindViewHolder(ReviewList.ReviewItemHolder holder, int position) {
             CReview reviewItem = reviewItems.get(position);
-            holder.writerView.setText(DataUtils.convertToAnonymousName(reviewItem.getUserName())+"님의 리뷰");
+            holder.writerView.setText(DataUtils.convertToAnonymousName(reviewItem.getName())+"님의 리뷰");
 
             //자신의 댓글인 경우에만 노출
             if(reviewItem.getUserid() !=null && Integer.parseInt(reviewItem.getUserid()) == user.getId())

@@ -21,8 +21,8 @@
             <ImageView
                 android:id="@+id/category_label"
                 android:paddingTop="3dp"
-                android:layout_width="25dp"
-                android:layout_height="15dp"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
                 android:layout_gravity="top"
                 android:src="@drawable/grade_university"
                 android:layout_marginRight="4dp"/>
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginLeft="28dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginBottom="3dp">
             <TextView
                 android:id="@+id/board_register_id"
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:text="@string/board_register_id"
+                android:text=""
                 android:gravity="center_vertical"
                 android:textColor="@color/river_auction_greyish"
                 android:textSize="13sp" />

@@ -22,10 +22,12 @@ import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
+import com.riverauction.riverauction.api.service.teacher.params.GetTeachersParams;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.eventbus.FavoriteChangedEvent;
 import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
+import com.riverauction.riverauction.eventbus.TeacherFilterEvent;
 import com.riverauction.riverauction.feature.common.BasicInfoView;
 import com.riverauction.riverauction.feature.common.LessonInfoView;
 import com.riverauction.riverauction.feature.review.ReviewList;
@@ -169,6 +171,8 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            GetTeachersParams.Builder builder = new GetTeachersParams.Builder();
+            RiverAuctionEventBus.getEventBus().post(new TeacherFilterEvent(builder));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -177,6 +181,15 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     protected void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        finish();
+        GetTeachersParams.Builder builder = new GetTeachersParams.Builder();
+        RiverAuctionEventBus.getEventBus().post(new TeacherFilterEvent(builder));
     }
 
     // userId 를 이전 화면에서 넘겨받는다

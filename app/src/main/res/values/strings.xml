@@ -366,7 +366,7 @@
 
     <string name="shop_action_bar_title">내 아이템/구매</string>
     <string name="shop_my_item_count">내 열쇠 : </string>
-    <string name="shop_description">충전하신 열쇠는 안드로이드 기기에서만\n사용하실 수 있습니다. 구매하신 열쇠는 환불이 불가하니\n구입 전 한 번 더 확인 해주세요.</string>
+    <string name="shop_description">서비스 이용권을 구매하시면 선생님 목록에 자동 등록이 되어 학생에게 보여지게 되며, 과외 경매에 매일 최대 3건(동시) 참여하실 수 있습니다.</string>
 
     <string name="filter_description">원하는 조건으로 검색을 해보세요</string>
     <string name="filter_subjects">과목</string>

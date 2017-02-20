@@ -42,12 +42,18 @@ public class BoardWriteRequest {
     @JsonProperty("reply_cnt")
     private Integer replyCnt;
 
+    @JsonProperty("image_path")
+    private String imagePath;
+
+    @JsonProperty("name")
+    private String name;
+
     public BoardWriteRequest() {
     }
 
 
 
-    public BoardWriteRequest(String userid, String teacherid, Integer boardIdx, Integer replyIdx, Long createdAt, Integer categoryId, Integer category2Id, String content, Integer viewCnt, String subject, Integer replyCnt) {
+    public BoardWriteRequest(String userid, String teacherid, Integer boardIdx, Integer replyIdx, Long createdAt, Integer categoryId, Integer category2Id, String content, Integer viewCnt, String subject, Integer replyCnt, String imagePath, String name) {
         this.userid = userid;
         this.teacherid = teacherid;
         this.boardIdx = boardIdx;
@@ -59,6 +65,8 @@ public class BoardWriteRequest {
         this.viewCnt = viewCnt;
         this.subject = subject;
         this.replyCnt = replyCnt;
+        this.imagePath = imagePath;
+        this.name = name;
     }
 
     public static class Builder {
@@ -84,8 +92,21 @@ public class BoardWriteRequest {
 
         private String subject;
 
+        private String imagePath;
+
+        private String name;
+
         public Builder setUserid(String userid) {
             this.userid = userid;
+            return this;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+
+        public Builder setImagePath(String imagePath) {
+            this.imagePath = imagePath;
             return this;
         }
 
@@ -139,8 +160,13 @@ public class BoardWriteRequest {
             return this;
         }
 
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
         public BoardWriteRequest build() {
-            return new BoardWriteRequest( userid,  teacherid,  boardIdx,  replyIdx,  createdAt,  categoryId, category2Id,  content,  viewCnt, subject, replyCnt);
+            return new BoardWriteRequest( userid,  teacherid,  boardIdx,  replyIdx,  createdAt,  categoryId, category2Id,  content,  viewCnt, subject, replyCnt, imagePath, name);
         }
     }
 }

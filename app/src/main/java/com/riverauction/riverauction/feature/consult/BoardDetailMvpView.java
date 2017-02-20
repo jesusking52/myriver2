@@ -40,4 +40,5 @@ public interface BoardDetailMvpView extends MvpView {
     void successRegistReply(Boolean boardRegist);
     boolean failRegistReply(CErrorCause errorCause);
 
+    void successDelete(Boolean result);
 }

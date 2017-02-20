@@ -78,7 +78,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         makeViewPagerSlidingTabLayout();
         MainTabTracker.registerTabCallback(this, 5, getContext());
 
-
         filterButton.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), ConsultFilterActivity.class);
             if(viewPager.getCurrentItem()==0)
@@ -138,13 +137,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             getBoardList(3,builder.build());
         }
 
-
-        /*
-        adapter.clearActiveLessonsAndBidding();
-        //getActiveLessonAndLessonBiddings();
-
-
-        */
     }
 
     private List<BoardPagerItem> makeTabPagerItems() {
@@ -169,8 +161,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
     public void onEnterTab() {
 
         if (CUserType.TEACHER == user.getType()) {
-            adapter.clearActiveLessons();
-            getActiveBoardList(null);
             adapter.clearBoard(1);
             adapter.clearBoard(2);
             adapter.clearBoard(3);
@@ -178,8 +168,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             getBoardList(2,null);
             getBoardList(3,null);
         } else if (CUserType.STUDENT == user.getType()) {
-            //adapter.clearActiveLessonsAndBidding();
-           // getActiveBoardList(null);
             adapter.clearBoard(1);
             adapter.clearBoard(2);
             adapter.clearBoard(3);
@@ -206,8 +194,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             builder.setreply_idx(0);
             presenter.getBoardList(boardCategory, builder.build());
         }
-
-
     }
 
       @Override

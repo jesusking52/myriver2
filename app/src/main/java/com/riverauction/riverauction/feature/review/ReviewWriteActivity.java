@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
@@ -16,19 +15,15 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLocation;
 import com.riverauction.riverauction.api.model.CReview;
-import com.riverauction.riverauction.api.model.CStudent;
-import com.riverauction.riverauction.api.model.CStudentStatus;
 import com.riverauction.riverauction.api.model.CTeacher;
 import com.riverauction.riverauction.api.model.CUser;
-import com.riverauction.riverauction.api.model.CUserType;
-import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.common.ReviewInfoView2;
+import com.riverauction.riverauction.feature.common.SimpleRatingBar;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.feature.teacher.TeacherDetailActivity;
 import com.riverauction.riverauction.states.UserStates;
-import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
 
 import javax.inject.Inject;
 
@@ -43,17 +38,14 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     public static final String EXTRA_USER_ID2 = EXTRA_PREFIX2 + "extra_user_id";
     public static final String EXTRA_REVIEW_IDX = EXTRA_PREFIX2 + "extra_review_idx";
     private PhotoSelector photoSelector;
-    private String profileImagePath;
     @Inject
     ReviewWritePresenter presenter;
 
     // basic
-    @Bind(R.id.review_rank) Spinner reviewRankSpinner;
     @Bind(R.id.review) EditText review;
     @Bind(R.id.basic_info_view) ReviewInfoView2 basicInfoView;
-    //@Bind(R.id.profile_photo_view) ProfileImageView profilePhotoView;
-    //@Bind(R.id.profile_user_name) TextView userNameView;
     @Bind(R.id.profile_university) TextView profileuniversity;
+    @Bind(R.id.ratingBar1) SimpleRatingBar ratingBar1;
     // address 정보
     private CLocation location;
     private CUser user;
@@ -71,7 +63,6 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // basic
-        initializeRankSpinner();
         getDataFromBundle(getIntent().getExtras());
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
@@ -80,11 +71,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         getSupportActionBar().setTitle(R.string.review_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
         presenter.getUserProfile(teacherId, true);
-
-
     }
 
     private  void setUserReview(CReview review){
@@ -100,49 +87,16 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
                 cReview = ParcelableWrappers.unwrap(parcelable);
                 teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
                 review.setText(cReview.getReview());
-                reviewRankSpinner.setSelection(cReview.getRank());
+                float rank = (float) cReview.getRank();
+                rank = rank /2;
+                ratingBar1.setRating(rank);
+                //reviewRankSpinner.setSelection(cReview.getRank());
                 isModify = true;
             }else
             {
                 teacherId = bundle.getInt(TeacherDetailActivity.EXTRA_USER_ID, -1);
                 isModify = false;
             }
-        }
-    }
-
-    String rankValue = "0";
-
-    public void setSpinnerValue(){
-        if(reviewRankSpinner.getSelectedItemPosition() == 1)
-        {
-            rankValue = "1";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 2)
-        {
-            rankValue = "2";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 3)
-        {
-            rankValue = "3";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 4)
-        {
-            rankValue = "4";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 5)
-        {
-            rankValue = "5";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 6)
-        {
-            rankValue = "6";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 7)
-        {
-            rankValue = "7";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 8)
-        {
-            rankValue = "8";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 9)
-        {
-            rankValue = "9";
-        }else if(reviewRankSpinner.getSelectedItemPosition() == 3)
-        {
-            rankValue = "10";
         }
     }
 
@@ -157,6 +111,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_common_confirm) {
             if (isValidCheckBasic()) {
+
                 if(isModify)
                     presenter.modifyReview(user.getId(), buildReviewRequest());
                 else
@@ -183,97 +138,8 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
         presenter.detachView();
     }
 
-    /**
-     * User data 로 초기화
-     * @param user
-     */
-    private void setRank(CUser user) {
-        CStudent student = user.getStudent();
-        CStudentStatus studentStatus = student.getStudentStatus();
-        switch (studentStatus) {
-            case KINDERGARTEN: {
-                reviewRankSpinner.setSelection(1);
-                break;
-            }
-            case ELEMENTARY_SCHOOL: {
-                reviewRankSpinner.setSelection(2);
-                break;
-            }
-            case MIDDLE_SCHOOL: {
-                reviewRankSpinner.setSelection(3);
-                break;
-            }
-            case HIGH_SCHOOL: {
-                reviewRankSpinner.setSelection(4);
-                break;
-            }
-            case UNIVERSITY: {
-                reviewRankSpinner.setSelection(5);
-                break;
-            }
-            case RETRY_UNIVERSITY: {
-                reviewRankSpinner.setSelection(6);
-                break;
-            }
-            case ORDINARY: {
-                reviewRankSpinner.setSelection(7);
-                break;
-            }
-        }
-/*
-        handler.postDelayed(() -> {
-            Integer grade = student.getGrade();
-            if (grade != null && grade > 0) {
-                gradeSpinner.setSelection(grade);
-            }
-        }, 500);
-
-        CStudentDepartmentType studentDepartmentType = student.getDepartment();
-        switch (studentDepartmentType) {
-            case LIBERAL_ARTS: {
-                departmentTypeSpinner.setSelection(1);
-                break;
-            }
-            case NATURAL_SCIENCES: {
-                departmentTypeSpinner.setSelection(2);
-                break;
-            }
-            case ART_MUSIC_PHYSICAL: {
-                departmentTypeSpinner.setSelection(3);
-                break;
-            }
-            case COMMERCIAL_AND_TECHNICAL: {
-                departmentTypeSpinner.setSelection(4);
-                break;
-            }
-            case NONE: {
-                departmentTypeSpinner.setSelection(5);
-                break;
-            }
-        }
-*/
-        //location = user.getLocation();
-        //review.setText("");
-    }
-
-    private void initializeRankSpinner() {
-        SpinnerAdapter reviewRankSpinnerAdapter = new SpinnerAdapter(this, R.layout.item_spinner);
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_hint));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_0_5));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_1));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_1_5));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_2));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_2_5));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_3));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_3_5));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_4));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_4_5));
-        reviewRankSpinnerAdapter.addItem(getString(R.string.review_rank_5));
-        reviewRankSpinner.setAdapter(reviewRankSpinnerAdapter);
-    }
-
     private boolean isValidCheckBasic() {
-        if (reviewRankSpinner.getSelectedItemPosition() == 0) {
+        if (ratingBar1.getRating() == 0) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.review_rank_validate)
                     .setMessage(R.string.review_rank_validate)
@@ -288,51 +154,25 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
         }
-
-
         return true;
     }
 
     private TeacherReviewRequest buildReviewRequest() {
-        int ranking = reviewRankSpinner.getSelectedItemPosition();
-        Integer ran = new Integer(ranking);
+        //int ranking = reviewRankSpinner.getSelectedItemPosition();
+        float rank = ratingBar1.getRating()*2;
+        Integer ran = new Integer((int)rank);
+
         String reviewIdx = "0";
         if(cReview != null)
             reviewIdx = cReview.getReviewIdx().toString();
-        setSpinnerValue();
+
         return new TeacherReviewRequest.Builder()
                 .setReviewidx(reviewIdx)
                 .setRank(ran.toString())
                 .setTeacherid(teacherId.toString())
                 .setReview(review.getText().toString())
+                .setName(user.getName())
                 .build();
-    }
-
-    private StudentBasicInformationRequest buildStudentBasicInformationRequest() {
-        StudentBasicInformationRequest.Builder builder = new StudentBasicInformationRequest.Builder()
-                .setType(CUserType.STUDENT)
-                .setStudentStatus(getStudentStatus());
-                //.setGrade(getGrade())
-                //.setDepartment(getDepartmentType());
-
-        if (location != null) {
-            builder.setLocation(location);
-        }
-        return builder.build();
-    }
-
-    private CStudentStatus getStudentStatus() {
-        switch (reviewRankSpinner.getSelectedItemPosition()) {
-            case 1 : return CStudentStatus.KINDERGARTEN;
-            case 2 : return CStudentStatus.ELEMENTARY_SCHOOL;
-            case 3 : return CStudentStatus.MIDDLE_SCHOOL;
-            case 4 : return CStudentStatus.HIGH_SCHOOL;
-            case 5 : return CStudentStatus.UNIVERSITY;
-            case 6 : return CStudentStatus.RETRY_UNIVERSITY;
-            case 7 : return CStudentStatus.ORDINARY;
-        }
-
-        return null;
     }
 
     @Override

@@ -48,4 +48,12 @@
     <color name="black_80">#CC000000</color>
     <color name="black_85">#D8000000</color>
     <color name="black_90">#E6000000</color>
+    <color name="golden_stars">#FFC619</color>
+
+    <color name="material_amber300">#FFC619</color>
+    <color name="material_amber400">#FFC619</color>
+    <color name="material_amber50">#FFC619</color>
+    <color name="material_amber500">#FFC619</color>
+    <color name="material_amberA400">#FFC619</color>
+    <color name="material_amberA700">#FFC619</color>
 </resources>

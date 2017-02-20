@@ -2,29 +2,25 @@ package com.riverauction.riverauction.feature.consult.write;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avast.android.dialogs.fragment.ListDialogFragment;
 import com.avast.android.dialogs.iface.IListDialogListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -43,26 +39,30 @@ import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.auth.request.StudentBasicInformationRequest;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
+import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.eventbus.BoardFilterEvent;
+import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.feature.consult.BoardDetailActivity;
 import com.riverauction.riverauction.feature.consult.BoardView;
+import com.riverauction.riverauction.feature.photo.BoardImageView;
 import com.riverauction.riverauction.feature.photo.CPhotoInfo;
 import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.feature.utils.PermissionUtils;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.spinner.SpinnerAdapter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 
+import static com.riverauction.riverauction.RiverAuctionApplication.getContext;
 import static com.riverauction.riverauction.api.model.CStudentStatus.ELEMENTARY_SCHOOL;
 import static com.riverauction.riverauction.api.model.CStudentStatus.HIGH_SCHOOL;
 import static com.riverauction.riverauction.api.model.CStudentStatus.KINDERGARTEN;
@@ -89,9 +89,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     EditText subject;
     @Bind(R.id.content)
     EditText content;
-    @Bind(R.id.uploadImage)
-    ImageView upload_Image;
-
+    @Bind(R.id.basic_info_profile_image) BoardImageView profileImageView;
     @Bind(R.id.profile_change_photo_container) View changePhotoButton;
     // address 정보
     private MenuItem likeMenuItem;
@@ -128,55 +126,14 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         photoSelector = new PhotoSelector(this);
-        boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-
-                initializeRankSpinner2(position);
-                /*
-                TextView titleView = (TextView) view.findViewById(R.id.item_spinner_title);
-                if (position == 0) {
-                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish));
-                } else {
-                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish_brown));
-                }
-                */
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                /*
-                TextView titleView = (TextView) view.findViewById(R.id.item_spinner_title);
-                if (position == 0) {
-                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish));
-                } else {
-                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish_brown));
-                }
-                */
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        presenter.getUserProfile(teacherId, true);
 
         getDataFromBundle(getIntent().getExtras());//변수 전달
 
+        presenter.getUserProfile(teacherId, true);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         changePhotoButton.setOnClickListener(v -> showProfilePhotoDialog());
-
-
     }
 
     public void showProfilePhotoDialog() {
@@ -317,7 +274,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
                 setSpinnerValue();
                 BoardWriteRequest request = new BoardWriteRequest.Builder()
                         .setReplyIdx(0).setCategoryId(Integer.parseInt(boardValue)).setSubject(subject.getText().toString()).setCategory2Id(Integer.parseInt(categoryValue))
-                        .setReplyCnt(0).setViewCnt(0).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").build();
+                        .setReplyCnt(0).setViewCnt(0).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
 
                 presenter.writeBoard(user.getId(), request);
             });
@@ -327,9 +284,10 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
             likeMenuItem.getActionView().setOnClickListener(item -> {
                 //수정
                 setSpinnerValue();
+
                 BoardWriteRequest request = new BoardWriteRequest.Builder()
                         .setBoardIdx(board.getBoardIdx()).setReplyIdx(0).setSubject(subject.getText().toString()).setCategoryId(Integer.parseInt(boardValue)).setCategory2Id(Integer.parseInt(categoryValue))
-                        .setReplyCnt(board.getReplyCnt()).setViewCnt(board.getViewCnt()).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").build();
+                        .setReplyCnt(board.getReplyCnt()).setViewCnt(board.getViewCnt()).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
 
                 presenter.postBoardModify(user.getId(), request);
             });
@@ -346,6 +304,23 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         boardSpinnerAdapter.addItem(getString(R.string.consult_tab_worry));
         //boardSpinner.setOnItemSelectedListener(new SpinnerItemSelectedListener(context));
         boardSpinner.setAdapter(boardSpinnerAdapter);
+
+        boardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView titleView = (TextView) view.findViewById(R.id.item_spinner_title);
+                if (position == 0) {
+                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish));
+                } else {
+                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish_brown));
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void initializeRankSpinner2(int select1) {
@@ -379,6 +354,22 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         }
         //categorySpinner.setOnItemSelectedListener(new SpinnerItemSelectedListener(context));
         categorySpinner.setAdapter(categorAdapter);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView titleView = (TextView) view.findViewById(R.id.item_spinner_title);
+                if (position == 0) {
+                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish));
+                } else {
+                    titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish_brown));
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private boolean isValidCheckBasic() {
@@ -463,6 +454,14 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         Toast.makeText(context, "질문이 작성되었습니다.", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
+        /*
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        */
+        GetBoardsParams.Builder builder = new GetBoardsParams.Builder();
+        builder.setCateogryId(CATEGORY);
+        RiverAuctionEventBus.getEventBus().post(new BoardFilterEvent(builder));
     }
 
     @Override
@@ -498,39 +497,42 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     public boolean failGetReview(CErrorCause errorCause) {
         return false;
     }
-
+    String url="";
+    String cList = "[{\"height\":0,\"source\":\"\",\"width\":0}]";
     @Override
     public void successPostProfilePhoto(List<CImage> boardpath) {
         //UserStates.USER.set(stateCtx, user);
-        Toast.makeText(context, "질문이 수정되었습니다."+boardpath.toString(), Toast.LENGTH_SHORT).show();
-        CImage image = boardpath.get(2);
+        //Toast.makeText(context, "질문이 수정되었습니다."+boardpath.toString(), Toast.LENGTH_SHORT).show();
+        CImage image = boardpath.get(1);
         Spannable span = content.getText();
         int start = content.getSelectionStart();
         int end = content.getPaddingEnd();
-
+        profileImageView.setVisibility(View.VISIBLE);
+        profileImageView.loadProfileImage(boardpath);
+        cList = boardpath.toString();
         //Bitmap bm = down.doInBackground(image.getSource());
-
-        String url = image.getSource().replace("https","http");
-        new AsyncTaskLoadImage(upload_Image).execute(url);
-
-
-        //RiverAuctionEventBus.getEventBus().post(new UploadProfilePhotoEvent());
-    }
-
-    public Bitmap getBitmapFromURL(String strURL) {
+        /*
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            URL url = new URL(strURL.replace("https","http"));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
+            cList = mapper.writeValueAsString(list);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
+*/
+        url = image.getSource().replace("https","http");
+
+        final OutputStream out = new ByteArrayOutputStream();
+        final ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            mapper.writeValue(out, boardpath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        cList = out.toString();
     }
+
 
     @Override
     public boolean failPostProfilePhoto(CErrorCause errorCause) {
@@ -546,7 +548,14 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
     public void successModify(Boolean boardRegist) {
         Toast.makeText(context, "질문이 수정되었습니다.", Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
+        Intent intent = new Intent(getContext(), BoardDetailActivity.class);
+        intent.putExtra(BoardDetailActivity.EXTRA_BOARD_ID, board.getBoardIdx());
+        intent.putExtra(BoardDetailActivity.EXTRA_REPLY_ID, board.getReplyIdx());
+        intent.putExtra(BoardDetailActivity.EXTRA_OWNER_ID, Integer.parseInt(board.getUserid()));
+        intent.putExtra(BoardDetailActivity.EXTRA_CATEGORY_ID, board.getCategoryId());
+        intent.putExtra(BoardDetailActivity.EXTRA_VIEW_ID, board.getViewCnt());
         finish();
+        startActivity(intent);
     }
 
     @Override
@@ -642,30 +651,4 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
                 break;
         }
     }
-}
- class AsyncTaskLoadImage  extends AsyncTask<String, String, Bitmap> {
-    private final static String TAG = "AsyncTaskLoadImage";
-    private ImageView imageView;
-     private  Bitmap bit;
-    public AsyncTaskLoadImage(ImageView imageView) {
-        this.imageView = imageView;
-    }
-     public AsyncTaskLoadImage() {
-     }
-    @Override
-    protected Bitmap doInBackground(String... params) {
-        Bitmap bitmap = null;
-        try {
-            URL url = new URL(params[0]);
-            bitmap = BitmapFactory.decodeStream((InputStream)url.getContent());
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return bitmap;
-    }
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        imageView.setImageBitmap(bitmap);
-    }
-
 }

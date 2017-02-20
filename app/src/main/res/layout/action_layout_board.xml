@@ -6,6 +6,4 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:gravity="center"
-    android:drawableLeft="@drawable/icon_like"
-    android:textColor="?attr/actionMenuTextColor"
-    android:text="@string/menu_favorite"/>
+    android:textColor="?attr/actionMenuTextColor"/>

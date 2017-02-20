@@ -150,7 +150,7 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                     @Override
                     public void onNext(Boolean result) {
                         super.onNext(result);
-                        getMvpView().successDeleteReply(result);
+                        getMvpView().successDelete(result);
                     }
 
                     @Override
@@ -162,4 +162,28 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
     }
 
 
+    public void deleteBoardReply(Integer userId, BoardWriteRequest request) {
+        checkViewAttached();
+
+        if (userId == null) {
+            return;
+        }
+
+        subscription = dataManager.deleteBoard(userId, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean result) {
+                        super.onNext(result);
+                        getMvpView().successDeleteReply(result);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failDeleteReply(getErrorCause(e));
+                    }
+                }, context));
+
+    }
 }

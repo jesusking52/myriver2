@@ -3,11 +3,11 @@ package com.riverauction.riverauction.feature.photo;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.jhcompany.android.libs.utils.Lists2;
-import com.makeramen.RoundedImageView;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.RiverAuctionApplication;
 import com.riverauction.riverauction.api.model.CImage;
@@ -19,38 +19,35 @@ import com.riverauction.riverauction.states.UserStates;
 
 import java.util.List;
 
-public class ProfileImageView extends RoundedImageView {
+public class BoardImageView extends ImageView {
     private CUser user;
 
-    public ProfileImageView(Context context) {
+    public BoardImageView(Context context) {
         super(context);
         initialize(context, null, 0);
     }
 
-    public ProfileImageView(Context context, AttributeSet attrs) {
+    public BoardImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialize(context, attrs, 0);
     }
 
-    public ProfileImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BoardImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context, attrs, defStyleAttr);
     }
 
     private void initialize(Context context, AttributeSet attrs, int defStyleAttr) {
         setClickable(true);
-        setOval(true);
-        setBorderWidth(0.5f);
-        setBorderColor(R.color.black_05);
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                RiverAuctionEventBus.getEventBus().register(ProfileImageView.this);
+                RiverAuctionEventBus.getEventBus().register(BoardImageView.this);
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                RiverAuctionEventBus.getEventBus().unregister(ProfileImageView.this);
+                RiverAuctionEventBus.getEventBus().unregister(BoardImageView.this);
             }
         });
     }

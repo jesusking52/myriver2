@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -65,13 +66,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="7dp"
+                android:background="@android:color/white"
                 android:orientation="horizontal">
                 <!-- 평점 -->
-                <Spinner
-                    style="@style/Widget.ActionBar.Spinner"
-                    android:id="@+id/review_rank"
+                <com.riverauction.riverauction.feature.common.SimpleRatingBar
+                    android:id="@+id/ratingBar1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:srb_fillColor="@color/material_amber300"
+                    app:srb_borderColor="@color/material_amber500"
+                    app:srb_pressedFillColor="@color/material_amberA400"
+                    app:srb_pressedBorderColor="@color/material_amberA700"
+                    app:srb_numberOfStars="5"
+                    app:srb_stepSize="0.5"
+                    />
+
             </LinearLayout>
 
             <!-- 리뷰 -->

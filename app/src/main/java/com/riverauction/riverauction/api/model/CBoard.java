@@ -2,6 +2,8 @@ package com.riverauction.riverauction.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 import proguard.annotation.Keep;
 import proguard.annotation.KeepClassMembers;
 
@@ -42,6 +44,20 @@ public class CBoard {
 
     @JsonProperty("reply_Cnt")
     private Integer replyCnt;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("image_path")
+    private List<CImage> boardPhoto;
+
+    public List<CImage> getBoardPhotos() {
+        return boardPhoto;
+    }
+
+    public void setBoardPhotos(List<CImage> boardPhoto) {
+        this.boardPhoto = boardPhoto;
+    }
 
     public Integer getBoardIdx() {
         return boardIdx;
@@ -128,5 +144,13 @@ public class CBoard {
 
     public void setTeacherid(String teacherid) {
         this.teacherid = teacherid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
