@@ -91,6 +91,8 @@
 
         <activity android:name=".feature.photo.crop.CropImageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.profile.shop.ShopActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".feature.profile.shop.ShopDetail" android:screenOrientation="portrait"/>
+
         <activity android:name=".feature.tutorial.TutorialActivity" android:theme="@style/RiverAuctionTheme.NoActionBar" android:screenOrientation="portrait"/>
 
 

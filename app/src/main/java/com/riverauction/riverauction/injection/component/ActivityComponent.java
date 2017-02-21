@@ -33,6 +33,7 @@ import com.riverauction.riverauction.feature.profile.patch.student.ProfileStuden
 import com.riverauction.riverauction.feature.profile.patch.teacher.ProfileTeacherBasicInfoPatchActivity;
 import com.riverauction.riverauction.feature.profile.patch.teacher.ProfileTeacherLessonInfoPatchActivity;
 import com.riverauction.riverauction.feature.profile.shop.ShopActivity;
+import com.riverauction.riverauction.feature.profile.shop.ShopDetail;
 import com.riverauction.riverauction.feature.register.IntroActivity;
 import com.riverauction.riverauction.feature.register.signup.phone.EnterPhoneNumberActivity;
 import com.riverauction.riverauction.feature.register.signup.phone.EnterPhoneNumberCodeActivity;
@@ -103,5 +104,6 @@ public interface ActivityComponent {
         void inject(ConsultFilterActivity activity);
         void inject(BoardDetailActivity activity);
         void inject(ReviewActivity activity);
+        void inject(ShopDetail activity);
 //        void inject(MapView mapView);
 }

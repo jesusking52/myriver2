@@ -18,6 +18,8 @@ public class CShopItem {
     @JsonProperty("bonus_description")
     private String bonusDescription;
 
+    @JsonProperty("bonus_description2")
+    private String bonusDescription2;
     @JsonProperty("price")
     private Integer price;
 
@@ -44,6 +46,14 @@ public class CShopItem {
 
     public void setBonusDescription(String bonusDescription) {
         this.bonusDescription = bonusDescription;
+    }
+
+    public String getBonusDescription2() {
+        return bonusDescription2;
+    }
+
+    public void setBonusDescription2(String bonusDescription2) {
+        this.bonusDescription2 = bonusDescription2;
     }
 
     public Integer getPrice() {

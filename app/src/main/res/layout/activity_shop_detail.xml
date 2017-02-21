@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/divider_dark"/>
+
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white">
+                <!-- 상품명 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:background="@color/river_auction_pale_grey"
+                    android:paddingLeft="18dp"
+                    android:textSize="11sp"
+                    android:textColor="@color/river_auction_warm_grey"
+                    android:text="구매 정보"/>
+
+               <!-- 상품명-->
+                <FrameLayout
+                    android:id="@+id/lesson_info_level_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_greyish_brown"
+                        android:text="상품명"/>
+
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="200dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_warm_grey"/>
+                </FrameLayout>
+
+                <!-- 이용기간 -->
+                <FrameLayout
+                    android:id="@+id/lesson_info_career_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_greyish_brown"
+                        android:text="이용기간"/>
+
+                    <TextView
+                        android:id="@+id/shop_my_item_during"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="200dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_warm_grey"/>
+                </FrameLayout>
+
+                <include layout="@layout/divider"/>
+
+                <!-- 가격 -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_greyish_brown"
+                        android:text="가격"/>
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="200dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/river_auction_warm_grey"/>
+                </FrameLayout>
+
+                <include layout="@layout/divider"/>
+
+            </LinearLayout>
+
+            <include layout="@layout/divider_dark"/>
+
+            <!-- 경력 소개 / 수업 방식-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/river_auction_pale_grey">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="18dp"
+                    android:textSize="11sp"
+                    android:textColor="@color/river_auction_warm_grey"
+                    android:text="아래 내용에 대해 동의합니다."/>
+
+                <include layout="@layout/divider_dark"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingRight="18dp"
+                    android:text="1. 결제한 내역은 환불이 불가능합니다."
+                    android:paddingBottom="5dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingRight="18dp"
+                    android:text="2. 본 서비스는 과외 연결 목적으로만 이용하실 수 있습니다."
+                    android:paddingBottom="5dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="18dp"
+                    android:paddingRight="18dp"
+                    android:text="3. 타인과의 아이디 공유, 과외 재연결 등 매칭튜터 운영상의 손실 및 이미지 훼손 시 환불없이 강제 탈퇴가 가능하며, 이에 따른 모든 민/형사상 책임을 지게 됩니다."
+                   />
+            </LinearLayout>
+
+            <include layout="@layout/divider_dark"/>
+
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+        android:id="@+id/purchaseButton"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="@android:color/white"
+        android:text="결제하기"
+        android:background="@color/river_auction_dodger_blue"/>
+</FrameLayout>

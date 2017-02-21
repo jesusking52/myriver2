@@ -4,33 +4,44 @@
     android:layout_height="72dp"
     android:background="@android:color/white">
 
-    <ImageView
-        android:id="@+id/item_shop_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginRight="15dp"
-        android:src="@drawable/small_icon_key"
-        android:layout_centerVertical="true"/>
-
     <TextView
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:id="@+id/item_shop_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_toRightOf="@id/item_shop_icon"
         android:layout_centerVertical="true"
         android:textSize="17sp"
         android:textColor="@color/river_auction_black"/>
 
     <TextView
-        android:id="@+id/item_shop_bonus_description"
+        android:id="@+id/item_shop_bonus_description2"
+        android:layout_marginRight="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/item_shop_count"
         android:layout_centerVertical="true"
         android:textSize="11sp"
         android:textColor="@color/river_auction_lightish_blue"/>
+
+    <TextView
+        android:id="@+id/item_shop_bonus_description"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/item_shop_bonus_description2"
+        android:layout_centerVertical="true"
+        android:textSize="11sp"
+        android:textColor="@color/river_auction_lightish_blue"/>
+
+    <TextView
+        android:id="@+id/item_shop_price"
+        android:layout_toRightOf="@id/item_shop_bonus_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textSize="17sp"
+        android:textColor="@color/river_auction_black"/>
 
     <TextView
         android:id="@+id/item_shop_price_button"
@@ -41,6 +52,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:textSize="15sp"
+        android:text="구매"
         android:textColor="@android:color/white"
         android:background="@drawable/shape_dodger_blue_radius_2dp"/>
 </RelativeLayout>

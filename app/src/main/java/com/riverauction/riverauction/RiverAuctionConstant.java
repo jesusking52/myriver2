@@ -13,9 +13,9 @@ public class RiverAuctionConstant {
     public static final String SKU_ID_COST10000 = "com.riverauction.11";
     public static final String SKU_ID_COST20000 = "com.riverauction.23";
     public static final String SKU_ID_COST50000 = "com.riverauction.60";
-    public static final String SKU_ID_COST13600 = "com.riverauction.11";
-    public static final String SKU_ID_COST19200 = "com.riverauction.23";
-    public static final String SKU_ID_COST23200 = "com.riverauction.60";
+    public static final String SKU_ID_COST13600 = "com.riverauction.136";
+    public static final String SKU_ID_COST19200 = "com.riverauction.192";
+    public static final String SKU_ID_COST23200 = "com.riverauction.232";
 
     public static final String IN_APP_BILLING_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0v05Z8AppZSBT+CVFVFN0T5Osp1ao1fTSpyM/HaxanOR7viM3E8plme/+nbX4P86nPGABSHhTV1yNPVA+rFuFBjsl7zlgOxG+FFt+5C6CgvpOBByeeFe6JpyoSVTMXnR4zDL2sDzBZtto/nd2BixJlIxDmJmPxuv4ufZoW4IfzLw5JcNwyr7Ex40zHtkKK1iSGAr69hKSxSKSmX0ZMGXh2SW6nHdcOoGyEXS1PYVTKK3svKZv/zQLAJOCxst02ulQZtYHEN/8JsJnf5DQF0PxalO3qSc6b2ha+raV0XUCZz4JuRhMXRmWIA2xUpBKTdoIToDQCUWtUaoeEU15DtiFQIDAQAB";
 }

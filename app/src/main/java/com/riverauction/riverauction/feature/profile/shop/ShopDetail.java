@@ -1,28 +1,18 @@
 package com.riverauction.riverauction.feature.profile.shop;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.riverauction.riverauction.BuildConfig;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.RiverAuctionConstant;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CReceipt;
-import com.riverauction.riverauction.api.model.CShopItem;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.inapppurchase.util.IabHelper;
@@ -30,17 +20,17 @@ import com.riverauction.riverauction.inapppurchase.util.IabResult;
 import com.riverauction.riverauction.inapppurchase.util.Inventory;
 import com.riverauction.riverauction.inapppurchase.util.Purchase;
 import com.riverauction.riverauction.states.UserStates;
-import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
-
-import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 
-public class ShopActivity extends BaseActivity implements ShopMvpView {
+import static com.riverauction.riverauction.feature.profile.shop.ShopActivity.BASIC_PRICE;
+import static com.riverauction.riverauction.feature.profile.shop.ShopActivity.PRODUCT_NAME;
+import static com.riverauction.riverauction.feature.profile.shop.ShopActivity.PRODUCT_PRICE;
+import static com.riverauction.riverauction.feature.profile.shop.ShopActivity.SKU_ID;
+
+public class ShopDetail extends BaseActivity implements ShopMvpView {
     // Debug tag, for logging
     static final String TAG = "ShopActivity";
 
@@ -49,10 +39,6 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     static final String SKU_REFUNDED = "android.test.refunded";
     static final String SKU_ITEM_UNAVAILABLE = "android.test.item_unavailable";
 
-    public static final String SKU_ID = "extra_sku_id";
-    public static final String PRODUCT_NAME = "extra_product_name";
-    public static final String PRODUCT_PRICE = "extra_product_price";
-    public static final String BASIC_PRICE = "extra_basic_price";
     // (arbitrary) request code for the purchase flow
     static final int RC_REQUEST = 10001;
 
@@ -60,31 +46,50 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     IabHelper mHelper;
     @Inject ShopPresenter presenter;
 
-    @Bind(R.id.shop_recycler_view) RecyclerView recyclerView;
-    @Bind(R.id.shop_my_item_count) TextView myItemCount;
+    @Bind(R.id.product_name) TextView productName;
     @Bind(R.id.shop_my_item_during) TextView during;
-    @Bind(R.id.notbuy) View notBuy;
-    @Bind(R.id.buy) View buy;
+    @Bind(R.id.price) TextView price;
+    @Bind(R.id.purchaseButton) TextView purchaseButton;
 
-    private ShopItemAdapter adapter;
-    private List<CShopItem> shopItems = Lists.newArrayList();
+
     private boolean isUseYn= false;
     private CUser user;
-
+    private String skuId;
+    private Integer product_name;
+    private Integer product_price;
+    private String basic_price;
     @Override
     public int getLayoutResId() {
-        return R.layout.activity_shop;
+        return R.layout.activity_shop_detail;
+    }
+
+
+    // userId 를 이전 화면에서 넘겨받는다
+    private void getDataFromBundle(Bundle bundle) {
+        if (bundle != null) {
+            skuId = bundle.getString(SKU_ID, "");
+            product_name = bundle.getInt(PRODUCT_NAME, -1);
+            product_price = bundle.getInt(PRODUCT_PRICE, -1);
+            basic_price =  bundle.getString(BASIC_PRICE, "");
+            if (skuId == "") {
+                throw new IllegalStateException("skuId must be exist");
+            }
+            productName.setText("서비스 이용권 "+product_name.toString()+"개월");
+            during.setText(product_name.toString()+"개월");
+            price.setText(basic_price+"(20%)"+product_price+"원(VAT포함)");
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getDataFromBundle(getIntent().getExtras());
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
 
         user = UserStates.USER.get(stateCtx);
 
-        getSupportActionBar().setTitle(R.string.shop_action_bar_title);
+        getSupportActionBar().setTitle("이용권 구매");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -105,36 +110,24 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
             mHelper.queryInventoryAsync(mGotInventoryListener);
         });
 
-        if (BuildConfig.DEBUG) {
-            // test 를 위한 skuID
-            //shopItems.add(makeShopItem("1개월 13,600원", 1, "17,000원 20% off", 13600));
-            //shopItems.add(makeShopItem("4개월 19,200원", 3, "24,000원 20% off", 19200));
-            //shopItems.add(makeShopItem("6개월 23,200원", 6, "29,000원 20% off", 23200));
-            shopItems.add(makeShopItem(SKU_PURCHASED, -1, null, 999, "1"));
-            shopItems.add(makeShopItem(SKU_CANCELED, -1, null, 999, "1"));
-            shopItems.add(makeShopItem(SKU_REFUNDED, -1, null, 999, "1"));
-            shopItems.add(makeShopItem(SKU_ITEM_UNAVAILABLE, -1, null, 999, "1"));
-        }
-        /*
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST3000, 3, null, 3000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST5000, 5, null, 5000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST10000, 11, "10% 보너스", 10000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST20000, 23, "15% 보너스", 20000));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST50000, 60, "20% 보너스", 50000));
-        */
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST13600, 1, "20% 할인", 13600, "17,000원"));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST19200, 3, "20% 할인", 19200, "24,000원"));
-        shopItems.add(makeShopItem(RiverAuctionConstant.SKU_ID_COST23200, 6, "20% 할인", 23200, "29,000원"));
-
-        adapter = new ShopItemAdapter(shopItems);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        RecyclerView.ItemDecoration itemDecoration = DividerUtils.getHorizontalDividerItemDecoration(context);
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         presenter.getUser(user.getId());
+
+        purchaseButton.setOnClickListener(v -> {
+            if(!isUseYn) {
+                // Purchase and Consume
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.shop_purchase_dialog_title)
+                        .setMessage(R.string.shop_purchase_dialog_message)
+                        .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                            purchaseItem(skuId);
+                        })
+                        .setCancelable(true)
+                        .show();
+            }else
+            {
+                Toast.makeText(context, "이미 서비스를 이용 중입니다.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
@@ -289,6 +282,8 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            Intent intent = new Intent(context, ShopActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -319,61 +314,10 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
         }
     }
 
-    private void setMyCoins(CUser user) {
-
-        if(user.getServiceMonth()==null)
-            user.setServiceMonth("0");
-        //myItemCount.setText(getString(R.string.common_shop_item_count_unit, user.getCoins()));
-        myItemCount.setText(getString(R.string.common_shop_item_count_unit, Integer.parseInt(user.getServiceMonth())));
-        if(user.getServiceStart() != null && user.getServiceStart() != null)
-        {
-
-            String serviceMonth = user.getServiceMonth();
-            String serviceStart = user.getServiceStart();
-            Date startDate = new Date();
-            startDate.setTime(Long.parseLong(serviceStart));
-            Date endDate = new Date();
-            endDate.setTime(Long.parseLong(serviceStart));
-
-            int mMonth = startDate.getMonth();
-            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
-
-            during.setText(DateUtils.getRelativeTimeSpanString(startDate.getTime()) +"~"+ DateUtils.getRelativeTimeSpanString(endDate.getTime()));
-            Date now = new Date();
-
-            if(now.getTime()<endDate.getTime())
-            {
-                buy.setVisibility(View.VISIBLE);
-                notBuy.setVisibility(View.GONE);
-                isUseYn=true;
-            }
-            else
-            {
-                buy.setVisibility(View.GONE);
-                notBuy.setVisibility(View.VISIBLE);
-                isUseYn=false;
-            }
-        }
-        else{
-            isUseYn=false;
-        }
-
-    }
-
-    private CShopItem makeShopItem(String skuId, Integer count, String bonus, Integer price, String basicPrice) {
-        CShopItem shopItem = new CShopItem();
-        shopItem.setSkuId(skuId);
-        shopItem.setCount(count);
-        shopItem.setBonusDescription(bonus);
-        shopItem.setBonusDescription2(basicPrice);
-        shopItem.setPrice(price);
-        return shopItem;
-    }
 
     @Override
     public void successGetUser(CUser user) {
         this.user = user;
-        setMyCoins(user);
     }
 
     @Override
@@ -385,6 +329,8 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     public void successPurchaseCoin(Boolean result) {
         presenter.getUser(user.getId());
         Toast.makeText(context, R.string.shop_purchase_dialog_success_title, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, ShopActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -400,101 +346,4 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
         return false;
     }
 
-    /**
-     * ViewHolder
-     */
-    public static class ShopItemHolder extends RecyclerView.ViewHolder {
-        public TextView countView;
-        public TextView bonusDescriptionView;
-        public TextView bonusDescriptionView2;
-        public TextView price;
-        public TextView priceButton;
-
-        public ShopItemHolder(View itemView) {
-            super(itemView);
-
-            countView = (TextView) itemView.findViewById(R.id.item_shop_count);
-            bonusDescriptionView = (TextView) itemView.findViewById(R.id.item_shop_bonus_description);
-            bonusDescriptionView2 = (TextView) itemView.findViewById(R.id.item_shop_bonus_description2);
-            price = (TextView) itemView.findViewById(R.id.item_shop_price);
-            priceButton = (TextView) itemView.findViewById(R.id.item_shop_price_button);
-
-        }
-    }
-
-    /**
-     * Adapter
-     */
-    private class ShopItemAdapter extends RecyclerView.Adapter<ShopItemHolder> {
-        private List<CShopItem> shopItems;
-
-        public ShopItemAdapter(List<CShopItem> shopItems) {
-            this.shopItems = shopItems;
-        }
-
-        @Override
-        public ShopItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ShopItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(ShopItemHolder holder, int position) {
-            CShopItem shopItem = shopItems.get(position);
-            if (shopItem.getSkuId().equals(SKU_PURCHASED)) {
-                holder.countView.setText("결제 성공하는 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_CANCELED)) {
-                holder.countView.setText("결제 실패하는 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_REFUNDED)) {
-                holder.countView.setText("결제 환불된거 테스트");
-            } else if (shopItem.getSkuId().equals(SKU_ITEM_UNAVAILABLE)) {
-                holder.countView.setText("결제 불가능아이템 테스트");
-            } else {
-                holder.countView.setText(getString(R.string.common_shop_item_count_unit, shopItem.getCount()));
-            }
-            DecimalFormat formatter = new DecimalFormat("#,###,###");
-            String formattedString = formatter.format(shopItem.getPrice());
-            holder.price.setText(getString(R.string.common_shop_item_price_unit, formattedString));
-            //holder.priceButton.setText(getString(R.string.common_shop_item_price_unit, formattedString));
-            holder.bonusDescriptionView2.setText(shopItem.getBonusDescription2());
-            holder.bonusDescriptionView2.setPaintFlags(holder.bonusDescriptionView2.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-
-            holder.priceButton.setOnClickListener(v -> {
-                //if(!isUseYn) {
-                    // Purchase and Consume
-                    new AlertDialog.Builder(context)
-                            .setTitle(R.string.shop_purchase_dialog_title)
-                            .setMessage(R.string.shop_purchase_dialog_message)
-                            .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                                Intent intent = new Intent(context, ShopDetail.class);
-                                intent.putExtra(ShopActivity.SKU_ID, shopItem.getSkuId());
-                                intent.putExtra(ShopActivity.PRODUCT_NAME, shopItem.getCount());
-                                intent.putExtra(ShopActivity.PRODUCT_PRICE, shopItem.getPrice());
-                                intent.putExtra(ShopActivity.BASIC_PRICE, shopItem.getBonusDescription2());
-                                startActivity(intent);
-                                //purchaseItem(shopItem.getSkuId());
-                            })
-                            .setCancelable(true)
-                            .show();
-                    /*
-                }else
-                {
-                    Toast.makeText(context, "이미 서비스를 이용 중입니다.", Toast.LENGTH_LONG).show();
-                }
-                */
-            });
-
-            if (!Strings.isNullOrEmpty(shopItem.getBonusDescription())) {
-                holder.bonusDescriptionView.setText(shopItem.getBonusDescription());
-                holder.bonusDescriptionView.setVisibility(View.VISIBLE);
-            } else {
-                holder.bonusDescriptionView.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return shopItems.size();
-        }
-    }
 }

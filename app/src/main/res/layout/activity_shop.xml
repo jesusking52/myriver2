@@ -33,7 +33,6 @@
             android:color="@color/river_auction_dodger_blue"
             android:gravity="center_vertical"
             android:background="@color/river_auction_pale_grey"
-
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
