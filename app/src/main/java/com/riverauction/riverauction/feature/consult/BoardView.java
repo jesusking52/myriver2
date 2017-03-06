@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.DisplayUtils;
@@ -15,8 +16,6 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.RiverAuctionApplication;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
-import com.riverauction.riverauction.api.model.CLesson;
-import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
@@ -90,18 +89,24 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
         });
 
         if (CUserType.TEACHER == user.getType()) {
-            boardWriteButton.setVisibility(GONE);
+            //boardWriteButton.setVisibility(GONE);
         }
-        boardWriteButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), BoardWriteActivity.class);
-            if(viewPager.getCurrentItem()==0)
-                intent.putExtra(EXTRA_CATEGORY_ID, 1);
-            else  if(viewPager.getCurrentItem()==1)
-                intent.putExtra(EXTRA_CATEGORY_ID, 2);
-            else
-                intent.putExtra(EXTRA_CATEGORY_ID, 3);
 
-            getContext().startActivity(intent);
+        boardWriteButton.setOnClickListener(v -> {
+            if (CUserType.TEACHER == user.getType()) {
+                //boardWriteButton.setVisibility(GONE);
+                Toast.makeText(context, "질문작성은 학생만 가능합니다.", Toast.LENGTH_SHORT).show();
+            }else {
+                Intent intent = new Intent(getContext(), BoardWriteActivity.class);
+                if (viewPager.getCurrentItem() == 0)
+                    intent.putExtra(EXTRA_CATEGORY_ID, 1);
+                else if (viewPager.getCurrentItem() == 1)
+                    intent.putExtra(EXTRA_CATEGORY_ID, 2);
+                else
+                    intent.putExtra(EXTRA_CATEGORY_ID, 3);
+
+                getContext().startActivity(intent);
+            }
         });
 
     }
@@ -223,8 +228,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
      */
     private class BoardPagerAdapter extends PagerAdapter implements SlidingTabLayout.TabCustomViewProvider, SlidingTabLayout.TabCustomLayoutParamsProvider {
 
-        private BoardActiveStudentView boardActiveStudentView;
-        private BoardActiveTeacherView boardActiveTeacherView;
         private BoardListView boardListView;
         private BoardListView boardListView2;
         private BoardListView boardListView3;
@@ -310,54 +313,6 @@ public class BoardView extends BaseFrameLayout implements BoardMvpView, MainTabT
             return new ViewGroup.LayoutParams(tabViewWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         }
 
-        // student
-        public void setActiveViewStudentLoading() {
-            if (boardActiveStudentView != null) {
-                boardActiveStudentView.setLoading();
-            }
-        }
-        public void setActiveViewStudentResult(CLesson lessons, List<CLessonBidding> biddings, Integer nextToken, int totalCount) {
-            if (boardActiveStudentView != null) {
-                boardActiveStudentView.setContent(lessons, biddings, nextToken, totalCount);
-            }
-        }
-        public void setActiveViewStudentResult(List<CLessonBidding> biddings, Integer nextToken) {
-            if (boardActiveStudentView != null) {
-                boardActiveStudentView.setContent(biddings, nextToken);
-            }
-        }
-        public void setActiveViewStudentError() {
-            if (boardActiveStudentView != null) {
-                boardActiveStudentView.setError();
-            }
-        }
-        public void clearActiveLessonsAndBidding() {
-            if (boardActiveStudentView != null) {
-                boardActiveStudentView.clear();
-            }
-        }
-
-        // active
-        public void setActiveViewLoading() {
-            if (boardActiveTeacherView != null) {
-                boardActiveTeacherView.setLoading();
-            }
-        }
-        public void setActiveViewResult(List<CLesson> lessons, Integer nextToken) {
-            if (boardActiveTeacherView != null) {
-                boardActiveTeacherView.setContent(lessons, nextToken);
-            }
-        }
-        public void setActiveViewError() {
-            if (boardActiveTeacherView != null) {
-                boardActiveTeacherView.setError();
-            }
-        }
-        public void clearActiveLessons() {
-            if (boardActiveTeacherView != null) {
-                boardActiveTeacherView.clear();
-            }
-        }
 
         // history
         public void setBoardViewLoading(Integer boardid) {

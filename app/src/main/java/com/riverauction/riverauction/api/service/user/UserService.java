@@ -1,12 +1,13 @@
 package com.riverauction.riverauction.api.service.user;
 
 import com.riverauction.riverauction.api.model.CImage;
-import com.riverauction.riverauction.api.model.CMyTeacher;
-import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.model.CLesson;
+import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
+import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CNotification;
 import com.riverauction.riverauction.api.model.CUser;
+import com.riverauction.riverauction.api.model.CUserFavorite;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.api.service.auth.request.TeacherReviewRequest;
 import com.riverauction.riverauction.api.service.user.request.UserGCMAddRequest;
@@ -34,6 +35,10 @@ public interface UserService {
 
     @GET("/api/users/{userId}/profile")
     Observable<APISuccessResponse<CUser>> getUserProfile(@Path("userId") Integer userId, @Query("phone_number") Boolean phoneNumber);
+
+    @GET("/api/users/{userId}/profile2")
+    Observable<APISuccessResponse<CUser>> getUserProfile2(@Path("userId") Integer userId, @Query("phone_number") Boolean phoneNumber);
+
 
     @GET("/api/users/{userId}/notifications")
     Observable<APISuccessResponse<List<CNotification>>> getNotifications(@Path("userId") Integer userId, @Query("next_token") Integer nextToken);
@@ -90,8 +95,11 @@ public interface UserService {
     Observable<APISuccessResponse<List<CMyTeacher>>> getMyTeacher(@Path("userId") Integer userId, @Path("type") Integer type);
 
     @GET("/api/lessons/{userId}/user_biddings")
-    Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(@Path("userId") Integer userId);
+    Observable<APISuccessResponse<List<CLessonBidding>>> getMyBidding(@Path("userId") Integer userId);
 
     @GET("/api/users/{userId}/{teacherId}/confirm_my_number")
     Observable<Boolean> confirmMyTeacher(@Path("userId") Integer userId, @Path("teacherId") Integer teacherId);
+
+    @GET("/api/users/{userId}/drop_out")
+    Observable<APISuccessResponse<Boolean>>  postDropOut(@Path("userId") Integer userId);
 }

@@ -80,6 +80,28 @@ public class ProfilePresenter extends BasePresenter<ProfileMvpView> {
                 });
     }
 
+    public void dropOut(Integer userId) {
+        checkViewAttached();
+        if (userId == null) {
+            return;
+        }
+        subscription = dataManager.postDropOut(userId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<Boolean>() {
+
+                    @Override
+                    public void onNext(Boolean boardRegist) {
+                        super.onNext(boardRegist);
+                        getMvpView().successDropOut(boardRegist);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failDropOut(getErrorCause(e));
+                    }
+                }, context));
+    }
+
     public void postPreferences(Integer userId, UserPreferencesRequest request) {
         checkViewAttached();
 

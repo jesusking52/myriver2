@@ -108,7 +108,8 @@ public class TeacherItemView extends LinearLayout {
         if(teacher.getRank() != null){
 
             if(teacher.getRank().equals("0")) {
-                imgRank.setImageResource(R.drawable.star1);
+                //imgRank.setVisibility(GONE);
+                //imgRank.setImageResource(R.drawable.star1);
             }else if(teacher.getRank().equals("1")) {
                 imgRank.setImageResource(R.drawable.star1);
             }else if(teacher.getRank().equals("2")) {

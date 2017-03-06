@@ -138,6 +138,10 @@ public class DataManager {
         return userService.getUserProfile(userId, phoneNumber).map(APISuccessResponse::getResult);
     }
 
+    public Observable<CUser> getUserProfile2(Integer userId, Boolean phoneNumber) {
+        return userService.getUserProfile2(userId, phoneNumber).map(APISuccessResponse::getResult);
+    }
+
     public Observable<APISuccessResponse<List<CNotification>>> getNotifications(Integer userId, Integer nextToken) {
         return userService.getNotifications(userId, nextToken);
     }
@@ -281,12 +285,17 @@ public class DataManager {
         return userService.getMyTeacher(userId, type);
     }
 
-    public Observable<APISuccessResponse<List<CMyTeacher>>> getMyBidding(Integer userId) {
+    public Observable<APISuccessResponse<List<CLessonBidding>>> getMyBidding(Integer userId) {
         return userService.getMyBidding(userId);
     }
 
     public Observable<Boolean> confirmMyTeacher(Integer userId, Integer teacherId) {
         return userService.confirmMyTeacher(userId, teacherId);
+    }
+
+    //탈퇴
+    public Observable<Boolean> postDropOut(Integer userId) {
+        return userService.postDropOut(userId).map(APISuccessResponse::getResult);
     }
 
 }

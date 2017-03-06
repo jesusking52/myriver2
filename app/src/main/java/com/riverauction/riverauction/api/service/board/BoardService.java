@@ -35,4 +35,5 @@ public interface BoardService {
     @POST("/api/board/{userId}/board_delete")
     Observable<APISuccessResponse<Boolean>> deleteBoard(@Path("userId") Integer boardId,  @Body BoardWriteRequest request);
 
+
 }

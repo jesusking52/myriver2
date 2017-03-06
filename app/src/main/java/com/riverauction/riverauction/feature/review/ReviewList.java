@@ -202,6 +202,9 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
     public void successDeleteReview(Boolean result) {
         setResult(RESULT_OK);
         finish();
+        Intent intent = new Intent(context, TeacherDetailActivity.class);
+        intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, teacherId);
+        startActivity(intent);
     }
 
     @Override
@@ -304,6 +307,7 @@ public class ReviewList extends BaseActivity implements ReviewListMvpView {
                         .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
                             modifyReviewItem(reviewItem);
                         })
+                        .setNegativeButton(R.string.common_button_cancel, null)
                         .setCancelable(true)
                         .show();
             });

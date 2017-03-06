@@ -51,7 +51,7 @@
                         android:id="@+id/product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="200dp"
+                        android:layout_marginLeft="100dp"
                         android:layout_gravity="center_vertical"
                         android:textSize="15sp"
                         android:textColor="@color/river_auction_warm_grey"/>
@@ -76,9 +76,18 @@
                         android:id="@+id/shop_my_item_during"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="200dp"
+                        android:layout_marginLeft="100dp"
                         android:layout_gravity="center_vertical"
                         android:textSize="15sp"
+                        android:textColor="@color/river_auction_dodger_blue"/>
+
+                    <TextView
+                        android:id="@+id/shop_my_item_during2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="150dp"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="11sp"
                         android:textColor="@color/river_auction_warm_grey"/>
                 </FrameLayout>
 
@@ -103,13 +112,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="200dp"
+                        android:layout_marginLeft="100dp"
                         android:textSize="15sp"
                         android:textColor="@color/river_auction_warm_grey"/>
                 </FrameLayout>
-
-                <include layout="@layout/divider"/>
-
             </LinearLayout>
 
             <include layout="@layout/divider_dark"/>
@@ -160,7 +166,7 @@
 
             <include layout="@layout/divider_dark"/>
 
-        </LinearLayout>
+        </LinearLayout>river_auction_dodger_blue
     </ScrollView>
     <TextView
         android:id="@+id/purchaseButton"

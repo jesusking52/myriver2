@@ -267,16 +267,19 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
 
         likeMenuItem.setVisible(true);
         TextView favoriteTextView = (TextView) likeMenuItem.getActionView().findViewById(R.id.favorite_text_view);
+
         if (isRegist) {
             favoriteTextView.setText(R.string.board_regist);
             likeMenuItem.getActionView().setOnClickListener(item -> {
                 // 등록
                 setSpinnerValue();
-                BoardWriteRequest request = new BoardWriteRequest.Builder()
-                        .setReplyIdx(0).setCategoryId(Integer.parseInt(boardValue)).setSubject(subject.getText().toString()).setCategory2Id(Integer.parseInt(categoryValue))
-                        .setReplyCnt(0).setViewCnt(0).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
+                if(isValidCheckBasic()) {
+                    BoardWriteRequest request = new BoardWriteRequest.Builder()
+                            .setReplyIdx(0).setCategoryId(Integer.parseInt(boardValue)).setSubject(subject.getText().toString()).setCategory2Id(Integer.parseInt(categoryValue))
+                            .setReplyCnt(0).setViewCnt(0).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
 
-                presenter.writeBoard(user.getId(), request);
+                    presenter.writeBoard(user.getId(), request);
+                }
             });
 
         } else {
@@ -284,12 +287,13 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
             likeMenuItem.getActionView().setOnClickListener(item -> {
                 //수정
                 setSpinnerValue();
+                if(isValidCheckBasic()) {
+                    BoardWriteRequest request = new BoardWriteRequest.Builder()
+                            .setBoardIdx(board.getBoardIdx()).setReplyIdx(0).setSubject(subject.getText().toString()).setCategoryId(Integer.parseInt(boardValue)).setCategory2Id(Integer.parseInt(categoryValue))
+                            .setReplyCnt(board.getReplyCnt()).setViewCnt(board.getViewCnt()).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
 
-                BoardWriteRequest request = new BoardWriteRequest.Builder()
-                        .setBoardIdx(board.getBoardIdx()).setReplyIdx(0).setSubject(subject.getText().toString()).setCategoryId(Integer.parseInt(boardValue)).setCategory2Id(Integer.parseInt(categoryValue))
-                        .setReplyCnt(board.getReplyCnt()).setViewCnt(board.getViewCnt()).setContent(content.getText().toString()).setUserid(user.getId().toString()).setTeacherid("0").setImagePath(cList).setName(user.getName()).build();
-
-                presenter.postBoardModify(user.getId(), request);
+                    presenter.postBoardModify(user.getId(), request);
+                }
             });
 
         }
@@ -309,6 +313,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TextView titleView = (TextView) view.findViewById(R.id.item_spinner_title);
+
                 if (position == 0) {
                     titleView.setTextColor(context.getResources().getColor(R.color.river_auction_greyish));
                 } else {
@@ -390,19 +395,21 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
             return false;
         }
 
-        if (subject.getText().equals("")) {
+        if (subject.getText().toString().equals("")) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.board_text5)
                     .setMessage(R.string.board_text5)
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
+            return false;
         }
-        if (content.getText().equals("")) {
+        if (content.getText().toString().equals("")) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.board_text6)
                     .setMessage(R.string.board_text6)
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
+            return false;
         }
 
         return true;
@@ -510,15 +517,7 @@ public class BoardWriteActivity extends BaseActivity implements BoardWriteMvpVie
         profileImageView.setVisibility(View.VISIBLE);
         profileImageView.loadProfileImage(boardpath);
         cList = boardpath.toString();
-        //Bitmap bm = down.doInBackground(image.getSource());
-        /*
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            cList = mapper.writeValueAsString(list);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
+
         url = image.getSource().replace("https","http");
 
         final OutputStream out = new ByteArrayOutputStream();

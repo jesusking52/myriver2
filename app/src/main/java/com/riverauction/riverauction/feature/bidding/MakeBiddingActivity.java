@@ -118,4 +118,14 @@ public class MakeBiddingActivity extends BaseActivity implements MakeBiddingMvpV
         // TODO: error handle
         return false;
     }
+
+    @Override
+    public void successGetUser(CUser user) {
+
+    }
+
+    @Override
+    public boolean failGetUser(CErrorCause errorCause) {
+        return false;
+    }
 }

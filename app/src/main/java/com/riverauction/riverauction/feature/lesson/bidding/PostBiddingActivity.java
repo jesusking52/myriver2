@@ -112,6 +112,10 @@ public class PostBiddingActivity extends BaseActivity implements PostBiddingMvpV
      * 입찰하기
      */
     private void postLessonBiddingsDialog() {
+        Integer price = Integer.valueOf(biddingPriceView.getText().toString());
+        LessonBiddingRequest request = new LessonBiddingRequest.Builder().setPrice(price).build();
+        presenter.postLessonBiddings(lessonId, request);
+        /*
         new AlertDialog.Builder(context)
                 .setTitle(R.string.post_bidding_dialog_title)
                 //.setMessage(getResources().getString(R.string.lesson_detail_bidding_dialog_message, RiverAuctionConstant.PRICE_POST_BIDDING))
@@ -123,6 +127,7 @@ public class PostBiddingActivity extends BaseActivity implements PostBiddingMvpV
                 })
                 .setNegativeButton(R.string.common_button_no, null)
                 .show();
+        */
     }
 
     @Override

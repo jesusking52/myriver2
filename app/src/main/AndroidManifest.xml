@@ -62,6 +62,7 @@
         <activity android:name=".feature.lesson.filter.StudentFilterActivity" android:screenOrientation="portrait"/>
 
         <activity android:name=".feature.bidding.MakeBiddingActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".feature.bidding.MakeStudentActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.lesson.LessonDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.teacher.TeacherDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.mylesson.detail.MyLessonDetailActivity" android:screenOrientation="portrait"/>
@@ -69,6 +70,8 @@
         <activity android:name=".feature.notification.NotificationActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.lesson.bidding.PostBiddingActivity" android:theme="@style/RiverAuctionTheme.White" android:screenOrientation="portrait"/>
 
+        <activity android:name=".feature.profile.ServiceActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".feature.profile.PrivateActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.profile.ProfileActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.profile.patch.ProfilePatchActivity" android:screenOrientation="portrait"/>
         <activity android:name=".feature.postcode.DaumPostCodeActivity" android:screenOrientation="portrait"/>

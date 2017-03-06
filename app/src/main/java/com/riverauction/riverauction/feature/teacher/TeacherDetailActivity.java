@@ -30,8 +30,10 @@ import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
 import com.riverauction.riverauction.eventbus.TeacherFilterEvent;
 import com.riverauction.riverauction.feature.common.BasicInfoView;
 import com.riverauction.riverauction.feature.common.LessonInfoView;
+import com.riverauction.riverauction.feature.profile.shop.ShopActivity;
 import com.riverauction.riverauction.feature.review.ReviewList;
 import com.riverauction.riverauction.feature.review.ReviewWriteActivity;
+import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.inapppurchase.util.InAppPurchaseUtils;
 import com.riverauction.riverauction.states.UserStates;
 
@@ -104,7 +106,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         presenter.getUserProfile(userId, true);
 
-
+        isSelectTeacherButton = false;
         if (isSelectTeacherButton) {
             //presenter.getMyBidding(userId);//비딩 내역 가져옴
             if(todayChoice==-1)
@@ -116,13 +118,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
                 phoneNumberButton.setOnClickListener(v -> {
                     if (lessonId != -1) {
 
-                           new AlertDialog.Builder(context)
-                                   .setTitle(R.string.lesson_bidding_list_dialog_negative_button)
-                                   .setPositiveButton(R.string.lesson_bidding_list_dialog_positive_button, (dialog, which) -> {
-                                       // 입찰 선택
-                                       presenter.postSelectTeacher(lessonId, userId);
-                                   })
-                                   .show();
+                        presenter.postSelectTeacher(lessonId, userId);
 
                     }
                     //Toast.makeText(this, "test1", Toast.LENGTH_SHORT).show();
@@ -164,6 +160,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         inflater.inflate(R.menu.menu_favorite, menu);
         likeMenuItem = menu.getItem(0);
         likeMenuItem.setActionView(R.layout.action_layout_favorite);
+        setLikeMenuItem();
         return true;
     }
 
@@ -231,21 +228,31 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
     private void showPhoneNumberDialog() {
         if(todayChoice==-1)
         {
-            Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
-        }
-        else if(todayChoice<3) {
             new AlertDialog.Builder(context)
-                    .setTitle(R.string.teacher_phone_number_dialog_title)
-                    //.setMessage(getResources().getString(R.string.teacher_phone_number_dialog_message, RiverAuctionConstant.PRICE_SHOW_PHONE_NUMBER))
-                    .setMessage("연락처를 확인하시겠습니까?\n하루에 3회만 확인하실 수 있습니다.")
+                    .setTitle("구매")
+                    .setMessage("회원가입 후 이용하실 수 있습니다.\n가입하시겠습니까?")
                     .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
-                        presenter.checkPhoneNumber(userId);
+                        Intent intent = new Intent(context, ShopActivity.class);
+                        startActivity(intent);
                     })
                     .setNegativeButton(R.string.common_button_no, null)
                     .show();
+
+            //Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+        }
+        else if(todayChoice<3) {
+            presenter.checkPhoneNumber(userId);
         }else
         {
-            Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.teacher_phone_number_dialog_title)
+                    //.setMessage(getResources().getString(R.string.teacher_phone_number_dialog_message, RiverAuctionConstant.PRICE_SHOW_PHONE_NUMBER))
+                    .setMessage("하루에 3회만 연락 요청 하실 수 있습니다.\n내일 다시 요청해 주십시오.")
+                    .setPositiveButton(R.string.lesson_bidding_list_dialog_positive_button, (dialog, which) -> {
+                        //presenter.checkPhoneNumber(userId);
+                    })
+                    .show();
+            //Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -268,29 +275,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         setLikeMenuItem();
     }
 
-    private  boolean isUseYn(CUser user){
-        boolean isuseYn = false;
-        if(user.getServiceStart() != null && user.getServiceStart() != null)
-        {
-            String serviceMonth = user.getServiceMonth();
-            String serviceStart = user.getServiceStart();
-            Date startDate = new Date();
-            startDate.setTime(Long.parseLong(serviceStart));
-            Date endDate = new Date();
-            endDate.setTime(Long.parseLong(serviceStart));
-            int mMonth = startDate.getMonth();
-            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
 
-            Date now = new Date();
-
-            if(now.getTime()<endDate.getTime())
-                isuseYn = true;
-            else
-                isuseYn =  false;
-        }else
-            isuseYn =  false;
-        return  isuseYn;
-    }
 
     private void setLikeMenuItem() {
         if (likeMenuItem == null) {
@@ -301,7 +286,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         } else {
             likeMenuItem.setVisible(true);
             TextView favoriteTextView = (TextView) likeMenuItem.getActionView().findViewById(R.id.favorite_text_view);
-            if (teacher.getIsFavorited() != null && teacher.getIsFavorited()) {
+            if (teacher != null && teacher.getIsFavorited() == true ) {
                 favoriteTextView.setText(R.string.menu_favorite_cancel);
                 likeMenuItem.getActionView().setOnClickListener(item -> {
                     // 찜 해제
@@ -327,7 +312,8 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             // 해당 선생님의 연락처 보기를 했으면 안보여준다
             if (teacher.getIsCheckedPhoneNumber() != null && teacher.getIsCheckedPhoneNumber()) {
                 phoneNumberButton.setVisibility(View.GONE);
-                phoneNumberDummyView.setVisibility(View.GONE);
+                //phoneNumberDummyView.setVisibility(View.GONE);
+                phoneNumberDummyView.setVisibility(View.VISIBLE);
             } else {
                 phoneNumberButton.setVisibility(View.VISIBLE);
                 phoneNumberDummyView.setVisibility(View.VISIBLE);
@@ -346,7 +332,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         }
 
 
-        if(Integer.parseInt(teacher.getRankcount())>0)
+        if(teacher.getRankcount() != null && Integer.parseInt(teacher.getRankcount())>0)
         {
             noRiviewLayout.setVisibility(View.GONE);
             riviewLayout.setVisibility(View.VISIBLE);
@@ -440,6 +426,12 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         teacher.setIsCheckedPhoneNumber(true);
         teacher.setPhoneNumber(user.getPhoneNumber());
         setContent(teacher);
+        new AlertDialog.Builder(context)
+                .setTitle("상담 요청")
+                .setMessage(DataUtils.convertToAnonymousName(user.getName()) + " 선생님께 상담 요청을 하였습니다.\n 선생님의 연락이 올 때까지 기다려 주시기 바랍니다.")
+                .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                })
+                .show();
     }
 
     @Override
@@ -453,7 +445,12 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
 
     @Override
     public void successPostSelectTeacher(CUser user) {
-
+        new AlertDialog.Builder(context)
+                .setTitle("입찰 안내")
+                .setMessage("입찰이 완료되었습니다.\n고객님께서 선생님에게 연락 요청을 하였습니다.")
+                .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                })
+                .show();
         teacher.setIsCheckedPhoneNumber(true);
         teacher.setPhoneNumber(user.getPhoneNumber());
         phoneNumberButton.setVisibility(View.GONE);
@@ -474,14 +471,9 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         return false;
     }
 
-    @Override
-    public void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response) {
-        List<CMyTeacher> teachers = response.getResult();
-        Date midnight = new Date();
-        midnight.setHours(0);
-        midnight.setMinutes(0);
-        midnight.setSeconds(0);
-        if(me.getServiceStart() != null && me.getServiceStart() != null)
+    private  void isUseYn(List<CMyTeacher> teachers ){
+
+        if(me.getServiceStart() != null && !me.getServiceStart().equals("0"))
         {
             String serviceMonth = me.getServiceMonth();
             String serviceStart = me.getServiceStart();
@@ -489,18 +481,40 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
             startDate.setTime(Long.parseLong(serviceStart));
             Date endDate = new Date();
             endDate.setTime(Long.parseLong(serviceStart));
+            int mMonth = startDate.getMonth();
+            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
+
             Date now = new Date();
-            if(now.getTime()<endDate.getTime())
-            {
-                todayChoice=-1;
-                return;
+
+            if(now.getTime()<endDate.getTime()) {
+                todayChoice = 0;
+
+                Date midnight = new Date();
+                midnight.setHours(0);
+                midnight.setMinutes(0);
+                midnight.setSeconds(0);
+                for(int i=0;i<teachers.size();i++)
+                {
+                    CMyTeacher nowTeacher = teachers.get(i);
+
+                    if(nowTeacher.getCreateAt()>midnight.getTime())
+                        todayChoice++;
+                }
+            }else {
+                todayChoice = -1;
             }
         }else
-        {
-            todayChoice=-1;
-            return;
-        }
+            todayChoice = -1;
+    }
 
+    @Override
+    public void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response) {
+        List<CMyTeacher> teachers = response.getResult();
+
+        Date midnight = new Date();
+        midnight.setHours(0);
+        midnight.setMinutes(0);
+        midnight.setSeconds(0);
         for(int i=0;i<teachers.size();i++)
         {
             CMyTeacher nowTeacher = teachers.get(i);
@@ -509,6 +523,7 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
                 todayChoice++;
         }
 
+        //isUseYn(teachers);
     }
 
     @Override
@@ -516,44 +531,4 @@ public class TeacherDetailActivity extends BaseActivity implements TeacherDetail
         return false;
     }
 
-    @Override
-    public void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response) {
-        List<CMyTeacher> teachers = response.getResult();
-        Date midnight = new Date();
-        midnight.setHours(0);
-        midnight.setMinutes(0);
-        midnight.setSeconds(0);
-        if(me.getServiceStart() != null && me.getServiceStart() != null)
-        {
-            String serviceMonth = me.getServiceMonth();
-            String serviceStart = me.getServiceStart();
-            Date startDate = new Date();
-            startDate.setTime(Long.parseLong(serviceStart));
-            Date endDate = new Date();
-            endDate.setTime(Long.parseLong(serviceStart));
-            Date now = new Date();
-            if(now.getTime()<endDate.getTime())
-            {
-                todayChoice=-1;
-                return;
-            }
-        }else
-        {
-            todayChoice=-1;
-            return;
-        }
-
-        for(int i=0;i<teachers.size();i++)
-        {
-            CMyTeacher nowTeacher = teachers.get(i);
-
-            if(nowTeacher.getCreateAt()>midnight.getTime())
-                todayChoice++;
-        }
-    }
-
-    @Override
-    public boolean failGetMyBidding(CErrorCause errorCause) {
-        return false;
-    }
 }

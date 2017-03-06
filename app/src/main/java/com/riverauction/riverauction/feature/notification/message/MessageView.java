@@ -1,6 +1,7 @@
 package com.riverauction.riverauction.feature.notification.message;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
@@ -16,10 +18,16 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CNotification;
 import com.riverauction.riverauction.common.LoadMoreRecyclerViewAdapter;
 import com.riverauction.riverauction.feature.MoreLoadable;
+import com.riverauction.riverauction.feature.bidding.MakeStudentActivity;
+import com.riverauction.riverauction.feature.lesson.LessonDetailActivity;
+import com.riverauction.riverauction.feature.photo.ProfileImageView;
 import com.riverauction.riverauction.widget.StatusView;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
 import java.util.List;
+
+import static com.riverauction.riverauction.api.model.CNotificationType.NUMBER_CHECKED;
+import static com.riverauction.riverauction.api.model.CNotificationType.USER_SELECTED;
 
 public abstract class MessageView extends StatusView implements MoreLoadable {
     private MessageAdapter adapter;
@@ -108,11 +116,15 @@ public abstract class MessageView extends StatusView implements MoreLoadable {
     public static class NotificationItemHolder extends RecyclerView.ViewHolder {
         public TextView contentView;
         public TextView createdAtView;
-
+        public ImageView imageP;
+        public ProfileImageView profileImage;
         public NotificationItemHolder(View itemView) {
             super(itemView);
             contentView = (TextView) itemView.findViewById(R.id.item_notification_content);
             createdAtView = (TextView) itemView.findViewById(R.id.item_notification_created_at);
+            imageP = (ImageView) itemView.findViewById(R.id.image_p);
+            profileImage = (ProfileImageView) itemView.findViewById(R.id.item_profile_image);
+
         }
     }
 
@@ -138,8 +150,38 @@ public abstract class MessageView extends StatusView implements MoreLoadable {
             NotificationItemHolder notificationItemHolder = ((NotificationItemHolder) holder);
             notificationItemHolder.contentView.setText(NotificationComposer.style(getContext(), notification.getSkeleton(), notification.getWords()));
             notificationItemHolder.createdAtView.setText(DateUtils.getRelativeTimeSpanString(notification.getCreatedAt()));
-        }
 
+            if(notification.getImagePhotos().size() > 1 ) {
+                notificationItemHolder.profileImage.setVisibility(View.VISIBLE);
+                notificationItemHolder.profileImage.loadProfileImage(notification.getImagePhotos());
+                notificationItemHolder.imageP.setVisibility(View.GONE);
+            }else
+            {
+                notificationItemHolder.profileImage.setVisibility(View.GONE);
+                notificationItemHolder.imageP.setVisibility(View.VISIBLE);
+            }
+            if (notification.getType() == USER_SELECTED) {
+                if(notification.getDeepLink().split("&").length>1) {
+                    lessonId = Integer.parseInt(notification.getDeepLink().split("&")[0]);
+                    ownerid = Integer.parseInt(notification.getDeepLink().split("&")[1]);
+                    notificationItemHolder.itemView.setOnClickListener(v -> {
+                        Intent intent = new Intent(getContext(), LessonDetailActivity.class);
+                        intent.putExtra(LessonDetailActivity.EXTRA_LESSON_ID, lessonId);
+                        intent.putExtra(LessonDetailActivity.EXTRA_OWNER_ID, ownerid);
+                        getContext().startActivity(intent);
+                    });
+                }
+            }else if(notification.getType() == NUMBER_CHECKED) {
+                ownerid = Integer.parseInt(notification.getDeepLink());
+                notificationItemHolder.itemView.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), MakeStudentActivity.class);
+                    intent.putExtra(MakeStudentActivity.EXTRA_PROFILE_ID, ownerid);
+                    getContext().startActivity(intent);
+                });
+            }
+        }
+        int lessonId=0;
+        int ownerid=0;
         @Override
         public int getItemViewItemType(int position) {
             return TYPE_ITEM;

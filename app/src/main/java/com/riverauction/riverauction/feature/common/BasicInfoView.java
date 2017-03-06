@@ -157,7 +157,8 @@ public class BasicInfoView extends LinearLayout {
                 // 대상이 선생, 내가 학생
                 if (!Strings.isNullOrEmpty(user.getPhoneNumber())) {
                     // 폰 번호가 있음
-                    phoneNumberView.setText(user.getPhoneNumber());
+                    //phoneNumberView.setText(user.getPhoneNumber());
+                    phoneNumberView.setText(R.string.common_phone_number);
                     phoneNumberView.setTextColor(getResources().getColor(R.color.river_auction_dodger_blue));
                     phoneNumberView.setTextSize(15);
                 } else {
@@ -180,6 +181,16 @@ public class BasicInfoView extends LinearLayout {
             priceContainer.setVisibility(VISIBLE);
         } else {
             priceContainer.setVisibility(GONE);
+        }
+    }
+
+    public void setContent2(CUser user) {
+        setContent(user);
+        phoneNumberView.setText(user.getPhoneNumber());
+
+        if (!Strings.isNullOrEmpty(user.getName()) || user.getGender() != null) {
+            String nameAndGenderString = user.getName() + " " + DataUtils.convertGenderToShortString(getContext(), user.getGender());
+            nameAndGenderView.setText(nameAndGenderString);
         }
     }
 

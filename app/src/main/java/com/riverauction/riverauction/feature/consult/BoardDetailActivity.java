@@ -1,6 +1,8 @@
 package com.riverauction.riverauction.feature.consult;
 
+import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,11 +20,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avast.android.dialogs.fragment.ListDialogFragment;
+import com.avast.android.dialogs.iface.IListDialogListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
@@ -32,11 +40,18 @@ import com.riverauction.riverauction.eventbus.RiverAuctionEventBus;
 import com.riverauction.riverauction.eventbus.SelectTeacherEvent;
 import com.riverauction.riverauction.feature.consult.write.BoardWriteActivity;
 import com.riverauction.riverauction.feature.photo.BoardImageView;
+import com.riverauction.riverauction.feature.photo.CPhotoInfo;
+import com.riverauction.riverauction.feature.photo.PhotoSelector;
 import com.riverauction.riverauction.feature.photo.ProfileImageView;
 import com.riverauction.riverauction.feature.utils.DataUtils;
+import com.riverauction.riverauction.feature.utils.PermissionUtils;
 import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +60,7 @@ import butterknife.Bind;
 
 import static com.riverauction.riverauction.R.id.reply_title;
 
-public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpView {
+public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpView, IListDialogListener {
     private static final String EXTRA_PREFIX = "com.riverauction.riverauction.feature.lesson.BoardDetailActivity.";
     public static final String EXTRA_BOARD = EXTRA_PREFIX + "extra_board_id";
     public static final String EXTRA_BOARD_ID = EXTRA_PREFIX + "extra_lesson_id";
@@ -54,9 +69,12 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     public static final String EXTRA_REPLY_ID = EXTRA_PREFIX + "extra_reply_id";
     public static final String EXTRA_VIEW_ID = EXTRA_PREFIX + "extra_view_id";
     private static final int REQUEST_POST_BIDDING = 0x01;
-
+    private static final int DIALOG_REQUEST_PROFILE_IMAGE = 0;
+    public static final int PERMISSION_STORAGE_CAMERA = 0x01;
+    public static final int PERMISSION_STORAGE_GALLERY = 0x02;
     @Inject
     BoardDetailPresenter presenter;
+
     @Bind(R.id.boardContents) TextView boardContent;
     @Bind(R.id.item_summary) TextView itemsummary;
     @Bind(R.id.board_register_id) TextView registId;
@@ -78,8 +96,11 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     @Bind(R.id.reply_container) View replyContainer;
     @Bind(R.id.replyLayout) View replyLayout;
     @Bind(R.id.item_teacher_profile_image2) ProfileImageView profile;
-
+    @Bind(R.id.profile_change_photo_container) View changePhotoButton;
     @Bind(R.id.basic_info_profile_image) BoardImageView boardImageView;
+    @Bind(R.id.basic_reply_image) BoardImageView replyImageView;
+
+    private GoogleApiClient client;
     private Integer boardId;
     private Integer replyId;
     private Integer ownerId;
@@ -90,6 +111,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     private Integer VIEWCNT;
     private Integer nextToken;
     //여기부터 추가
+    private PhotoSelector photoSelector;
     List<CBoard> boardList;
     private MenuItem likeMenuItem;
     private GetBoardsParams.Builder builder;
@@ -103,6 +125,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
     private static final String SKU_ITEM_UNAVAILABLE = "android.test.item_unavailable";
     public static final String MODES = "MODE";
     public static final String IDX = "IDX";
+    private String boardImagePath;
     @Override
     public int getLayoutResId() {
         return R.layout.activity_board_detail;
@@ -131,7 +154,9 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         me = UserStates.USER.get(stateCtx);
         getActivityComponent().inject(this);
         presenter.attachView(this, this);
-
+        photoSelector = new PhotoSelector(this);
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        changePhotoButton.setOnClickListener(v -> showProfilePhotoDialog());
         getSupportActionBar().setTitle(R.string.board_write_title);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -157,7 +182,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         //답글
         reply.setOnClickListener(v -> {
             profile.loadProfileImage(me);
-            replyTitle.setText("매칭튜터"+me.getId()+"님의 답변입니다.");
+            replyTitle.setText("매칭튜터"+me.getName()+"님의 답변입니다.");
             replyLayout.setVisibility(View.VISIBLE);
             noReply.setVisibility(View.GONE);
             replyContainer.setVisibility(View.GONE);
@@ -188,6 +213,18 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         });
     }
 
+
+    public void showProfilePhotoDialog() {
+        String[] items = new String[]{
+                getString(R.string.photo_request_from_camera),
+                getString(R.string.photo_request_from_android_gallery)
+        };
+        ListDialogFragment
+                .createBuilder(BoardDetailActivity.this, getSupportFragmentManager())
+                .setItems(items)
+                .setRequestCode(DIALOG_REQUEST_PROFILE_IMAGE)
+                .show();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -204,6 +241,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             finish();
             GetBoardsParams.Builder builder = new GetBoardsParams.Builder();
             builder.setCateogryId(CATEGORY);
+            builder.setreply_idx(0);
             RiverAuctionEventBus.getEventBus().post(new BoardFilterEvent(builder));
         }
         return super.onOptionsItemSelected(item);
@@ -239,8 +277,54 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         if (REQUEST_POST_BIDDING == requestCode && RESULT_OK == resultCode) {
             presenter.getBoardDetail(CATEGORY, builder.build());
         }
+
+        // profile photo change
+        CPhotoInfo photoInfo = photoSelector.onActivityResult(requestCode, resultCode, data, bundle);
+        if (photoInfo != null) {
+            boardImagePath = photoInfo.getPath();
+        }
+
+        if (boardImagePath != null) {
+            presenter.postBoardPhoto(me.getId(), new File(boardImagePath));
+        }
     }
 
+    @Override
+    public void onListItemSelected(String value, int position, int requestCode) {
+        if (requestCode == DIALOG_REQUEST_PROFILE_IMAGE) {
+            if (position == 0) {
+                PermissionUtils.checkSelfPermission(this,
+                        Build.VERSION.SDK_INT >= 16 ? new String[]{Manifest.permission.READ_EXTERNAL_STORAGE} : new String[]{},
+                        PERMISSION_STORAGE_CAMERA, null);
+            } else if (position == 1) {
+                PermissionUtils.checkSelfPermission(this,
+                        Build.VERSION.SDK_INT >= 16 ? new String[]{Manifest.permission.READ_EXTERNAL_STORAGE} : new String[]{},
+                        PERMISSION_STORAGE_GALLERY, null);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean granted = PermissionUtils.checkGranted(grantResults);
+        if (!granted) {
+            PermissionUtils.showDeniedMessage(this, permissions, grantResults);
+        }
+
+        switch (requestCode) {
+            case PERMISSION_STORAGE_CAMERA:
+                if (granted) {
+                    photoSelector.requestImageFromCamera();
+                }
+                break;
+            case PERMISSION_STORAGE_GALLERY:
+                if (granted) {
+                    photoSelector.requestImageFromAndroidGallery();
+                }
+                break;
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -293,6 +377,38 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
                 .show();
     }
     String cList = "[{\"height\":0,\"source\":\"\",\"width\":0}]";
+
+    @Override
+    public void successPostProfilePhoto(List<CImage> boardpath) {
+        //UserStates.USER.set(stateCtx, user);
+        //Toast.makeText(context, "질문이 수정되었습니다."+boardpath.toString(), Toast.LENGTH_SHORT).show();
+        CImage image = boardpath.get(1);
+
+        replyImageView.setVisibility(View.VISIBLE);
+        replyImageView.loadProfileImage(boardpath);
+        cList = boardpath.toString();
+        final OutputStream out = new ByteArrayOutputStream();
+        final ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            mapper.writeValue(out, boardpath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        cList = out.toString();
+    }
+
+    @Override
+    public boolean failPostProfilePhoto(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public boolean failPostPreferences(CErrorCause errorCause) {
+        return false;
+    }
+
     /**
      * 수정
      */
@@ -502,6 +618,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
         public TextView replyRegisterId;
         public TextView replyTime;
         public ProfileImageView profileImageView;
+        public BoardImageView boardImageV;
         public EditText editContent;
         public ImageView modify;
         public ImageView delete;
@@ -517,6 +634,7 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             modify = (ImageView) itemView.findViewById(R.id.modify);
             delete = (ImageView) itemView.findViewById(R.id.delete);
             replyRegisterId  = (TextView) itemView.findViewById(R.id.reply_register_id);
+            boardImageV = (BoardImageView) itemView.findViewById(R.id.basic_reply_image2);
         }
     }
 
@@ -581,6 +699,16 @@ public class BoardDetailActivity extends BaseActivity implements BoardDetailMvpV
             }else
             {
                 holder.modifylayout.setVisibility(View.GONE);
+            }
+
+            if(boardItem.getBoardPhotos() !=null) {
+                if(boardItem.getBoardPhotos().size() > 1 ) {
+                    holder.boardImageV.setVisibility(View.VISIBLE);
+                    holder.boardImageV.loadProfileImage(boardItem.getBoardPhotos());
+                }else
+                {
+                    holder.boardImageV.setVisibility(View.GONE);
+                }
             }
 
             holder.profileImageView.loadProfileImage(me);

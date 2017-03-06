@@ -2,6 +2,7 @@ package com.riverauction.riverauction.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 
 import proguard.annotation.Keep;
@@ -28,6 +29,22 @@ public class CNotification {
 
     @JsonProperty("type")
     private CNotificationType type;
+
+    @JsonProperty("images")
+    private List<CImage> imagePhotos;
+
+    public List<CImage> getImagePhotos() {
+        if(imagePhotos == null)
+        {
+
+        }
+        return imagePhotos;
+    }
+
+    public void setImagePhotos(List<CImage> imagePhotos) {
+        this.imagePhotos = imagePhotos;
+    }
+
 
     public Integer getId() {
         return id;

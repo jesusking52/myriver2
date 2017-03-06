@@ -60,6 +60,7 @@ public class ProfileActivity extends BaseActivity implements ProfileMvpView, ILi
     @Bind(R.id.profile_purchase_item_container) View purchaseItemButton;
     @Bind(R.id.profile_faq_container) View faqButton;
     @Bind(R.id.profile_question_container) View questionButton;
+    @Bind(R.id.profile_purchase) View purchase;
 
     // 로그인 한 유저
     private CUser user;
@@ -109,12 +110,16 @@ public class ProfileActivity extends BaseActivity implements ProfileMvpView, ILi
                 startActivity(intent);
             }
         });
-
-        purchaseItemButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ShopActivity.class);
-            startActivity(intent);
-        });
-
+        if (user.getType() == CUserType.TEACHER) {
+            purchaseItemButton.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ShopActivity.class);
+                startActivity(intent);
+            });
+        }else
+        {
+            purchase.setVisibility(View.GONE);
+            purchaseItemButton.setVisibility(View.GONE);
+        }
         faqButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,9 +156,19 @@ public class ProfileActivity extends BaseActivity implements ProfileMvpView, ILi
                     })
                     .setNegativeButton(R.string.common_button_no, null)
                     .show();
-        } else if (item.getItemId() == R.id.menu_terms) {
+        } else if (item.getItemId() == R.id.menu_drop_out)
+        {
             // TODO:
-        } else if (item.getItemId() == android.R.id.home) {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.dropout)
+                    .setMessage(R.string.dropout_dialog_message)
+                    .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                        presenter.dropOut(user.getId());
+                    })
+                    .setNegativeButton(R.string.common_button_no, null)
+                    .show();
+        }
+        else if (item.getItemId() == android.R.id.home) {
             finish();
         }
 
@@ -255,6 +270,24 @@ public class ProfileActivity extends BaseActivity implements ProfileMvpView, ILi
 
     @Override
     public boolean failPostProfilePhoto(CErrorCause errorCause) {
+        return false;
+    }
+
+    @Override
+    public void successDropOut(Boolean boardRegist) {
+        // TODO:
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.dropout)
+                .setMessage(R.string.dropend_dialog_message)
+                .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                    presenter.signOut();
+                })
+                .show();
+
+    }
+
+    @Override
+    public boolean failDropOut(CErrorCause errorCause) {
         return false;
     }
 

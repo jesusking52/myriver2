@@ -26,8 +26,4 @@ public interface TeacherDetailMvpView extends MvpView {
     void successGetMyTeacher(APISuccessResponse<List<CMyTeacher>> response);
 
     boolean failGetMyTeacher(CErrorCause errorCause);
-
-    void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response);
-
-    boolean failGetMyBidding(CErrorCause errorCause);
 }

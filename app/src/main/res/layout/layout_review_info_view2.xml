@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp">
 
                 <ImageView
@@ -117,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="3dp">
             <TextView
                 android:id="@+id/averagerank"
@@ -129,8 +131,9 @@
                 android:textColor="@color/river_auction_brownish_grey" />
             <ImageView
                 android:id="@+id/averagerank2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:paddingTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/star1"
                 android:textSize="20sp"

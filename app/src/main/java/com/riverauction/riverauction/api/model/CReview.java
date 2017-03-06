@@ -27,7 +27,7 @@ public class CReview {
     @JsonProperty("teacherid")
     private String teacherid;
 
-    @JsonProperty("createdAt")
+    @JsonProperty("created_at")
     private long createdAt;
 
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.google.common.base.Strings;
@@ -11,6 +12,8 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.service.auth.request.CertifyPhoneNumberRequest;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.feature.profile.PrivateActivity;
+import com.riverauction.riverauction.feature.profile.ServiceActivity;
 
 import javax.inject.Inject;
 
@@ -23,7 +26,9 @@ public class EnterPhoneNumberActivity extends BaseActivity implements EnterPhone
 
     @Bind(R.id.enter_phone_number_edit_text) EditText phoneNumberEditText;
     @Bind(R.id.next_button) View nextButton;
-
+    @Bind(R.id.necessary1)
+    CheckBox necessary1;
+    @Bind(R.id.necessary2) CheckBox necessary2;
     @Override
     public int getLayoutResId() {
         return R.layout.activity_enter_phone_number;
@@ -40,6 +45,27 @@ public class EnterPhoneNumberActivity extends BaseActivity implements EnterPhone
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         nextButton.setOnClickListener(v -> {
+
+            if(!necessary1.isChecked())
+            {
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.common_error_title)
+                        .setMessage("서비스 이용약관에 동의해 주시기 바랍니다.")
+                        .setPositiveButton(R.string.common_button_confirm, null)
+                        .show();
+                return;
+            }
+
+            if(!necessary2.isChecked())
+            {
+                new AlertDialog.Builder(context)
+                        .setTitle(R.string.common_error_title)
+                        .setMessage("개인정보 취급방침에 동의해 주시기 바랍니다.")
+                        .setPositiveButton(R.string.common_button_confirm, null)
+                        .show();
+                return;
+            }
+
             String phoneNumber = phoneNumberEditText.getText().toString();
             if (Strings.isNullOrEmpty(phoneNumber)) {
                 new AlertDialog.Builder(context)
@@ -55,6 +81,18 @@ public class EnterPhoneNumberActivity extends BaseActivity implements EnterPhone
                     .build();
             presenter.requestAuthNumber(request);
         });
+    }
+
+    public void necessary1(View v)
+    {
+        Intent intent = new Intent(context, ServiceActivity.class);
+        startActivity(intent);
+    }
+
+    public void necessary2(View v)
+    {
+        Intent intent = new Intent(context, PrivateActivity.class);
+        startActivity(intent);
     }
 
     @Override

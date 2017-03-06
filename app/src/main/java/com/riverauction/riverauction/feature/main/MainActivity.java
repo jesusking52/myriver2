@@ -299,9 +299,8 @@ public class MainActivity extends BaseActivity implements MainMvpView {
         midnight.setHours(0);
         midnight.setMinutes(0);
         midnight.setSeconds(0);
-        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        if(me.getServiceStart() != null && !me.getServiceStart().equals("0"))
         {
-            String serviceMonth = me.getServiceMonth();
             String serviceStart = me.getServiceStart();
             Date startDate = new Date();
             startDate.setTime(Long.parseLong(serviceStart));
@@ -311,7 +310,7 @@ public class MainActivity extends BaseActivity implements MainMvpView {
             {
                 CMyTeacher nowTeacher = teachers.get(i);
                 Date choiceDate = new Date(nowTeacher.getCreateAt());
-                choiceDate.setDate(14);
+                choiceDate.setDate(choiceDate.getDate()+14);
                 if(choiceDate.getTime()<now.getTime())
                 {
                     iReview = nowTeacher.getUserId();

@@ -25,6 +25,7 @@ import com.riverauction.riverauction.api.model.CReceipt;
 import com.riverauction.riverauction.api.model.CShopItem;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.BaseActivity;
+import com.riverauction.riverauction.feature.profile.ProfileActivity;
 import com.riverauction.riverauction.inapppurchase.util.IabHelper;
 import com.riverauction.riverauction.inapppurchase.util.IabResult;
 import com.riverauction.riverauction.inapppurchase.util.Inventory;
@@ -33,6 +34,7 @@ import com.riverauction.riverauction.states.UserStates;
 import com.riverauction.riverauction.widget.recyclerview.DividerUtils;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -289,6 +291,8 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            Intent intent = new Intent(context, ProfileActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -338,7 +342,10 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
             int mMonth = startDate.getMonth();
             endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
 
-            during.setText(DateUtils.getRelativeTimeSpanString(startDate.getTime()) +"~"+ DateUtils.getRelativeTimeSpanString(endDate.getTime()));
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일");
+            String str = dayTime.format(new Date(startDate.getTime()));
+
+            during.setText(str +"~"+ DateUtils.getRelativeTimeSpanString(endDate.getTime()));
             Date now = new Date();
 
             if(now.getTime()<endDate.getTime())
@@ -460,7 +467,7 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
 
 
             holder.priceButton.setOnClickListener(v -> {
-                //if(!isUseYn) {
+                if(!isUseYn) {
                     // Purchase and Consume
                     new AlertDialog.Builder(context)
                             .setTitle(R.string.shop_purchase_dialog_title)
@@ -476,12 +483,12 @@ public class ShopActivity extends BaseActivity implements ShopMvpView {
                             })
                             .setCancelable(true)
                             .show();
-                    /*
+
                 }else
                 {
                     Toast.makeText(context, "이미 서비스를 이용 중입니다.", Toast.LENGTH_LONG).show();
                 }
-                */
+
             });
 
             if (!Strings.isNullOrEmpty(shopItem.getBonusDescription())) {

@@ -3,6 +3,7 @@ package com.riverauction.riverauction.feature.bidding;
 import android.content.Context;
 
 import com.riverauction.riverauction.api.model.CLesson;
+import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
@@ -34,6 +35,26 @@ public class MakeBiddingPresenter extends BasePresenter<MakeBiddingMvpView> {
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    public void getUserProfile(Integer userId, boolean phoneNumber) {
+        checkViewAttached();
+
+        subscription = dataManager.getUserProfile2(userId, phoneNumber)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<CUser>() {
+
+                    @Override
+                    public void onNext(CUser user) {
+                        super.onNext(user);
+                        getMvpView().successGetUser(user);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failGetUser(getErrorCause(e));
+                    }
+                }, context));
     }
 
     public void postLesson() {

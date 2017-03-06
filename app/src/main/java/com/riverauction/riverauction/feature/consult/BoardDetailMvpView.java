@@ -2,6 +2,7 @@ package com.riverauction.riverauction.feature.consult;
 
 import com.riverauction.riverauction.api.model.CBoard;
 import com.riverauction.riverauction.api.model.CErrorCause;
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.base.MvpView;
 
 import java.util.List;
@@ -41,4 +42,8 @@ public interface BoardDetailMvpView extends MvpView {
     boolean failRegistReply(CErrorCause errorCause);
 
     void successDelete(Boolean result);
+
+    void successPostProfilePhoto(List<CImage> user);
+    boolean failPostProfilePhoto(CErrorCause errorCause);
+    boolean failPostPreferences(CErrorCause errorCause);
 }

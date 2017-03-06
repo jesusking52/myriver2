@@ -3,6 +3,7 @@ package com.riverauction.riverauction.feature.profile.shop;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,6 +21,10 @@ import com.riverauction.riverauction.inapppurchase.util.IabResult;
 import com.riverauction.riverauction.inapppurchase.util.Inventory;
 import com.riverauction.riverauction.inapppurchase.util.Purchase;
 import com.riverauction.riverauction.states.UserStates;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -50,7 +55,7 @@ public class ShopDetail extends BaseActivity implements ShopMvpView {
     @Bind(R.id.shop_my_item_during) TextView during;
     @Bind(R.id.price) TextView price;
     @Bind(R.id.purchaseButton) TextView purchaseButton;
-
+    @Bind(R.id.shop_my_item_during2) TextView during2;
 
     private boolean isUseYn= false;
     private CUser user;
@@ -76,7 +81,23 @@ public class ShopDetail extends BaseActivity implements ShopMvpView {
             }
             productName.setText("서비스 이용권 "+product_name.toString()+"개월");
             during.setText(product_name.toString()+"개월");
-            price.setText(basic_price+"(20%)"+product_price+"원(VAT포함)");
+
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            String formattedString = formatter.format(product_price);
+            price.setText(basic_price+"(20%) "+formattedString+"원(VAT포함)");
+
+            Date startDate = new Date();
+            //startDate.setTime(Long.parseLong(serviceStart));
+            Date endDate = new Date();
+
+
+            int mMonth = startDate.getMonth();
+            endDate.setMonth(mMonth + Integer.parseInt(product_name.toString()));
+
+            SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일");
+            String str = dayTime.format(new Date(startDate.getTime()));
+
+            during2.setText(str +"~"+ DateUtils.getRelativeTimeSpanString(endDate.getTime()));
         }
     }
 
@@ -120,6 +141,8 @@ public class ShopDetail extends BaseActivity implements ShopMvpView {
                         .setMessage(R.string.shop_purchase_dialog_message)
                         .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
                             purchaseItem(skuId);
+
+
                         })
                         .setCancelable(true)
                         .show();
@@ -318,6 +341,7 @@ public class ShopDetail extends BaseActivity implements ShopMvpView {
     @Override
     public void successGetUser(CUser user) {
         this.user = user;
+        UserStates.USER.set(stateCtx, this.user);
     }
 
     @Override

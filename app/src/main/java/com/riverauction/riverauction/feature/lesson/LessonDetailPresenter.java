@@ -3,8 +3,8 @@ package com.riverauction.riverauction.feature.lesson;
 import android.content.Context;
 
 import com.riverauction.riverauction.api.model.CLesson;
+import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
-import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.base.BasePresenter;
 import com.riverauction.riverauction.data.DataManager;
@@ -139,10 +139,10 @@ public class LessonDetailPresenter extends BasePresenter<LessonDetailMvpView> {
 
         subscription = dataManager.getMyBidding(userId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<APISuccessResponse<List<CMyTeacher>>>() {
+                .subscribe(new APISubscriber<APISuccessResponse<List<CLessonBidding>>>() {
 
                     @Override
-                    public void onNext(APISuccessResponse<List<CMyTeacher>> response) {
+                    public void onNext(APISuccessResponse<List<CLessonBidding>> response) {
                         super.onNext(response);
                         getMvpView().successGetMyBidding(response);
                     }

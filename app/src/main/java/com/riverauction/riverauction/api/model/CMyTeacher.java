@@ -12,7 +12,7 @@ public class CMyTeacher {
     @JsonProperty("checked_user_id")
     private String checkedUserId;
 
-    @JsonProperty("create_at")
+    @JsonProperty("created_at")
     private long createAt;
 
     @JsonProperty("user_id")

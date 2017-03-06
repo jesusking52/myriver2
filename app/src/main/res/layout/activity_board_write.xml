@@ -76,6 +76,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/contents"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <com.riverauction.riverauction.feature.photo.BoardImageView
+                    android:id="@+id/basic_reply_image"
+                    android:layout_width="300dp"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    />
+            </LinearLayout>
             <RelativeLayout
                 android:id="@+id/sign_up_address_container"
                 android:layout_width="match_parent"
@@ -93,6 +108,7 @@
                     android:textSize="15sp"
                     android:gravity="top"
                     android:hint="@string/contents_hint"/>
+
             </RelativeLayout>
             <FrameLayout
                 android:id="@+id/profile_change_photo_container"

@@ -20,14 +20,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="250dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:background="@android:color/white">
@@ -37,18 +37,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:src="@drawable/icon_degree"
-            android:layout_marginRight="3dp"/>
-        <TextView
-            android:id="@+id/profile_university"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textSize="15sp"
-            android:textColor="@color/river_auction_brownish_grey"/>
+
     </LinearLayout>
 
     <TextView

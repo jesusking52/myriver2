@@ -181,26 +181,4 @@ public class TeacherDetailPresenter extends BasePresenter<TeacherDetailMvpView> 
                 });
     }
 
-    public void getMyBidding(Integer userId) {
-        checkViewAttached();
-        if (userId == null) {
-            return;
-        }
-
-        subscription = dataManager.getMyBidding(userId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new APISubscriber<APISuccessResponse<List<CMyTeacher>>>() {
-
-                    @Override
-                    public void onNext(APISuccessResponse<List<CMyTeacher>> response) {
-                        super.onNext(response);
-                        getMvpView().successGetMyBidding(response);
-                    }
-
-                    @Override
-                    public boolean onErrors(Throwable e) {
-                        return getMvpView().failGetMyBidding(getErrorCause(e));
-                    }
-                });
-    }
 }

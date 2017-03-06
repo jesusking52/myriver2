@@ -3,6 +3,7 @@ package com.riverauction.riverauction.feature.consult;
 import android.content.Context;
 
 import com.riverauction.riverauction.api.model.CBoard;
+import com.riverauction.riverauction.api.model.CImage;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
 import com.riverauction.riverauction.api.service.auth.request.BoardWriteRequest;
 import com.riverauction.riverauction.api.service.board.params.GetBoardsParams;
@@ -11,6 +12,7 @@ import com.riverauction.riverauction.data.DataManager;
 import com.riverauction.riverauction.rxjava.APISubscriber;
 import com.riverauction.riverauction.rxjava.DialogSubscriber;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -185,5 +187,25 @@ public class BoardDetailPresenter extends BasePresenter<BoardDetailMvpView> {
                     }
                 }, context));
 
+    }
+
+    public void postBoardPhoto(Integer userId, File localFile) {
+        checkViewAttached();
+
+        subscription = dataManager.postBoardPhoto(userId, localFile)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DialogSubscriber<>(new APISubscriber<List<CImage>>() {
+
+                    @Override
+                    public void onNext(List<CImage> path) {
+                        super.onNext(path);
+                        getMvpView().successPostProfilePhoto(path);
+                    }
+
+                    @Override
+                    public boolean onErrors(Throwable e) {
+                        return getMvpView().failPostPreferences(getErrorCause(e));
+                    }
+                }, context));
     }
 }

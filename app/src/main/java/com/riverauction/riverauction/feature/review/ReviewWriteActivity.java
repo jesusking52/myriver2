@@ -109,6 +109,7 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == R.id.menu_common_confirm) {
             if (isValidCheckBasic()) {
 
@@ -147,12 +148,13 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
                     .show();
             return false;
         }
-        if(review.getText().equals("")){
+        if(review.getText().toString().equals("")){
             new AlertDialog.Builder(context)
                     .setTitle(R.string.review_review_validate)
                     .setMessage(R.string.review_review_validate)
                     .setPositiveButton(R.string.common_button_confirm, null)
                     .show();
+            return false;
         }
         return true;
     }
@@ -176,9 +178,12 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     }
 
     @Override
-    public void successWriteReview(Boolean user) {
+    public void successWriteReview(Boolean user1) {
         setResult(RESULT_OK);
         finish();
+        Intent intent = new Intent(context, ReviewList.class);
+        intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, teacherId);
+        startActivity(intent);
     }
 
     @Override
@@ -224,6 +229,9 @@ public class ReviewWriteActivity extends BaseActivity implements ReviewWriteMvpV
     public void successModifyReview(Boolean result) {
         setResult(RESULT_OK);
         finish();
+        Intent intent = new Intent(context, ReviewList.class);
+        intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, teacherId);
+        startActivity(intent);
     }
 
     @Override

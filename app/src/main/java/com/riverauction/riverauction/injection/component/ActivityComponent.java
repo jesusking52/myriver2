@@ -8,6 +8,7 @@ import com.jhcompany.android.libs.injection.scope.PerActivity;
 import com.jhcompany.android.libs.preference.StateCtx;
 import com.riverauction.riverauction.base.BaseActivity;
 import com.riverauction.riverauction.feature.bidding.MakeBiddingActivity;
+import com.riverauction.riverauction.feature.bidding.MakeStudentActivity;
 import com.riverauction.riverauction.feature.common.dayofweek.SelectDayOfWeeksActivity;
 import com.riverauction.riverauction.feature.common.gender.SelectGenderActivity;
 import com.riverauction.riverauction.feature.common.location.SelectLocationActivity;
@@ -26,7 +27,9 @@ import com.riverauction.riverauction.feature.main.MainActivity;
 import com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailActivity;
 import com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity;
 import com.riverauction.riverauction.feature.notification.NotificationActivity;
+import com.riverauction.riverauction.feature.profile.PrivateActivity;
 import com.riverauction.riverauction.feature.profile.ProfileActivity;
+import com.riverauction.riverauction.feature.profile.ServiceActivity;
 import com.riverauction.riverauction.feature.profile.patch.ProfilePatchActivity;
 import com.riverauction.riverauction.feature.profile.patch.student.ProfileStudentBasicInfoPatchActivity;
 import com.riverauction.riverauction.feature.profile.patch.student.ProfileStudentLessonInfoPatchActivity;
@@ -105,5 +108,11 @@ public interface ActivityComponent {
         void inject(BoardDetailActivity activity);
         void inject(ReviewActivity activity);
         void inject(ShopDetail activity);
+
+        void inject(MakeStudentActivity makeStudentActivity);
+
+        void inject(PrivateActivity privateActivity);
+
+        void inject(ServiceActivity serviceActivity);
 //        void inject(MapView mapView);
 }

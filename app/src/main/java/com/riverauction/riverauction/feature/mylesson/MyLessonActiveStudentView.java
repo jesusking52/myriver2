@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.common.collect.Lists;
 import com.jhcompany.android.libs.preference.StateCtx;
@@ -19,7 +18,6 @@ import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.RiverAuctionApplication;
 import com.riverauction.riverauction.api.model.CLesson;
 import com.riverauction.riverauction.api.model.CLessonBidding;
-import com.riverauction.riverauction.api.model.CLessonStatus;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.common.LoadMoreRecyclerViewAdapter;
@@ -260,16 +258,18 @@ public abstract class MyLessonActiveStudentView extends FrameLayout implements M
                 BiddingItemHolder biddingItemHolder = ((BiddingItemHolder) holder);
                 biddingItemHolder.teacherItemView.setContent(bidding);
                 biddingItemHolder.teacherItemView.setOnClickListener(v -> {
+                    /*
                     if (lesson.getStatus() == CLessonStatus.BIDDING) {
                         Toast.makeText(getContext(), R.string.my_lesson_bidding_status_toast, Toast.LENGTH_SHORT).show();
                     } else if (lesson.getStatus() == CLessonStatus.DEALING) {
+                    */
                         Intent intent = new Intent(getContext(), TeacherDetailActivity.class);
                         intent.putExtra(TeacherDetailActivity.EXTRA_USER_ID, bidding.getUser().getId());
                         intent.putExtra(TeacherDetailActivity.EXTRA_BIDDING_PRICE, bidding.getPrice());
                         intent.putExtra(TeacherDetailActivity.EXTRA_BOOLEAN_SELECT_TEACHER, true);
                         intent.putExtra(TeacherDetailActivity.EXTRA_LESSON_ID, lesson.getId());
                         getContext().startActivity(intent);
-                    }
+                    //}
                 });
             }
         }

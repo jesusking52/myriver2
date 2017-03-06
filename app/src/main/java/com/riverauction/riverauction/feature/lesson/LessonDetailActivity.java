@@ -16,9 +16,9 @@ import com.jhcompany.android.libs.utils.ParcelableWrappers;
 import com.riverauction.riverauction.R;
 import com.riverauction.riverauction.api.model.CErrorCause;
 import com.riverauction.riverauction.api.model.CLesson;
+import com.riverauction.riverauction.api.model.CLessonBidding;
 import com.riverauction.riverauction.api.model.CLessonFavorite;
 import com.riverauction.riverauction.api.model.CLessonStatus;
-import com.riverauction.riverauction.api.model.CMyTeacher;
 import com.riverauction.riverauction.api.model.CUser;
 import com.riverauction.riverauction.api.model.CUserType;
 import com.riverauction.riverauction.api.service.APISuccessResponse;
@@ -31,6 +31,7 @@ import com.riverauction.riverauction.feature.common.BasicInfoView;
 import com.riverauction.riverauction.feature.common.LessonInfoView;
 import com.riverauction.riverauction.feature.lesson.bidding.PostBiddingActivity;
 import com.riverauction.riverauction.feature.mylesson.detail.MyLessonDetailSelectListActivity;
+import com.riverauction.riverauction.feature.profile.shop.ShopActivity;
 import com.riverauction.riverauction.feature.utils.DataUtils;
 import com.riverauction.riverauction.states.UserStates;
 
@@ -305,7 +306,16 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
         biddingButton.setOnClickListener(v -> {
             if(todayChoice==-1)
             {
-                Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(context)
+                        .setTitle("구매")
+                        .setMessage("회원가입 후 이용하실 수 있습니다.\n가입하시겠습니까?")
+                        .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                            Intent intent = new Intent(context, ShopActivity.class);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton(R.string.common_button_no, null)
+                        .show();
+                //Toast.makeText(this, "회원권을 구매하셔야 연락처를 확인하실 수 있습니다.", Toast.LENGTH_SHORT).show();
             }
             else if(todayChoice<3) {
                 Intent intent = new Intent(context, PostBiddingActivity.class);
@@ -314,7 +324,12 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
                 startActivityForResult(intent, REQUEST_POST_BIDDING);
             }else
             {
-                Toast.makeText(this, "하루 3회만 선택 가능합니다.", Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(context)
+                        .setTitle("이용안내")
+                        .setMessage("경매에는 하루에 3회만 참여하실 수 있습니다.")
+                        .setPositiveButton(R.string.common_button_ok, (dialog, which) -> {
+                        })
+                        .show();
             }
         });
         biddingCancelButton.setOnClickListener(v -> {
@@ -380,13 +395,13 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
     }
 
     @Override
-    public void successGetMyBidding(APISuccessResponse<List<CMyTeacher>> response) {
-        List<CMyTeacher> teachers = response.getResult();
+    public void successGetMyBidding(APISuccessResponse<List<CLessonBidding>> response) {
+        List<CLessonBidding> biddinglist = response.getResult();
         Date midnight = new Date();
         midnight.setHours(0);
         midnight.setMinutes(0);
         midnight.setSeconds(0);
-        if(me.getServiceStart() != null && me.getServiceStart() != null)
+        if(me.getServiceStart() != null && !me.getServiceStart().equals("0"))
         {
             String serviceMonth = me.getServiceMonth();
             String serviceStart = me.getServiceStart();
@@ -394,23 +409,26 @@ public class LessonDetailActivity extends BaseActivity implements LessonDetailMv
             startDate.setTime(Long.parseLong(serviceStart));
             Date endDate = new Date();
             endDate.setTime(Long.parseLong(serviceStart));
+            int mMonth = startDate.getMonth();
+            endDate.setMonth(mMonth + Integer.parseInt(serviceMonth));
+
             Date now = new Date();
             if(now.getTime()<endDate.getTime())
             {
+                todayChoice=0;
+            }else
+            {
                 todayChoice=-1;
-                return;
             }
         }else
         {
             todayChoice=-1;
-            return;
         }
 
-        for(int i=0;i<teachers.size();i++)
+        for(int i=0;i<biddinglist.size();i++)
         {
-            CMyTeacher nowTeacher = teachers.get(i);
-
-            if(nowTeacher.getCreateAt()>midnight.getTime())
+            CLessonBidding bidding = biddinglist.get(i);
+            if(bidding.getCreatedAt()>midnight.getTime())
                 todayChoice++;
         }
     }
